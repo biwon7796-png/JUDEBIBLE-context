@@ -1,0 +1,132 @@
+{
+  "gen-21:14": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          73,
+          77
+        ]
+      ]
+    }
+  ],
+  "gen-21:31": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          25,
+          29
+        ]
+      ]
+    }
+  ],
+  "gen-21:32": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          4,
+          8
+        ]
+      ]
+    }
+  ],
+  "gen-21:33": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          6,
+          10
+        ]
+      ]
+    }
+  ],
+  "gen-22:19": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          28,
+          32
+        ]
+      ]
+    }
+  ],
+  "gen-26:23": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          10,
+          14
+        ]
+      ]
+    }
+  ],
+  "gen-26:33": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          36,
+          40
+        ]
+      ]
+    }
+  ],
+  "gen-28:10": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          4,
+          8
+        ]
+      ]
+    }
+  ],
+  "gen-46:1": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          22,
+          26
+        ]
+      ]
+    }
+  ],
+  "gen-46:5": [
+    {
+      "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "group": "direct",
+      "surface": "브엘세바",
+      "spans": [
+        [
+          4,
+          8
+        ]
+      ]
+    }
+  ]
+}

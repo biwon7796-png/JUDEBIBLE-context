@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주드-컨텍스트바이블 · JudeBible Context</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <h1 class="brand">주드-컨텍스트바이블 <small>JudeBible Context</small></h1>
+  <form id="ref-form" class="ref-form" role="search" aria-label="성경 참조 이동"><input id="ref-input" type="text" autocomplete="off" spellcheck="false" placeholder="참조 이동 (예: 창 22:2)" aria-label="성경 참조" aria-describedby="ref-error"><button type="submit" class="btn primary">이동</button></form>
+  <input id="search" type="search" placeholder="인물·장소·본문 검색" aria-label="검색" autocomplete="off">
+  <button id="search-open" class="btn ghost search-open" type="button" aria-label="검색 열기">검색</button>
+</header>
+<div id="search-workspace" class="sw" hidden>
+  <div class="sw-backdrop" data-sw-close></div>
+  <section class="sw-panel" role="dialog" aria-modal="true" aria-labelledby="sw-title">
+    <header class="sw-head">
+      <h2 id="sw-title" class="sw-title">인물·장소 탐색</h2>
+      <input id="sw-query" type="search" placeholder="인물·장소·본문 검색 또는 참조" aria-label="검색어" autocomplete="off">
+      <button id="sw-close" class="btn ghost" type="button" aria-label="검색 닫기">닫기</button>
+    </header>
+    <div class="sw-filters" role="group" aria-label="검색 필터">
+      <div class="sw-fgroup"><span class="sw-flabel">종류</span><button type="button" data-swfilter="kind:all" aria-pressed="true">전체</button><button type="button" data-swfilter="kind:entity" aria-pressed="false">인물·장소</button><button type="button" data-swfilter="kind:verse" aria-pressed="false">구절</button></div>
+      <div class="sw-fgroup" data-entity-filter><span class="sw-flabel">대상</span><button type="button" data-swfilter="type:all" aria-pressed="true">전체</button><button type="button" data-swfilter="type:person" aria-pressed="false">인물</button><button type="button" data-swfilter="type:place" aria-pressed="false">장소</button></div>
+      <div class="sw-fgroup"><span class="sw-flabel">범위</span><button type="button" data-swfilter="testament:all" aria-pressed="true">전체</button><button type="button" data-swfilter="testament:ot" aria-pressed="false">구약</button><button type="button" data-swfilter="testament:nt" aria-pressed="false">신약</button></div>
+      <label class="sw-select"><span class="sw-flabel">시대</span><select id="sw-period" aria-label="시대 필터"><option value="all">전체</option></select></label>
+      <label class="sw-select"><span class="sw-flabel">지역</span><select id="sw-region" aria-label="지역 필터"><option value="all">전체</option></select></label>
+      <label class="sw-select"><span class="sw-flabel">정렬</span><select id="sw-sort" aria-label="정렬"><option value="label">가나다순</option><option value="bible">성경순</option><option value="period">시대순</option></select></label>
+      <div class="sw-fgroup sw-view" role="group" aria-label="보기 방식"><span class="sw-flabel">보기</span><button type="button" data-swfilter="view:card" aria-pressed="true">카드</button><button type="button" data-swfilter="view:list" aria-pressed="false">목록</button></div>
+    </div>
+    <p id="sw-summary" class="helper" aria-live="polite"></p>
+    <div id="search-results" class="sw-results"></div>
+    <div class="sw-more"><button id="sw-more" class="btn ghost" type="button" hidden>더 보기</button></div>
+  </section>
+</div>
+<p id="ref-error" role="status"></p>
+<main id="workspace">
+  <div id="stage" class="stage">
+    <section id="text-pane" aria-label="본문"><div class="pane-head"><h2 id="passage-title"></h2><button id="panel-open" class="btn ghost" type="button" aria-controls="side-pane" hidden>맥락 열기</button></div><div id="verses"></div>
+      <div id="chapter-nav" class="chapter-nav"><button class="btn ghost" data-step="-1">‹ 이전 장</button><button class="btn ghost" data-step="1">다음 장 ›</button></div><p id="crumb" class="helper"></p></section>
+    <section id="map-pane" aria-label="지도">
+      <div class="mp-head"><h2 class="mp-title">지도</h2><span id="mp-cap" class="meta"></span><span class="mp-zoom" role="group" aria-label="지도 확대 축소"><button type="button" class="btn ghost" id="map-zoom-out" data-zoom="-1" aria-label="축소">−</button><button type="button" class="btn ghost" id="map-zoom-in" data-zoom="1" aria-label="확대">+</button><button type="button" class="btn ghost" id="map-zoom-fit" data-zoom="0">맞춤</button></span><button id="map-mode" class="btn ghost" type="button" aria-pressed="false" hidden>지리 지도 ›</button><button id="map-tiles" class="btn ghost" type="button" aria-pressed="false" hidden>현대 지도</button><button id="map-toggle" class="btn ghost" type="button" aria-controls="map-body" aria-expanded="true">접기</button></div>
+      <div id="map-body"></div>
+      <section id="side-pane" aria-label="맥락 패널">
+    <div class="pane-bar"><h2 class="pane-title">상세</h2><button id="panel-toggle" class="btn ghost" type="button" aria-controls="panel" aria-expanded="true">접기</button></div>
+    <div id="panel" role="tabpanel"></div>
+  </section>
+    </section>
+    <div id="split" role="separator" aria-orientation="vertical" aria-label="지도와 본문 너비 조절" aria-valuemin="20" aria-valuemax="85" aria-valuenow="40" tabindex="0" title="드래그하여 지도와 본문 너비 조절 (더블클릭: 초기화)"></div>
+  </div>
+  <nav id="rail" aria-label="관점과 도구">
+    <div class="rail-group" role="group" aria-label="관점"><button type="button" id="rail-study" class="rail-btn" data-perspective="study">본문연구</button><button type="button" id="rail-map" class="rail-btn" data-perspective="map">지도</button><button type="button" id="rail-timeline" class="rail-btn" data-perspective="timeline">연표</button></div>
+    <div class="rail-group rail-util" role="group" aria-label="도구"><button type="button" id="rail-search" class="rail-btn util" data-util="search">검색</button><button type="button" id="rail-settings" class="rail-btn util" data-util="settings" aria-haspopup="dialog" aria-expanded="false">설정</button></div>
+    <div id="settings-pop" role="dialog" aria-label="설정" hidden><p class="sec-h">설정</p><button type="button" class="btn" id="reset-split">지도·본문 분할 비율 초기화</button><p class="helper">이 기기에만 저장되는 화면 설정입니다. 그 외 설정 항목은 아직 정의되지 않았습니다.</p></div>
+  </nav>
+  <aside id="guide-pane" aria-label="네비게이션"></aside>
+  <section id="timeline-pane" aria-label="연표" hidden><div id="tl-body"></div></section>
+</main>
+<footer id="notice" class="helper"></footer>
+<div id="media-lightbox" class="media-lightbox" role="dialog" aria-modal="true" aria-labelledby="media-lightbox-caption" hidden>
+  <button type="button" class="media-lightbox-backdrop" data-media-lightbox-close aria-label="이미지 닫기"></button>
+  <figure class="media-lightbox-card"><button type="button" class="media-lightbox-close" data-media-lightbox-close aria-label="닫기">×</button><div id="media-lightbox-body"></div></figure>
+</div>
+<script src="data/krv.js"></script>
+<script src="data/fixture.js"></script>
+<script src="data/guide.fixture.js"></script>
+<script src="data/projection.research.js"></script>
+<script src="data/scripture.index.js"></script>
+<script src="app.js"></script>
+<script src="self-qa.js"></script>
+<script src="qa-auth.js"></script>
+<script src="qa-krv.js"></script>
+<script src="qa-w1.js"></script>
+<script src="qa-w2.js"></script>
+<script src="qa-sw.js"></script>
+<script src="qa-nav.js"></script>
+<script src="qa-ws.js"></script>
+<script src="qa-bs.js"></script>
+<script src="qa-pl.js"></script>
+<script src="qa-geo.js"></script>
+<script src="qa-ee.js"></script>
+</body>
+</html>

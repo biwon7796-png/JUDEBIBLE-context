@@ -1,0 +1,10 @@
+{
+  "_comment": "APP-SIDE overlay for the Gerar projection. Deliberately minimal: only the legacy runtime key and the explicit media target bindings. Reader text, location text, candidates and captions all come from the research note itself; nothing here is a research value.",
+  "stable_id": "JBC-CR-PLACE-GERAR-001",
+  "legacy_key": "gerar",
+  "scripture_surface_rule": "canonical_name_ko",
+  "media_bindings": {
+    "JBC-MEDIA-GR-001": { "target_ref": "JBC-CR-PLACE-GERAR-001", "subject": "candidate_site_depiction" },
+    "JBC-MEDIA-GR-002": { "target_ref": "JBC-CR-PLACE-GERAR-001", "subject": "candidate_site_depiction" }
+  }
+}

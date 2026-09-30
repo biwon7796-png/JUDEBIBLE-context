@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성경 맥락 보기 v0.1</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <h1 class="brand">성경 맥락 보기 <small>v0.1 · 샘플 프로토타입</small></h1>
+  <nav id="passage-nav" aria-label="본문 선택"></nav>
+  <input id="search" type="search" placeholder="인물·장소·본문 검색" aria-label="검색" autocomplete="off">
+</header>
+<div id="search-results" aria-live="polite"></div>
+<p id="ref-error" role="status"></p>
+<main>
+  <section id="text-pane" aria-label="본문"><h2 id="passage-title"></h2><div id="verses"></div>
+    <div id="chapter-nav" class="chapter-nav"><button class="btn ghost" data-step="-1">‹ 이전 장</button><button class="btn ghost" data-step="1">다음 장 ›</button></div><p id="crumb" class="helper"></p></section>
+  <section id="side-pane" aria-label="맥락 패널">
+    <div id="tabs" role="tablist"></div>
+    <div id="panel" role="tabpanel"></div>
+  </section>
+</main>
+<footer id="notice" class="helper"></footer>
+<script src="data/krv.js"></script>
+<script src="data/fixture.js"></script>
+<script src="app.js"></script>
+<script src="self-qa.js"></script>
+<script src="qa-auth.js"></script>
+<script src="qa-krv.js"></script>
+</body>
+</html>

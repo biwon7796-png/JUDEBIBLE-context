@@ -1,0 +1,22 @@
+{
+  "schema": "JBC_INGEST_CONFIG_v0.1",
+  "_comment": "Discovery boundary and per-record inputs for tools/pipeline/run.js. Only the include folders are ingested; the exclude folders never are. Approval overrides are recorded verbatim in the record (authority.note_approval_status keeps what the note itself says).",
+  "vault_env": "JBC_VAULT",
+  "mirror_root": "docs/architecture",
+  "include": ["02_연구물/브엘세바/", "02_연구물/그랄/"],
+  "exclude": ["01_소스들/", "03_산출물/", "99_운영문서/"],
+  "records": {
+    "JBC_BEERSHEBA_CONNECTED_WORBS_20260930_01": {
+      "expected_identity": "JBC-CR-PLACE-BEERSHEBA-001",
+      "overlay": "data/projection.overlay.beersheba.json"
+    },
+    "JBC_GERAR_CONNECTED_WORBS_20260930_01": {
+      "expected_identity": "JBC-CR-PLACE-GERAR-001",
+      "overlay": "data/projection.overlay.gerar.json",
+      "approval": {
+        "value": "CAPTAIN_APPROVED",
+        "source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); the research note itself still states PENDING_CAPTAIN_REVIEW"
+      }
+    }
+  }
+}

@@ -1,0 +1,521 @@
+{
+  "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+  "legacy_key": "beersheba",
+  "type": "place",
+  "reader_type": "성읍·도시",
+  "hero_caption": "브엘세바의 유력한 고고학 후보지",
+  "display_label": "브엘세바",
+  "label_en": "Beersheba",
+  "ancient_name": {
+    "hebrew": "בְּאֵר שֶׁבַע",
+    "transliteration": "Be'er Sheva / Be'er Sheba"
+  },
+  "aliases": [
+    "Beer-sheba",
+    "Beer Sheba",
+    "Be'er Sheva",
+    "Be’er Sheva"
+  ],
+  "place_type": {
+    "primary": "BIBLICAL_PLACE",
+    "secondary": [
+      "patriarchal_residence",
+      "well_and_oath_place",
+      "covenant_location",
+      "later_southern_geographic_marker"
+    ]
+  },
+  "region": {
+    "canonical": "Beersheba Valley / northern Negev",
+    "stable_ref": "JBC-CR-REGION-BEERSHEBA_VALLEY-001"
+  },
+  "certainty": "HIGH_FOR_BIBLICAL_IDENTITY",
+  "coordinate_certainty": "DISPUTED_FOR_EXACT_BIBLICAL_POINT",
+  "coordinates": null,
+  "coordinate_status": "NO_EXACT_POINT_ASSIGNED",
+  "status": "STAGE_APPROVED_WITH_VERIFY",
+  "authority": {
+    "project": "01_목회연구_WORBS_BICS",
+    "module": "WORBS",
+    "approval": "STAGE_APPROVED_WITH_VERIFY",
+    "registry_effect": "NONE",
+    "BAT01_crosswalk": "NOT_PERFORMED"
+  },
+  "source_refs": [
+    {
+      "id": "JBC_BEERSHEBA_CONNECTED_WORBS_20260930_01",
+      "version": "v0.2",
+      "path": "docs/architecture/브엘세바/JBC_BEERSHEBA_CONNECTED_WORBS_20260930_01.md",
+      "sha256": "7e3af9f6a78bc7d6c21814c7bfccd36545105d7df8cbc1dd9f1bf98df8aef0f5"
+    }
+  ],
+  "source_locator": "§1 Canonical Research Asset",
+  "VERIFY_HOLD": {
+    "verify": true,
+    "hold": true,
+    "reason": "retained VERIFY-BS-01, VERIFY-BS-02, VERIFY-BS-03, VERIFY-BS-04 / HOLD 4건"
+  },
+  "reader": {
+    "headline": "우물과 맹세, 약속의 기억이 겹쳐지는 장소",
+    "concise_summary": "브엘세바는 아브라함과 이삭의 이야기에서 우물, 언약, 하나님의 임재가 반복해서 만나는 장소입니다. 아브라함은 이곳에서 아비멜렉과 맹세하고 하나님을 예배했으며, 모리아 사건 뒤에도 브엘세바로 돌아왔습니다. 이삭에게도 하나님이 이곳에서 나타나셨고, 다시 우물을 얻고 평화의 맹세를 맺었습니다. 정확한 고대 도시의 위치는 학계에서 완전히 확정된 것은 아니지만, 텔 브엘세바가 중요한 고고학 후보로 연구되고 있습니다.",
+    "quick_facts": [
+      [
+        "이름",
+        "브엘세바, Be’er Sheva"
+      ],
+      [
+        "이름의 뜻",
+        "“맹세의 우물” 또는 “일곱의 우물”"
+      ],
+      [
+        "지역",
+        "네게브 북부, 브엘세바 계곡 일대"
+      ],
+      [
+        "중요한 주제",
+        "우물, 맹세, 언약, 예배, 하나님의 임재"
+      ],
+      [
+        "대표 본문",
+        "창 21:22–34; 22:19; 26:23–33"
+      ],
+      [
+        "오늘의 지리",
+        "현대 브엘세바와 텔 브엘세바를 구별해서 보아야 함"
+      ]
+    ],
+    "glance": [
+      [
+        "이름의 뜻",
+        "맹세의 우물 / 일곱의 우물"
+      ],
+      [
+        "지역",
+        "네게브 북부"
+      ],
+      [
+        "대표 본문",
+        "창 21 · 22 · 26"
+      ],
+      [
+        "핵심 주제",
+        "우물 · 언약 · 예배"
+      ]
+    ]
+  },
+  "location": {
+    "reader_status": "DISPUTED",
+    "lead": "정확한 위치는 확정되지 않았습니다.",
+    "sentences": [
+      "정확한 고대 도시의 위치는 학계에서 완전히 확정된 것은 아니지만, 텔 브엘세바가 중요한 고고학 후보로 연구되고 있습니다.",
+      "현대 브엘세바와 텔 브엘세바를 구별해서 보아야 합니다."
+    ]
+  },
+  "candidates": [
+    {
+      "id": "JBC-CR-SITE-TEL_BEER_SHEVA-001",
+      "label": "Tel Be’er Sheva (텔 브엘세바)",
+      "reader_label": "유력한 고고학 후보지",
+      "lat": 31.245,
+      "lon": 34.840556,
+      "status": "VERIFIED_ARCHAEOLOGICAL_SITE",
+      "role": "archaeological_candidate",
+      "equivalence_locked": false,
+      "note": "Heidelberg 성경지리 DB의 Tell es-Seba‘ 좌표. UNESCO 좌표와도 거의 일치"
+    },
+    {
+      "id": "JBC-CR-PLACE-BEERSHEBA_MODERN-001",
+      "label": "현대 브엘세바",
+      "reader_label": "현대 브엘세바(참고)",
+      "lat": 31.2518136,
+      "lon": 34.7912979,
+      "status": "MODERN_CITY_REFERENCE",
+      "role": "modern_context",
+      "equivalence_locked": false,
+      "note": "현대 브엘세바 중심 좌표. 고대 성경 장소 좌표로 사용 금지"
+    }
+  ],
+  "passage_links": [
+    {
+      "group": "direct",
+      "book": "gen",
+      "chapter": 21,
+      "v1": 14,
+      "v2": 14
+    },
+    {
+      "group": "direct",
+      "book": "gen",
+      "chapter": 21,
+      "v1": 31,
+      "v2": 34
+    },
+    {
+      "group": "direct",
+      "book": "gen",
+      "chapter": 22,
+      "v1": 19,
+      "v2": 19
+    },
+    {
+      "group": "direct",
+      "book": "gen",
+      "chapter": 26,
+      "v1": 23,
+      "v2": 33
+    },
+    {
+      "group": "direct",
+      "book": "gen",
+      "chapter": 28,
+      "v1": 10,
+      "v2": 10
+    },
+    {
+      "group": "direct",
+      "book": "gen",
+      "chapter": 46,
+      "v1": 1,
+      "v2": 5
+    },
+    {
+      "group": "related",
+      "book": "gen",
+      "chapter": 20,
+      "v1": null,
+      "v2": null
+    },
+    {
+      "group": "related",
+      "book": "gen",
+      "chapter": 26,
+      "v1": 1,
+      "v2": 22
+    }
+  ],
+  "claims": [
+    {
+      "id": "CLM-BS-01",
+      "statement": "브엘세바는 창 21에서 아브라함과 아비멜렉의 우물·맹세 장소다",
+      "class": "FACT",
+      "locator": "Genesis 21:25–32",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-02",
+      "statement": "아브라함은 그곳에서 하나님을 부르고 체류한다",
+      "class": "FACT",
+      "locator": "Genesis 21:33–34",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-03",
+      "statement": "모리아 사건 뒤 아브라함은 브엘세바로 돌아가 거주한다",
+      "class": "FACT",
+      "locator": "Genesis 22:19",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-04",
+      "statement": "이삭에게 브엘세바에서 하나님이 나타나고 약속을 재확인한다",
+      "class": "FACT",
+      "locator": "Genesis 26:23–25",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-05",
+      "statement": "이삭도 브엘세바에서 아비멜렉 측과 맹세하며 우물을 얻는다",
+      "class": "FACT",
+      "locator": "Genesis 26:26–33",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-06",
+      "statement": "이름은 ‘우물/일곱/맹세’의 언어적 결합을 의도한다",
+      "class": "INTERPRETATION",
+      "locator": "창 21:28–31; 26:31–33; Hebrew lexical evidence",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-07",
+      "statement": "브엘세바는 족장 내러티브에서 약속·예배·우물·거주의 반복 장소다",
+      "class": "INTERPRETATION",
+      "locator": "창 21–22; 26 + Genesis Book Profile",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-08",
+      "statement": "Tel Be’er Sheva는 중요한 고고학적 브엘세바 후보이다",
+      "class": "FACT/IDENTIFICATION",
+      "locator": "UNESCO, Heidelberg DB, excavation report",
+      "confidence": "MEDIUM-HIGH"
+    },
+    {
+      "id": "CLM-BS-09",
+      "statement": "Tel Be’er Sheva의 철기시대 증거는 족장 사건 자체를 직접 입증하지 않는다",
+      "class": "ARCHAEOLOGICAL_BOUNDARY",
+      "locator": "층위 자료",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "CLM-BS-10",
+      "statement": "정확한 고대 브엘세바 위치에는 경쟁 견해가 남는다",
+      "class": "FACT_OF_SCHOLARLY_DISPUTE",
+      "locator": "Fritz alternative identification",
+      "confidence": "HIGH"
+    }
+  ],
+  "competing_views": [
+    "Aharoni 계열의 Tel es-Seba‘ 동일시가 널리 사용되는 반면, Volkmar Fritz는 현대 브엘세바 구도심 주변의 Bir es-Seba‘/Khirbet Bir es-Seba‘를 더 유력하게 보고 Tell es-Seba‘ 동일시에 이의를 제기했습니다."
+  ],
+  "relations": [
+    {
+      "from": "Abraham",
+      "relation": "person_associated_with_place",
+      "to": "Beersheba",
+      "evidence": "창 21:22–34; 22:19",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Isaac",
+      "relation": "person_associated_with_place",
+      "to": "Beersheba",
+      "evidence": "창 26:23–33",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Abimelech-Abraham cycle",
+      "relation": "person_associated_with_place",
+      "to": "Beersheba",
+      "evidence": "창 21:22–32",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Abimelech-Isaac cycle",
+      "relation": "person_associated_with_place",
+      "to": "Beersheba",
+      "evidence": "창 26:26–31",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Abraham–Abimelech covenant",
+      "relation": "event_located_at_place",
+      "to": "Beersheba",
+      "evidence": "창 21:31–32",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Abraham return/residence",
+      "relation": "event_located_at_place",
+      "to": "Beersheba",
+      "evidence": "창 22:19",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Isaac theophany/well/oath",
+      "relation": "event_located_at_place",
+      "to": "Beersheba",
+      "evidence": "창 26:23–33",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Beersheba",
+      "relation": "place_located_in_region",
+      "to": "Beersheba Valley / northern Negev",
+      "evidence": "지리·고고학 자료",
+      "certainty": "HIGH",
+      "from_id": null,
+      "to_id": null,
+      "resolved": false
+    },
+    {
+      "from": "Biblical Beersheba",
+      "relation": "place_related_to_place",
+      "to": "Tel Be’er Sheva",
+      "evidence": "주요 고고학 동일시 후보",
+      "certainty": "MEDIUM",
+      "from_id": null,
+      "to_id": null,
+      "resolved": false
+    },
+    {
+      "from": "Biblical Beersheba",
+      "relation": "place_related_to_place",
+      "to": "Modern Beersheba",
+      "evidence": "지명·지역 연속성, 동일 점 아님",
+      "certainty": "MEDIUM",
+      "from_id": null,
+      "to_id": null,
+      "resolved": false
+    },
+    {
+      "from": "Moriah episode",
+      "relation": "route_returns_to_place",
+      "to": "Beersheba",
+      "evidence": "창 22:19",
+      "certainty": "HIGH narrative / LOW geometry",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    },
+    {
+      "from": "Rehoboth area",
+      "relation": "route_connects_places",
+      "to": "Beersheba",
+      "evidence": "창 26:22–23",
+      "certainty": "HIGH narrative / LOW geometry",
+      "from_id": null,
+      "to_id": "JBC-CR-PLACE-BEERSHEBA-001",
+      "resolved": false
+    }
+  ],
+  "verify": [
+    {
+      "id": "VERIFY-BS-01",
+      "issue": "Exact point location of patriarchal Beersheba",
+      "state": "unresolved",
+      "consequence": "primary biblical Place receives no exact coordinate"
+    },
+    {
+      "id": "VERIFY-BS-02",
+      "issue": "Biblical Beersheba = Tel Be'er Sheva",
+      "state": "strong/common archaeological identification but not absolute"
+    },
+    {
+      "id": "VERIFY-BS-03",
+      "issue": "identity relationship between the two Abimelech narratives",
+      "state": "not resolved by this place study"
+    },
+    {
+      "id": "VERIFY-BS-04",
+      "issue": "exact route geometry for Beersheba-Moriah and Rehoboth-Beersheba",
+      "state": "not generated"
+    }
+  ],
+  "hold": [
+    "exact archaeological attribution of Genesis 21/26 wells",
+    "identification of Tel Be'er Sheva well as Abraham's or Isaac's well",
+    "exact patriarchal archaeological stratum",
+    "BAT01_PLACE or BAT01_P crosswalk"
+  ],
+  "media": [
+    {
+      "id": "JBC-MEDIA-BS-001",
+      "provider": "Wikimedia Commons",
+      "file": "File:20211001 100742 Tel Be'er Sheva.jpg",
+      "creator": "Sasha1506",
+      "license": "CC BY-SA 4.0",
+      "role": "representative / archaeological",
+      "reader_caption": "텔 브엘세바 고고학 유적 전경. 성경의 브엘세바로 연구되는 주요 고고학 후보입니다.",
+      "attribution": "Sasha1506, “20211001 100742 Tel Be'er Sheva.jpg,” Wikimedia Commons, CC BY-SA 4.0.",
+      "rights_note": "reusable with attribution and ShareAlike obligations.",
+      "target_ref": {
+        "ref": "JBC-CR-SITE-TEL_BEER_SHEVA-001",
+        "kind": "site",
+        "binding": "overlay_explicit"
+      },
+      "representative": true,
+      "source_url": null,
+      "source_url_verified": false,
+      "preview_url": null,
+      "display_mode": "attribution_only",
+      "rights": {
+        "validated": true,
+        "status": "REUSE_WITH_ATTRIBUTION",
+        "license_code": "CC-BY-SA-4.0",
+        "attribution_required": true,
+        "share_alike": true,
+        "derivatives_note": "ShareAlike",
+        "display_clearance": false
+      },
+      "content_hash": "086acaef451af401dcb520b26553f518a1510dc465af2b471dd06b57cacad323"
+    },
+    {
+      "id": "JBC-MEDIA-BS-002",
+      "provider": "Wikimedia Commons",
+      "file": "File:Tel Be'er Sheva, Altar 01.jpg",
+      "creator": "Daniel Baránek",
+      "license": "CC BY-SA 3.0",
+      "role": "archaeological",
+      "reader_caption": "텔 브엘세바에서 복원된 뿔 제단. 아브라함이나 이삭의 제단을 보여 주는 사진은 아닙니다.",
+      "attribution": "Daniel Baránek, “Tel Be'er Sheva, Altar 01.jpg,” Wikimedia Commons, CC BY-SA 3.0.",
+      "attribution_composed": true,
+      "rights_note": null,
+      "target_ref": {
+        "ref": "JBC-CR-SITE-TEL_BEER_SHEVA-001",
+        "kind": "feature",
+        "binding": "overlay_explicit"
+      },
+      "representative": false,
+      "source_url": null,
+      "source_url_verified": false,
+      "preview_url": null,
+      "display_mode": "attribution_only",
+      "rights": {
+        "validated": true,
+        "status": "REUSE_WITH_ATTRIBUTION",
+        "license_code": "CC-BY-SA-3.0",
+        "attribution_required": true,
+        "share_alike": true,
+        "derivatives_note": "ShareAlike",
+        "display_clearance": false
+      },
+      "content_hash": "9f98b3ee5fcedee95d5d3125c7c75d96bf4e7ec5a5116ea5a2e9619dd43a24ee"
+    },
+    {
+      "id": "JBC-MEDIA-BS-003",
+      "provider": "Wikimedia Commons",
+      "file": "File:Beersheba, Israel 01.jpg",
+      "creator": "Yonatan Dodin",
+      "license": "CC BY 4.0",
+      "role": "modern_landscape",
+      "reader_caption": "현대 브엘세바 전경. 고대 성경의 도시를 보여 주는 사진이 아닙니다.",
+      "attribution": "Yonatan Dodin, “Beersheba, Israel 01.jpg,” Wikimedia Commons, CC BY 4.0.",
+      "attribution_composed": true,
+      "rights_note": null,
+      "target_ref": {
+        "ref": "JBC-CR-PLACE-BEERSHEBA_MODERN-001",
+        "kind": "modern_city",
+        "binding": "overlay_explicit"
+      },
+      "representative": false,
+      "source_url": null,
+      "source_url_verified": false,
+      "preview_url": null,
+      "display_mode": "attribution_only",
+      "rights": {
+        "validated": true,
+        "status": "REUSE_WITH_ATTRIBUTION",
+        "license_code": "CC-BY-4.0",
+        "attribution_required": true,
+        "share_alike": false,
+        "derivatives_note": null,
+        "display_clearance": false
+      },
+      "content_hash": "e7adf4de0e0220843fd76a33fe99aeef33c421dc5afa4c357589a0c51d08547f"
+    }
+  ],
+  "representative_media_id": "JBC-MEDIA-BS-001",
+  "navigation": null
+}

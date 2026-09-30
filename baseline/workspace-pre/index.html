@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>성경 맥락 보기 v0.1</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <h1 class="brand">성경 맥락 보기 <small>본문 작업공간</small></h1>
+  <form id="ref-form" class="ref-form" role="search" aria-label="성경 참조 이동"><input id="ref-input" type="text" autocomplete="off" spellcheck="false" placeholder="참조 이동 (예: 창 22:2)" aria-label="성경 참조" aria-describedby="ref-error"><button type="submit" class="btn primary">이동</button></form>
+  <input id="search" type="search" placeholder="인물·장소·본문 검색" aria-label="검색" autocomplete="off">
+  <button id="search-open" class="btn ghost search-open" type="button" aria-label="검색 열기">검색</button>
+</header>
+<div id="search-workspace" class="sw" hidden>
+  <div class="sw-backdrop" data-sw-close></div>
+  <section class="sw-panel" role="dialog" aria-modal="true" aria-labelledby="sw-title">
+    <header class="sw-head">
+      <h2 id="sw-title" class="sw-title">검색</h2>
+      <input id="sw-query" type="search" placeholder="인물·장소·본문 검색 또는 참조" aria-label="검색어" autocomplete="off">
+      <button id="sw-close" class="btn ghost" type="button" aria-label="검색 닫기">닫기</button>
+    </header>
+    <div class="sw-filters" role="group" aria-label="검색 필터">
+      <div class="sw-fgroup"><span class="sw-flabel">종류</span><button type="button" data-swfilter="kind:all" aria-pressed="true">전체</button><button type="button" data-swfilter="kind:entity" aria-pressed="false">인물·장소</button><button type="button" data-swfilter="kind:verse" aria-pressed="false">구절</button></div>
+      <div class="sw-fgroup"><span class="sw-flabel">범위</span><button type="button" data-swfilter="testament:all" aria-pressed="true">전체</button><button type="button" data-swfilter="testament:ot" aria-pressed="false">구약</button><button type="button" data-swfilter="testament:nt" aria-pressed="false">신약</button></div>
+    </div>
+    <p id="sw-summary" class="helper" aria-live="polite"></p>
+    <div id="search-results" class="sw-results"></div>
+    <div class="sw-more"><button id="sw-more" class="btn ghost" type="button" hidden>더 보기</button></div>
+  </section>
+</div>
+<p id="ref-error" role="status"></p>
+<main>
+  <section id="text-pane" aria-label="본문"><div class="pane-head"><h2 id="passage-title"></h2><button id="panel-open" class="btn ghost" type="button" aria-controls="side-pane" hidden>맥락 열기</button></div><div id="verses"></div>
+    <div id="chapter-nav" class="chapter-nav"><button class="btn ghost" data-step="-1">‹ 이전 장</button><button class="btn ghost" data-step="1">다음 장 ›</button></div><p id="crumb" class="helper"></p></section>
+  <section id="side-pane" aria-label="맥락 패널">
+    <div class="pane-bar"><div id="tabs" role="tablist"></div><button id="panel-toggle" class="btn ghost" type="button" aria-controls="panel" aria-expanded="true">접기</button></div>
+    <div id="panel" role="tabpanel"></div>
+  </section>
+</main>
+<footer id="notice" class="helper"></footer>
+<script src="data/krv.js"></script>
+<script src="data/fixture.js"></script>
+<script src="app.js"></script>
+<script src="self-qa.js"></script>
+<script src="qa-auth.js"></script>
+<script src="qa-krv.js"></script>
+<script src="qa-w1.js"></script>
+<script src="qa-w2.js"></script>
+<script src="qa-sw.js"></script>
+<script src="qa-nav.js"></script>
+</body>
+</html>

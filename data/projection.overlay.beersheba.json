@@ -1,0 +1,72 @@
+{
+  "_comment": "APP-SIDE overlay for the Beersheba projection. These values are NOT derived from the research note; they come from the approved handoffs (BEERSHEBA_PRE_IMPLEMENTATION_GATE_v0.1, JUDEBIBLE_BEERSHEBA_DETAIL_INFORMATION_HIERARCHY_PATCH v0.1) and from app policy. The pipeline merges them AFTER the source-derived fields and records which fields came from here.",
+  "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
+  "legacy_key": "beersheba",
+  "reader_type": "성읍·도시",
+  "hero_caption": "브엘세바의 유력한 고고학 후보지",
+  "hide_quick_fact_rows": [
+    "중요한 인물"
+  ],
+  "glance": [
+    [
+      "이름의 뜻",
+      "맹세의 우물 / 일곱의 우물"
+    ],
+    [
+      "지역",
+      "네게브 북부"
+    ],
+    [
+      "대표 본문",
+      "창 21 · 22 · 26"
+    ],
+    [
+      "핵심 주제",
+      "우물 · 언약 · 예배"
+    ]
+  ],
+  "location": {
+    "lead": "정확한 위치는 확정되지 않았습니다.",
+    "sentences": [
+      {
+        "from": "summary_last_sentence"
+      },
+      {
+        "text": "현대 브엘세바와 텔 브엘세바를 구별해서 보아야 합니다."
+      }
+    ]
+  },
+  "candidate_labels": {
+    "JBC-CR-SITE-TEL_BEER_SHEVA-001": "Tel Be’er Sheva (텔 브엘세바)",
+    "JBC-CR-PLACE-BEERSHEBA_MODERN-001": "현대 브엘세바"
+  },
+  "media_captions": {
+    "JBC-MEDIA-BS-001": "텔 브엘세바 고고학 유적 전경. 성경의 브엘세바로 연구되는 주요 고고학 후보입니다.",
+    "JBC-MEDIA-BS-002": "텔 브엘세바에서 복원된 뿔 제단. 아브라함이나 이삭의 제단을 보여 주는 사진은 아닙니다.",
+    "JBC-MEDIA-BS-003": "현대 브엘세바 전경. 고대 성경의 도시를 보여 주는 사진이 아닙니다."
+  },
+  "scripture_surface_rule": "canonical_name_ko",
+  "candidate_reader_labels": {
+    "JBC-CR-SITE-TEL_BEER_SHEVA-001": "유력한 고고학 후보지",
+    "JBC-CR-PLACE-BEERSHEBA_MODERN-001": "현대 브엘세바(참고)"
+  },
+  "media_bindings": {
+    "JBC-MEDIA-BS-001": {
+      "target_ref": "JBC-CR-SITE-TEL_BEER_SHEVA-001",
+      "subject": "site",
+      "source_url": "https://commons.wikimedia.org/wiki/File:20211001_100742_Tel_Be%27er_Sheva.jpg"
+    },
+    "JBC-MEDIA-BS-002": {
+      "target_ref": "JBC-CR-SITE-TEL_BEER_SHEVA-001",
+      "subject": "feature",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Tel_Be%27er_Sheva,_Altar_01.jpg"
+    },
+    "JBC-MEDIA-BS-003": {
+      "target_ref": "JBC-CR-PLACE-BEERSHEBA_MODERN-001",
+      "subject": "modern_city",
+      "source_url": "https://commons.wikimedia.org/wiki/File:Beersheba,_Israel_01.jpg"
+    }
+  },
+  "hero_subject": "텔 브엘세바 고고학 유적",
+  "_source_url_provenance": "media_bindings[*].source_url are the canonical file-page URLs returned (fullurl) by the official Wikimedia Commons API for each research file title on 2026-09-30, which also confirmed the file exists. They were not built from file names; the pipeline re-validates host, File: title match and license/creator before anything is used."
+}

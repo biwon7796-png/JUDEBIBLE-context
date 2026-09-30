@@ -1,0 +1,926 @@
+{
+ "asset_id": "KRV_TEXT_FOR_BIBLE_CONTEXT_VIEWER",
+ "generated": "2026-09-29",
+ "output_file": "data/krv.js",
+ "output_sha256": "b09a58f1527bb32ccc554d5208736a3c797ba9b7ab1a87d50e9c577372518896",
+ "output_bytes": 4501053,
+ "translation": {
+  "name": "성경전서 개역한글판",
+  "abbr": "KRV",
+  "publisher": "대한성서공회",
+  "edition_year": 1961
+ },
+ "source": {
+  "kind": "transcription",
+  "site": "ko.wikisource.org",
+  "index_page": "개역한글판",
+  "index_revid": 300562,
+  "index_timestamp": "2023-12-03T12:34:35Z",
+  "retrieved": "2026-09-29",
+  "method": "MediaWiki API action=query&prop=revisions (page revisions pinned per book in provenance)"
+ },
+ "books": [
+  {
+   "id": "gen",
+   "name": "창세기",
+   "source_title": "개역한글판/창세기",
+   "source_revid": 393283,
+   "source_timestamp": "2025-07-01T04:20:06Z",
+   "source_wikitext_sha256": "178aa82fe7ed78c06492199c83cbb3366a6eb32cb099c458a963510b954314d9",
+   "chapters": 50,
+   "verses": 1533
+  },
+  {
+   "id": "exo",
+   "name": "출애굽기",
+   "source_title": "개역한글판/출애굽기",
+   "source_revid": 393284,
+   "source_timestamp": "2025-07-01T04:20:45Z",
+   "source_wikitext_sha256": "a4de67decbd70b8fd6f0375b106f5e383fdf01cd87c471575ce94ec3a808a430",
+   "chapters": 40,
+   "verses": 1213
+  },
+  {
+   "id": "lev",
+   "name": "레위기",
+   "source_title": "개역한글판/레위기",
+   "source_revid": 393285,
+   "source_timestamp": "2025-07-01T04:21:13Z",
+   "source_wikitext_sha256": "bf35cf6d400fe6e97003614497f0cc1227b4d166f083b760d30aa770619c1ccb",
+   "chapters": 27,
+   "verses": 859
+  },
+  {
+   "id": "num",
+   "name": "민수기",
+   "source_title": "개역한글판/민수기",
+   "source_revid": 393286,
+   "source_timestamp": "2025-07-01T04:21:41Z",
+   "source_wikitext_sha256": "68e8ef4e0c01731a95f1c7bbc6bd5ac6e3f81102c20fdaf832861dbf3869fb8a",
+   "chapters": 36,
+   "verses": 1288
+  },
+  {
+   "id": "deu",
+   "name": "신명기",
+   "source_title": "개역한글판/신명기",
+   "source_revid": 393288,
+   "source_timestamp": "2025-07-01T04:22:30Z",
+   "source_wikitext_sha256": "496b4c10090ec934af6f21dcbe8d3aec39c010fb14676b4a9f80b20d021ca0d8",
+   "chapters": 34,
+   "verses": 959
+  },
+  {
+   "id": "jos",
+   "name": "여호수아",
+   "source_title": "개역한글판/여호수아",
+   "source_revid": 393296,
+   "source_timestamp": "2025-07-01T04:46:42Z",
+   "source_wikitext_sha256": "9f9be491f058661d84b6ca7eb2c4e3723d95bf9cc195ca25c64722c37bcf6aa1",
+   "chapters": 24,
+   "verses": 658
+  },
+  {
+   "id": "jdg",
+   "name": "사사기",
+   "source_title": "개역한글판/사사기",
+   "source_revid": 393323,
+   "source_timestamp": "2025-07-01T09:08:05Z",
+   "source_wikitext_sha256": "6174143e6d5b142a9dde1fb013d84610d67614dfb2b13cec3b3053ee8a11b632",
+   "chapters": 21,
+   "verses": 618
+  },
+  {
+   "id": "rut",
+   "name": "룻기",
+   "source_title": "개역한글판/룻기",
+   "source_revid": 393331,
+   "source_timestamp": "2025-07-01T09:09:18Z",
+   "source_wikitext_sha256": "ec48469f53711b478a3ef0bf906ef9561388935c7ba9ac36ac6a3899577c18e2",
+   "chapters": 4,
+   "verses": 85
+  },
+  {
+   "id": "1sa",
+   "name": "사무엘상",
+   "source_title": "개역한글판/사무엘상",
+   "source_revid": 393342,
+   "source_timestamp": "2025-07-01T09:11:04Z",
+   "source_wikitext_sha256": "602d9e5c422dbf37d128518fba95c4e533b4893a4a751efff039affa5dc1e634",
+   "chapters": 31,
+   "verses": 810
+  },
+  {
+   "id": "2sa",
+   "name": "사무엘하",
+   "source_title": "개역한글판/사무엘하",
+   "source_revid": 393350,
+   "source_timestamp": "2025-07-01T09:12:59Z",
+   "source_wikitext_sha256": "e00cd52dd07de07ac97d762732ab66b275c354b07e955aba3fd2dd764e00f529",
+   "chapters": 24,
+   "verses": 695
+  },
+  {
+   "id": "1ki",
+   "name": "열왕기상",
+   "source_title": "개역한글판/열왕기상",
+   "source_revid": 393355,
+   "source_timestamp": "2025-07-01T09:14:16Z",
+   "source_wikitext_sha256": "e28df9d4ce92590e8f7865122bb118f6e8a3fd0425803db5579991bdafe1b6ba",
+   "chapters": 22,
+   "verses": 816
+  },
+  {
+   "id": "2ki",
+   "name": "열왕기하",
+   "source_title": "개역한글판/열왕기하",
+   "source_revid": 393358,
+   "source_timestamp": "2025-07-01T09:15:06Z",
+   "source_wikitext_sha256": "d93a3393b99be5f067a270c501f01a9c15f141b30f4627662e8518676c62d6a3",
+   "chapters": 25,
+   "verses": 719
+  },
+  {
+   "id": "1ch",
+   "name": "역대상",
+   "source_title": "개역한글판/역대상",
+   "source_revid": 393794,
+   "source_timestamp": "2025-07-01T23:53:24Z",
+   "source_wikitext_sha256": "7c5ef6ba2fb523d1ed18f7154e19c24279afbaf15ebd68e99a835a6e26dd6ba8",
+   "chapters": 29,
+   "verses": 942
+  },
+  {
+   "id": "2ch",
+   "name": "역대하",
+   "source_title": "개역한글판/역대하",
+   "source_revid": 393797,
+   "source_timestamp": "2025-07-01T23:54:51Z",
+   "source_wikitext_sha256": "7ea26c27af868cb6824e7389b25e65de67f841d2338e9164e561041ffd81bf32",
+   "chapters": 36,
+   "verses": 822
+  },
+  {
+   "id": "ezr",
+   "name": "에스라",
+   "source_title": "개역한글판/에스라",
+   "source_revid": 393802,
+   "source_timestamp": "2025-07-02T00:06:47Z",
+   "source_wikitext_sha256": "1aaa60a5bba25db06e32c3ff204dc1033c6a708a3bce88661d135fe477d08073",
+   "chapters": 10,
+   "verses": 280
+  },
+  {
+   "id": "neh",
+   "name": "느헤미야",
+   "source_title": "개역한글판/느헤미야",
+   "source_revid": 393806,
+   "source_timestamp": "2025-07-02T00:13:20Z",
+   "source_wikitext_sha256": "d87e7afb98e65373910ed115ccb16ba541a3210cc954b13fcc5bc7fd9246cb8d",
+   "chapters": 13,
+   "verses": 406
+  },
+  {
+   "id": "est",
+   "name": "에스더",
+   "source_title": "개역한글판/에스더",
+   "source_revid": 393812,
+   "source_timestamp": "2025-07-02T00:17:37Z",
+   "source_wikitext_sha256": "a6f832fdde55ff87eaa61343f937117fe600847393638d13aa2c2317f7a844a1",
+   "chapters": 10,
+   "verses": 167
+  },
+  {
+   "id": "job",
+   "name": "욥기",
+   "source_title": "개역한글판/욥기",
+   "source_revid": 393816,
+   "source_timestamp": "2025-07-02T00:24:44Z",
+   "source_wikitext_sha256": "9465e3bbf1d2975006d53eec9ed966e7f5cf7509a72bfd9a12952719327b03a7",
+   "chapters": 42,
+   "verses": 1070
+  },
+  {
+   "id": "psa",
+   "name": "시편",
+   "source_title": "개역한글판/시편",
+   "source_revid": 393834,
+   "source_timestamp": "2025-07-02T02:52:11Z",
+   "source_wikitext_sha256": "db5d887d802806ba1657566d5e468d2d2c7710edeb54d34f44b27993a8244ddb",
+   "chapters": 150,
+   "verses": 2460
+  },
+  {
+   "id": "pro",
+   "name": "잠언",
+   "source_title": "개역한글판/잠언",
+   "source_revid": 393839,
+   "source_timestamp": "2025-07-02T02:53:23Z",
+   "source_wikitext_sha256": "32c216837f32c1d260861bdb4755f2d468e8e3f7697d9e67473aeb8c83cc83fa",
+   "chapters": 31,
+   "verses": 915
+  },
+  {
+   "id": "ecc",
+   "name": "전도서",
+   "source_title": "개역한글판/전도서",
+   "source_revid": 393844,
+   "source_timestamp": "2025-07-02T02:55:47Z",
+   "source_wikitext_sha256": "319a2bcb88ceb2518da511941201a690158974d24abb922f96c69182ea66d745",
+   "chapters": 12,
+   "verses": 222
+  },
+  {
+   "id": "sng",
+   "name": "아가",
+   "source_title": "개역한글판/아가",
+   "source_revid": 393849,
+   "source_timestamp": "2025-07-02T03:05:08Z",
+   "source_wikitext_sha256": "6c4e9389ab86528da3d784b7fc26c1600051a0fa64300694c63d3c228dd38887",
+   "chapters": 8,
+   "verses": 118
+  },
+  {
+   "id": "isa",
+   "name": "이사야",
+   "source_title": "개역한글판/이사야",
+   "source_revid": 393853,
+   "source_timestamp": "2025-07-02T03:06:05Z",
+   "source_wikitext_sha256": "41deee7caa2dc902a92cf88775b2898187f13f45471c1a4d99bdca78d1013e0a",
+   "chapters": 66,
+   "verses": 1292
+  },
+  {
+   "id": "jer",
+   "name": "예레미야",
+   "source_title": "개역한글판/예레미야",
+   "source_revid": 401888,
+   "source_timestamp": "2025-09-19T11:54:15Z",
+   "source_wikitext_sha256": "64717a01fbd3752699ab1864a63ca07b6fe9132cbb67aaae47414a4d4e1808c1",
+   "chapters": 52,
+   "verses": 1364
+  },
+  {
+   "id": "lam",
+   "name": "예레미야애가",
+   "source_title": "개역한글판/예레미야애가",
+   "source_revid": 393899,
+   "source_timestamp": "2025-07-02T12:25:44Z",
+   "source_wikitext_sha256": "cff44f4bec693b37140f2caea86433e4b2018942734b459fe2c41ffc17203260",
+   "chapters": 5,
+   "verses": 154
+  },
+  {
+   "id": "ezk",
+   "name": "에스겔",
+   "source_title": "개역한글판/에스겔",
+   "source_revid": 393903,
+   "source_timestamp": "2025-07-02T12:26:56Z",
+   "source_wikitext_sha256": "ccdb761e75b6c49aabb84e5e9bb780e2cf300aa6bddbc1d97309b025dcf7151a",
+   "chapters": 48,
+   "verses": 1273
+  },
+  {
+   "id": "dan",
+   "name": "다니엘",
+   "source_title": "개역한글판/다니엘",
+   "source_revid": 393910,
+   "source_timestamp": "2025-07-02T12:28:51Z",
+   "source_wikitext_sha256": "ea37ac0048b00b648cfb639f84efade3f076f437c5e4a624e249a37ae2793e51",
+   "chapters": 12,
+   "verses": 357
+  },
+  {
+   "id": "hos",
+   "name": "호세아",
+   "source_title": "개역한글판/호세아",
+   "source_revid": 393915,
+   "source_timestamp": "2025-07-02T12:30:17Z",
+   "source_wikitext_sha256": "a9479e221fa18a4287aa24b48707d52a91553e66342b237605a315e52eb24420",
+   "chapters": 14,
+   "verses": 197
+  },
+  {
+   "id": "jol",
+   "name": "요엘",
+   "source_title": "개역한글판/요엘",
+   "source_revid": 393922,
+   "source_timestamp": "2025-07-02T12:33:13Z",
+   "source_wikitext_sha256": "af785eaf9c85ef979d2c47cd7c0573127c0ca77749be56b6d5305a22387f0f6a",
+   "chapters": 3,
+   "verses": 73
+  },
+  {
+   "id": "amo",
+   "name": "아모스",
+   "source_title": "개역한글판/아모스",
+   "source_revid": 393927,
+   "source_timestamp": "2025-07-02T12:34:39Z",
+   "source_wikitext_sha256": "cfc27c1619b5d06663c564ee996f87c368a0b616546d3c8bce95ab1c20f13747",
+   "chapters": 9,
+   "verses": 146
+  },
+  {
+   "id": "oba",
+   "name": "오바댜",
+   "source_title": "개역한글판/오바댜",
+   "source_revid": 393932,
+   "source_timestamp": "2025-07-02T12:35:37Z",
+   "source_wikitext_sha256": "d60016e2be16a98923b77fa3b0d75cd68af0492857ec2c2edb55824ac57d48df",
+   "chapters": 1,
+   "verses": 21
+  },
+  {
+   "id": "jon",
+   "name": "요나",
+   "source_title": "개역한글판/요나",
+   "source_revid": 393937,
+   "source_timestamp": "2025-07-02T12:36:38Z",
+   "source_wikitext_sha256": "25b4c9e4caaef0cfb87509b4c710ed3e8e19b990262693f1a9d2dc938ef53e15",
+   "chapters": 4,
+   "verses": 48
+  },
+  {
+   "id": "mic",
+   "name": "미가",
+   "source_title": "개역한글판/미가",
+   "source_revid": 393942,
+   "source_timestamp": "2025-07-02T12:39:10Z",
+   "source_wikitext_sha256": "11016311c2920cbdb42a9c1ec147428b21299ec04e1173a6f95177643c970539",
+   "chapters": 7,
+   "verses": 105
+  },
+  {
+   "id": "nam",
+   "name": "나훔",
+   "source_title": "개역한글판/나훔",
+   "source_revid": 393947,
+   "source_timestamp": "2025-07-02T12:42:22Z",
+   "source_wikitext_sha256": "50510cc26ef248562fd68568ee08dcd35b5df24c5d5e70c9273f05f900705363",
+   "chapters": 3,
+   "verses": 47
+  },
+  {
+   "id": "hab",
+   "name": "하박국",
+   "source_title": "개역한글판/하박국",
+   "source_revid": 393952,
+   "source_timestamp": "2025-07-02T12:43:16Z",
+   "source_wikitext_sha256": "659b1195c98a0d9bfce931bad0cd753c90a2085f004d9e373dc3313563ffe1a9",
+   "chapters": 3,
+   "verses": 56
+  },
+  {
+   "id": "zep",
+   "name": "스바냐",
+   "source_title": "개역한글판/스바냐",
+   "source_revid": 393958,
+   "source_timestamp": "2025-07-02T12:44:54Z",
+   "source_wikitext_sha256": "d67e4b8e35198956ce83f13949fd6b3c4656729f5ec241aba92d2b8dd2bb1b69",
+   "chapters": 3,
+   "verses": 53
+  },
+  {
+   "id": "hag",
+   "name": "학개",
+   "source_title": "개역한글판/학개",
+   "source_revid": 393963,
+   "source_timestamp": "2025-07-02T12:46:04Z",
+   "source_wikitext_sha256": "22f1d67a6a4558ed1874d0b3726140d82cb2f7eadb6eef096dd9e1622634dcfc",
+   "chapters": 2,
+   "verses": 38
+  },
+  {
+   "id": "zec",
+   "name": "스가랴",
+   "source_title": "개역한글판/스가랴",
+   "source_revid": 393968,
+   "source_timestamp": "2025-07-02T12:48:26Z",
+   "source_wikitext_sha256": "1c6d5a7dba89289f897312931c1b6a45b8e3b5800163f439108d00006a09a21c",
+   "chapters": 14,
+   "verses": 211
+  },
+  {
+   "id": "mal",
+   "name": "말라기",
+   "source_title": "개역한글판/말라기",
+   "source_revid": 393973,
+   "source_timestamp": "2025-07-02T12:49:20Z",
+   "source_wikitext_sha256": "2703ff898693e9c1cff47588c9664e12a281209348be61012adfbc1412baaa73",
+   "chapters": 4,
+   "verses": 55
+  },
+  {
+   "id": "mat",
+   "name": "마태복음",
+   "source_title": "개역한글판/마태복음",
+   "source_revid": 401707,
+   "source_timestamp": "2025-09-17T01:27:15Z",
+   "source_wikitext_sha256": "7655decb2287d5291b658ef00817bd78946af5dc3e9e7946b7ce76139019219e",
+   "chapters": 28,
+   "verses": 1071
+  },
+  {
+   "id": "mrk",
+   "name": "마가복음",
+   "source_title": "개역한글판/마가복음",
+   "source_revid": 393998,
+   "source_timestamp": "2025-07-02T12:57:04Z",
+   "source_wikitext_sha256": "8110f563b50d5d103db665f656429ffee044cdbc972bd643b31f72c16ab2dfb5",
+   "chapters": 16,
+   "verses": 678
+  },
+  {
+   "id": "luk",
+   "name": "누가복음",
+   "source_title": "개역한글판/누가복음",
+   "source_revid": 394007,
+   "source_timestamp": "2025-07-02T13:01:06Z",
+   "source_wikitext_sha256": "f4f87d892131e5ca8ac661b075fa2632868e241c00c2cc1ab962b2f389a4989c",
+   "chapters": 24,
+   "verses": 1151
+  },
+  {
+   "id": "jhn",
+   "name": "요한복음",
+   "source_title": "개역한글판/요한복음",
+   "source_revid": 394018,
+   "source_timestamp": "2025-07-02T13:03:58Z",
+   "source_wikitext_sha256": "ddc4694d6e9aa3fed1c10c94c041740aa5ac6eea3bcab007fc85d6bdcd19f58f",
+   "chapters": 21,
+   "verses": 879
+  },
+  {
+   "id": "act",
+   "name": "사도행전",
+   "source_title": "개역한글판/사도행전",
+   "source_revid": 394025,
+   "source_timestamp": "2025-07-02T13:05:22Z",
+   "source_wikitext_sha256": "264ef2e7a74f47aba3afc841d2d990c0609411f1a9d6819a443723a988f45a45",
+   "chapters": 28,
+   "verses": 1007
+  },
+  {
+   "id": "rom",
+   "name": "로마서",
+   "source_title": "개역한글판/로마서",
+   "source_revid": 394032,
+   "source_timestamp": "2025-07-02T13:06:58Z",
+   "source_wikitext_sha256": "237e312d3455b475f261150f092fac129f59b2f037455462298bce76d0c177f4",
+   "chapters": 16,
+   "verses": 433
+  },
+  {
+   "id": "1co",
+   "name": "고린도전서",
+   "source_title": "개역한글판/고린도전서",
+   "source_revid": 394040,
+   "source_timestamp": "2025-07-02T13:10:49Z",
+   "source_wikitext_sha256": "3b26ef491283a0d37aa95618f7d937055eb8a05b4660ee8dabb954aa681dfe28",
+   "chapters": 16,
+   "verses": 437
+  },
+  {
+   "id": "2co",
+   "name": "고린도후서",
+   "source_title": "개역한글판/고린도후서",
+   "source_revid": 394047,
+   "source_timestamp": "2025-07-02T13:12:09Z",
+   "source_wikitext_sha256": "efb756bbd1b664b3aa1111e92f4cf46ff6b093b5824cff70df1df8c68bf5c064",
+   "chapters": 13,
+   "verses": 256
+  },
+  {
+   "id": "gal",
+   "name": "갈라디아서",
+   "source_title": "개역한글판/갈라디아서",
+   "source_revid": 394054,
+   "source_timestamp": "2025-07-02T13:14:06Z",
+   "source_wikitext_sha256": "b30b834f12e83ce251d7e2d7137e27934775ead8ee3f29f777fd766b87e5de61",
+   "chapters": 6,
+   "verses": 149
+  },
+  {
+   "id": "eph",
+   "name": "에베소서",
+   "source_title": "개역한글판/에베소서",
+   "source_revid": 394062,
+   "source_timestamp": "2025-07-02T13:16:20Z",
+   "source_wikitext_sha256": "70a5e5e353a2b20c3f14647650b85cc6185764ea79d175d22513bc3314531f68",
+   "chapters": 6,
+   "verses": 155
+  },
+  {
+   "id": "php",
+   "name": "빌립보서",
+   "source_title": "개역한글판/빌립보서",
+   "source_revid": 394073,
+   "source_timestamp": "2025-07-02T13:20:36Z",
+   "source_wikitext_sha256": "8ffbd4087981936f811310ccfb2bbe7bb2858d46b4b46710e8e1ebc7d84cc59a",
+   "chapters": 4,
+   "verses": 104
+  },
+  {
+   "id": "col",
+   "name": "골로새서",
+   "source_title": "개역한글판/골로새서",
+   "source_revid": 394080,
+   "source_timestamp": "2025-07-02T13:23:20Z",
+   "source_wikitext_sha256": "33c64bc7c5a76157b829ec69e0a346c8840405067b09beb40134e391dbde2019",
+   "chapters": 4,
+   "verses": 95
+  },
+  {
+   "id": "1th",
+   "name": "데살로니가전서",
+   "source_title": "개역한글판/데살로니가전서",
+   "source_revid": 394087,
+   "source_timestamp": "2025-07-02T13:25:43Z",
+   "source_wikitext_sha256": "5afffe230d021d00e6a33467782313683b621ada925e2f100dfb8d0fc45e6360",
+   "chapters": 5,
+   "verses": 89
+  },
+  {
+   "id": "2th",
+   "name": "데살로니가후서",
+   "source_title": "개역한글판/데살로니가후서",
+   "source_revid": 394094,
+   "source_timestamp": "2025-07-02T13:26:57Z",
+   "source_wikitext_sha256": "aae5a6343c7ee6142b750d7668f7f1058e19c6ad7d3c13706a0f6d813fff9c9f",
+   "chapters": 3,
+   "verses": 47
+  },
+  {
+   "id": "1ti",
+   "name": "디모데전서",
+   "source_title": "개역한글판/디모데전서",
+   "source_revid": 394101,
+   "source_timestamp": "2025-07-02T13:28:45Z",
+   "source_wikitext_sha256": "6f16455a5e0860cf2a4964a0dc7c9db28a8e126300ef5f6fc7092fba09546e06",
+   "chapters": 6,
+   "verses": 113
+  },
+  {
+   "id": "2ti",
+   "name": "디모데후서",
+   "source_title": "개역한글판/디모데후서",
+   "source_revid": 394110,
+   "source_timestamp": "2025-07-02T13:31:13Z",
+   "source_wikitext_sha256": "a5fac93b26760dc0e06006a9fbb9441bb96716eace702422f2652156d09be0e7",
+   "chapters": 4,
+   "verses": 83
+  },
+  {
+   "id": "tit",
+   "name": "디도서",
+   "source_title": "개역한글판/디도서",
+   "source_revid": 394117,
+   "source_timestamp": "2025-07-02T13:32:46Z",
+   "source_wikitext_sha256": "0fbad685ea03b5e5c5781b3f84d53197de357e8f3abf733cb4b28da03bae1c5f",
+   "chapters": 3,
+   "verses": 46
+  },
+  {
+   "id": "phm",
+   "name": "빌레몬서",
+   "source_title": "개역한글판/빌레몬서",
+   "source_revid": 394124,
+   "source_timestamp": "2025-07-02T13:34:55Z",
+   "source_wikitext_sha256": "f64fef46a1b98d1da8d3ad28f9c9a60567dcad52e65fad0532424b3c84d3d2f3",
+   "chapters": 1,
+   "verses": 25
+  },
+  {
+   "id": "heb",
+   "name": "히브리서",
+   "source_title": "개역한글판/히브리서",
+   "source_revid": 394131,
+   "source_timestamp": "2025-07-02T13:36:10Z",
+   "source_wikitext_sha256": "8365bc9eaef520ac5012e52376d4ceda26666e97ccc103da440116778de8f5a3",
+   "chapters": 13,
+   "verses": 303
+  },
+  {
+   "id": "jas",
+   "name": "야고보서",
+   "source_title": "개역한글판/야고보서",
+   "source_revid": 394139,
+   "source_timestamp": "2025-07-02T13:42:04Z",
+   "source_wikitext_sha256": "e18165a831cce020d535641b2c7683ca4603d8597fa2ee4e3d610e2e8a48b508",
+   "chapters": 5,
+   "verses": 108
+  },
+  {
+   "id": "1pe",
+   "name": "베드로전서",
+   "source_title": "개역한글판/베드로전서",
+   "source_revid": 394147,
+   "source_timestamp": "2025-07-02T13:43:54Z",
+   "source_wikitext_sha256": "86ffb2d76347e850bf2ffd625d3234d3e330ad0aed52fc27827decebb9b05c70",
+   "chapters": 5,
+   "verses": 105
+  },
+  {
+   "id": "2pe",
+   "name": "베드로후서",
+   "source_title": "개역한글판/베드로후서",
+   "source_revid": 394154,
+   "source_timestamp": "2025-07-02T13:45:08Z",
+   "source_wikitext_sha256": "57827dc26095cb80dbcfaeb9e30bd35a7a2a1a46fb7bda223976985e668bb78f",
+   "chapters": 3,
+   "verses": 61
+  },
+  {
+   "id": "1jn",
+   "name": "요한일서",
+   "source_title": "개역한글판/요한1서",
+   "source_revid": 394161,
+   "source_timestamp": "2025-07-02T13:46:12Z",
+   "source_wikitext_sha256": "ea2acb1e10f75f982287c760e8d5d6a121fccb16745ba5e46e057646b102a578",
+   "chapters": 5,
+   "verses": 105
+  },
+  {
+   "id": "2jn",
+   "name": "요한이서",
+   "source_title": "개역한글판/요한2서",
+   "source_revid": 394170,
+   "source_timestamp": "2025-07-02T13:48:15Z",
+   "source_wikitext_sha256": "e6f63aba9f856b40f344e6cee3aa0227dcec51eb92e7d479ebcf1fd5b977bce7",
+   "chapters": 1,
+   "verses": 13
+  },
+  {
+   "id": "3jn",
+   "name": "요한삼서",
+   "source_title": "개역한글판/요한3서",
+   "source_revid": 394179,
+   "source_timestamp": "2025-07-02T13:50:04Z",
+   "source_wikitext_sha256": "7b3c368ab49756cb437f360336595c61dcfdb6910625f0adbdd72b1172acd393",
+   "chapters": 1,
+   "verses": 15
+  },
+  {
+   "id": "jud",
+   "name": "유다서",
+   "source_title": "개역한글판/유다서",
+   "source_revid": 394186,
+   "source_timestamp": "2025-07-02T13:51:18Z",
+   "source_wikitext_sha256": "f7ce53134cb7b26b47a4d37b634f00b4e854e581c02adbf59138786d07c65e6b",
+   "chapters": 1,
+   "verses": 25
+  },
+  {
+   "id": "rev",
+   "name": "요한계시록",
+   "source_title": "개역한글판/요한계시록",
+   "source_revid": 398034,
+   "source_timestamp": "2025-08-06T02:35:20Z",
+   "source_wikitext_sha256": "0881161b56adec7af3e114a59e898ad122b32785d8b5bc00094f5548b44d23ed",
+   "chapters": 22,
+   "verses": 404
+  }
+ ],
+ "text_transform": {
+  "modified": false,
+  "transform": [
+   "wikitext {{절}} verse markers removed",
+   "poetic <br>/&nbsp; continuation lines joined to previous verse with \"\\n\""
+  ],
+  "structure_check": {
+   "verses": 31102,
+   "chapters": 1189,
+   "books": 66,
+   "contiguous_verse_numbers": true,
+   "contiguous_chapter_numbers": true
+  }
+ },
+ "rights_boundary": {
+  "text": {
+   "status": "PD_CLAIMED_NOT_CONFIRMED_BY_PUBLISHER",
+   "evidence_for": [
+    "ko.wikisource.org 개역한글판 index page states: \"2012년 저작권이 만료되었다\" and marks the work public domain (KBS 1961)",
+    "blueletterbible.org sample page for Korean Holy Bible (KOR) states: \"This translation of the Bible is in the public domain.\""
+   ],
+   "evidence_against_or_unresolved": [
+    "bskorea.or.kr page footer: \"COPYRIGHT (c) KOREAN BIBLE SOCIETY. ALL RIGHTS RESERVED.\" (site-wide notice; no 개역한글-specific statement retrieved)",
+    "bible.bskorea.or.kr/copyright_notice returned HTTP 403 to automated fetch; publisher statement NOT read"
+   ],
+   "action": "Obtain written/published KBS statement on 개역한글판 (1961) before any external release."
+  },
+  "data_file": {
+   "status": "RIGHTS_VERIFY",
+   "note": "Data is derived from a Wikisource transcription. Wikimedia text contributions are generally CC BY-SA; the page template shows both PD and CC BY-SA notices. Distribution rights of THIS data file are separate from rights in the underlying 1961 text and are unresolved."
+  },
+  "not_used_as_canonical": [
+   "unattributed GitHub/JSON dumps of Korean Bible text"
+  ]
+ },
+ "verification": {
+  "structure": "PASS: 66 books, 1189 chapters, 31102 verses; chapter and verse numbering contiguous in every book; matches the standard Protestant canon totals.",
+  "cross_check_source": "blueletterbible.org/sample/kor/{book}/{chapter}/1 (Korean Holy Bible KOR) - used for comparison only, never as text source",
+  "cross_check_summary": {
+   "exact": 21173,
+   "whitespace_only": 5228,
+   "lexical": 1121,
+   "punctuation_only": 609,
+   "missing_in_xcheck": 2861,
+   "wikisource_has_bracketed_heading": 110
+  },
+  "cross_check_note": "Both sources are unofficial transcriptions. Differences include spelling/spacing conventions, bracketed Psalm headings (Wikisource only), placeholder verses, cross-reference alignment artifacts in the comparison source, and at least one apparent omission in the Wikisource text (Jonah 1:4).",
+  "chapters_not_comparable_in_xcheck": 102,
+  "lexical_difference_count": 1121
+ },
+ "known_text_flags": {
+  "placeholder_verses": [
+   {
+    "ref": "deu.6.19",
+    "kind": "placeholder_text",
+    "text": "(앞절과 동일)",
+    "xcheck_text": "여호와의 보시기에 정직하고 선량한 일을 행하라 그리하면 네가 복을 얻고 여호와께서 네 열조에게 맹세하사 네 대적을 몰수히 네 앞에서 쫓아내리라 하신 아름다운 땅을 들어가서 얻으리니 여호와의 말씀과 같으리라"
+   },
+   {
+    "ref": "deu.15.5",
+    "kind": "placeholder_text",
+    "text": "(앞절과 동일)",
+    "xcheck_text": "네가 만일 네 하나님 여호와의 말씀만 듣고 내가 오늘날 네게 명하는 그 명령을 다 지켜 행하면 네 하나님 여호와께서 네게 유업으로 주신 땅에서 네가 정녕 복을 받으리니 너희 중에 가난한 자가 없으리라"
+   },
+   {
+    "ref": "deu.30.10",
+    "kind": "placeholder_text",
+    "text": "(앞절과 동일)",
+    "xcheck_text": "것과 같이 너를 다시 기뻐하사 네게 복을 주시리라 (30장 9절의 내용의 계속임 - 9절과 10절의 내용 동일함)"
+   },
+   {
+    "ref": "jos.2.13",
+    "kind": "placeholder_text",
+    "text": "12절과 상동",
+    "xcheck_text": null
+   },
+   {
+    "ref": "1sa.30.31",
+    "kind": "placeholder_text",
+    "text": "(없음)",
+    "xcheck_text": "(개역한글판 31절이 30절에 포함)"
+   },
+   {
+    "ref": "1ch.16.13",
+    "kind": "placeholder_text",
+    "text": "상동",
+    "xcheck_text": null
+   },
+   {
+    "ref": "job.31.34",
+    "kind": "placeholder_text",
+    "text": "상동",
+    "xcheck_text": null
+   },
+   {
+    "ref": "job.35.11",
+    "kind": "placeholder_text",
+    "text": "상동",
+    "xcheck_text": null
+   },
+   {
+    "ref": "psa.92.2",
+    "kind": "placeholder_text",
+    "text": "(앞절과 동일)",
+    "xcheck_text": "지존자여 십현금과 비파와 수금의 정숙한 소리로 여호와께 감사하며 주의 이름을 찬양하며 아침에 주의 인자하심을 나타내며 밤마다 주의 성실하심을 베풂이 좋으니이다"
+   },
+   {
+    "ref": "psa.92.3",
+    "kind": "placeholder_text",
+    "text": "(앞절과 동일)",
+    "xcheck_text": "지존자여 십현금과 비파와 수금의 정숙한 소리로 여호와께 감사하며 주의 이름을 찬양하며 아침에 주의 인자하심을 나타내며 밤마다 주의 성실하심을 베풂이 좋으니이다"
+   },
+   {
+    "ref": "psa.105.6",
+    "kind": "placeholder_text",
+    "text": "(앞절과 동일)",
+    "xcheck_text": "그 종 아브라함의 후손 곧 택하신 야곱의 자손 너희는 그의 행하신 기사와 그 이적과 그 입의 판단을 기억할지어다"
+   },
+   {
+    "ref": "isa.7.9",
+    "kind": "placeholder_text",
+    "text": "8절과 같음",
+    "xcheck_text": "8절과 상동"
+   },
+   {
+    "ref": "isa.30.2",
+    "kind": "placeholder_text",
+    "text": "[1절과 같음]",
+    "xcheck_text": "1절과 상동"
+   },
+   {
+    "ref": "isa.48.2",
+    "kind": "placeholder_text",
+    "text": "[1절과 같음]",
+    "xcheck_text": "1절과 상동"
+   },
+   {
+    "ref": "jer.21.2",
+    "kind": "placeholder_text",
+    "text": "[1절과 같음]",
+    "xcheck_text": "1절과 상동"
+   },
+   {
+    "ref": "ezk.24.5",
+    "kind": "placeholder_text",
+    "text": "[4절과 같음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "mat.17.21",
+    "kind": "placeholder_text",
+    "text": "(없음)",
+    "xcheck_text": null
+   },
+   {
+    "ref": "mat.18.11",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "mat.23.14",
+    "kind": "placeholder_text",
+    "text": "(없음)",
+    "xcheck_text": null
+   },
+   {
+    "ref": "mrk.9.44",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "mrk.9.46",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "mrk.11.26",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "mrk.15.28",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "luk.17.36",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "luk.23.17",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "act.8.37",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "act.15.26",
+    "kind": "placeholder_text",
+    "text": "[25절과 같음]",
+    "xcheck_text": "(25"
+   },
+   {
+    "ref": "act.15.34",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "act.28.29",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   },
+   {
+    "ref": "rom.9.2",
+    "kind": "placeholder_text",
+    "text": "[1절과 같음]",
+    "xcheck_text": "내가 그리스도 안에서 참말을 하고 거짓말을 아니하노라 내게 큰근심이 있는 것과 마음에 그치지 않는 고통이 있는 것을 내 양심이 성령안에서 나로 더불어 증거하노니"
+   },
+   {
+    "ref": "rom.16.24",
+    "kind": "placeholder_text",
+    "text": "[없음]",
+    "xcheck_text": null
+   }
+  ],
+  "placeholder_count": 31
+ },
+ "status": "UNVERIFIED_TRANSCRIPTION - text bound verbatim; requires reconciliation with a publisher-authorized copy before external release"
+}

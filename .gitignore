@@ -1,0 +1,27 @@
+.claude/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+# Local environment / secrets
+.env
+.env.*
+!.env.example
+
+# Pipeline caches
+tools/pipeline/cache/
+
+# Node dependencies
+node_modules/
+
+# Source/reference datasets - keep local
+data/source/
+
+# Generated pipeline outputs
+tools/pipeline/out/
+
+# Generated QA HTML outputs
+tools/_out_*.html
