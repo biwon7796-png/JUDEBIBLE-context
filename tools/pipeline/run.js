@@ -5,7 +5,8 @@
 // Fail-closed per record: a record with validation errors is never projected; its last known good projection entry (if any) is kept.
 // Source notes are opened read-only. Only ingest.config.json "include" folders are read; "exclude" folders never are.
 const fs = require("fs"), path = require("path"), vm = require("vm"), crypto = require("crypto");
-const { parseNote } = require("./parse"), { validate, mediaErrors } = require("./validate"), { normalize, mediaHash } = require("./normalize"), sidx = require("./scripture-index"), resolver = require("./media-resolver");
+const { regionPass } = require("./region-stage");   // canonical Region pass (entity-type dispatch for Region records)
+const { parseNote } = require("./parse"), { validate, mediaErrors } = require("./validate"), { normalize, mediaHash } = require("./normalize"), sidx = require("./scripture-index"), resolver = require("./media-resolver"), rb = require("./relation-binding");
 
 const ROOT = path.resolve(__dirname, "..", ".."), OUT = path.join(__dirname, "out");
 const CONFIG = path.join(__dirname, "ingest.config.json");
@@ -19,9 +20,39 @@ const GERAR = VAULT_GERAR || path.join(ROOT, "docs", "architecture", "그랄", "
 const sha256 = (f) => crypto.createHash("sha256").update(fs.readFileSync(f)).digest("hex");
 
 function loadKrv() { const box = { window: {} }; vm.runInNewContext(fs.readFileSync(path.join(ROOT, "data", "krv.js"), "utf8"), box); return box.window.BVC_KRV; }
-const write = (f, s) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f, s); };
+// Atomic writes: content goes to <file>.tmp first and is renamed into place, so a crash never leaves a half-written file. The live projection + index are staged as a pair
+// (both .tmp files must be written before either is renamed) so a failure while generating never replaces a previous live file.
+const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+// Windows refuses to replace a file another process (editor, dev server, virus scanner) briefly holds open: retry the rename a few times before giving up.
+// If the target stays locked (a dev server / browser keeping the file open without share-delete), the already fully written .tmp is copied over it instead and removed.
+const rename = (a, b) => { for (let n = 0; ; n++) { try { return fs.renameSync(a, b); } catch (e) { if (!/^(EPERM|EBUSY|EACCES)$/.test(e.code)) throw e; if (n >= 3) { fs.copyFileSync(a, b); fs.unlinkSync(a); return; } sleep(60 * (n + 1)); } } };
+const write = (f, s) => { fs.mkdirSync(path.dirname(f), { recursive: true }); const t = f + ".tmp"; fs.writeFileSync(t, s); rename(t, f); };
+// flush: if any rename fails, the files already replaced are restored from their .prev copy → the previous live pair is never left half-updated.
+const stagePair = () => { const q = []; return { stage: (f, s) => { fs.mkdirSync(path.dirname(f), { recursive: true }); fs.writeFileSync(f + ".tmp", s); q.push(f); }, flush: () => { const done = []; try { for (const f of q) { if (fs.existsSync(f)) fs.copyFileSync(f, f + ".prev"); rename(f + ".tmp", f); done.push(f); } } catch (e) { for (const f of done) { try { rename(f + ".prev", f); } catch (e2) {} } for (const f of q) { try { fs.unlinkSync(f + ".tmp"); } catch (e3) {} } throw e; } finally { for (const f of q) { try { fs.unlinkSync(f + ".prev"); } catch (e4) {} } } q.length = 0; }, abort: () => { q.forEach((f) => { try { fs.unlinkSync(f + ".tmp"); } catch (e) {} }); q.length = 0; } }; };
 const loadConfig = (f) => JSON.parse(fs.readFileSync(f || CONFIG, "utf8"));
 function loadGenerated(file, name) { try { const box = { window: {} }; vm.runInNewContext(fs.readFileSync(file, "utf8"), box); return box.window[name] || null; } catch (e) { return null; } }
+
+// ---------------------------------------------------------------- stale-source guard
+// A write run against the REAL data/ directory must come from the authoritative vault. When JBC_VAULT is missing the discovery silently
+// falls back to the repo mirror, which can be stale (it once dropped structured_media_rights and turned cleared photos into attribution-only).
+// So: no vault → refuse, unless --allow-mirror is given AND the mirror reproduces the recorded source sha256 of every projected record;
+// a deliberate lineage change from a mirror needs --accept-source-change as well. Vault runs that change a source sha are reported and appended to
+// tools/pipeline/lineage/source-lineage.json (read-only audit trail; it never approves a hash — qa-bs BS-01 pin stays a manual decision).
+const LINEAGE = path.join(__dirname, "lineage", "source-lineage.json");
+function guardSources(disc, results, prevProj, opts) {
+  const mirrorUsed = (disc.scanned || []).some((s) => s.resolved_from === "mirror"), prevMeta = (id) => prevProj && prevProj.meta && (prevProj.meta.records || []).find((m) => m.stable_id === id);
+  const changes = (results || []).filter((r) => r.meta && r.meta.source).map((r) => ({ r, prev: prevMeta(r.doc.stable_id) })).filter((x) => x.prev && x.prev.source && x.prev.source.sha256 !== x.r.meta.source.sha256);
+  if (mirrorUsed && !opts.allowMirror) throw new Error("STALE_SOURCE_GUARD: JBC_VAULT is not bound, so the repo mirror would be used for a write run. The mirror may be stale (media rights / structured blocks can be missing). Bind JBC_VAULT to the research vault, or pass --allow-mirror to knowingly use the mirror. Nothing was written.");
+  if (mirrorUsed && changes.length && !opts.acceptSourceChange) throw new Error("STALE_SOURCE_GUARD: the mirror would change the recorded source lineage of " + changes.map((c) => c.r.doc.stable_id + " (" + c.prev.source.sha256.slice(0, 12) + " → " + c.r.meta.source.sha256.slice(0, 12) + ")").join(", ") + ". Use the vault, or pass --accept-source-change after the owner approved the new source. Nothing was written.");
+  return changes.map((c) => ({ stable_id: c.r.doc.stable_id, from: c.prev.source.sha256, to: c.r.meta.source.sha256, via: mirrorUsed ? "mirror" : "vault" }));
+}
+function recordLineage(results, disc, changes) {
+  let log = { schema: "JBC_SOURCE_LINEAGE_v0.1", entries: [] }; try { log = JSON.parse(fs.readFileSync(LINEAGE, "utf8")); } catch (e) {}
+  const via = (disc.scanned || []).some((s) => s.resolved_from === "mirror") ? "mirror" : "vault";
+  for (const r of results) { if (!r.meta || !r.meta.source) continue; const e = { stable_id: r.doc.stable_id, path: r.meta.source.path, sha256: r.meta.source.sha256, via };
+    if (!log.entries.some((x) => x.stable_id === e.stable_id && x.sha256 === e.sha256 && x.path === e.path)) log.entries.push(Object.assign({ observed: new Date().toISOString() }, e)); }
+  write(LINEAGE, JSON.stringify(log, null, 2) + "\n");
+}
 
 // ---------------------------------------------------------------- discovery
 // Only the configured include folders are scanned (vault "02_연구물/…" when JBC_VAULT is set, otherwise the repo mirror of those folders).
@@ -40,7 +71,10 @@ function discover(cfg, opts) {
   const useVault = !!vault;   // one source of truth: an explicit vault never falls back to the repo mirror
   for (const inc of cfg.include || []) {
     const base = useVault ? path.join(vault, inc) : path.join(mirror, inc.replace(/^02_연구물\//, "")), via = useVault ? "vault" : "mirror";
-    const files = []; walk(base, inc, files); scanned.push({ include: inc, resolved_from: via, files: files.length });
+    let files = []; walk(base, inc, files);
+    // The repo mirror root itself is not a research folder (locks, gates and stale flat copies sit there): for a root include only its sub-folders count (the vault root files are judged by the eligibility gate).
+    if (!useVault && path.resolve(base) === mirror) files = files.filter((f) => f.vrel.slice(inc.length).indexOf("/") > 0);
+    scanned.push({ include: inc, resolved_from: via, files: files.length });
     for (const f of files) {
       if (isExcluded(f.vrel)) { excluded.push(f.vrel); continue; }
       let p; try { p = parseNote(f.abs); } catch (e) { skipped.push({ path: f.vrel, reason: "unreadable: " + e.message }); continue; }
@@ -51,7 +85,14 @@ function discover(cfg, opts) {
       else found.push({ document_id: id, abs: f.abs, vrel: f.vrel, stable_id: place.Place.stable_id });
     }
   }
-  return { found, skipped, excluded, scanned };
+  // Auto-discovery scans whole roots, so the same research asset may appear twice (a stray copy). Two notes claiming one research id are ambiguous:
+  // both stay in `found` flagged and fail closed in ingest (the last known good entry is kept) — the pipeline never guesses which copy is authoritative.
+  found.sort((a, b) => (a.document_id < b.document_id ? -1 : a.document_id > b.document_id ? 1 : 0));   // processing / output order depends on the research id, never on the folder layout
+  // A byte-identical copy is the same asset (first path wins, the copy is reported as skipped); differing copies are ambiguous.
+  for (let i = found.length - 1; i > 0; i--) { const twin = found.slice(0, i).find((x) => x.document_id === found[i].document_id && sha256(x.abs) === sha256(found[i].abs)); if (twin) { skipped.push({ path: found[i].vrel, reason: "byte-identical copy of " + twin.vrel + " — not ingested twice" }); found.splice(i, 1); } }
+  const dupIds = new Set(found.map((f) => f.document_id).filter((id, i, a) => a.indexOf(id) !== i));
+  found.forEach((f) => { if (dupIds.has(f.document_id)) f.duplicate = true; });
+  return { found, skipped, excluded, scanned, vault: useVault ? vault : null };
 }
 
 // Media failure isolation: an asset that fails its own checks is quarantined (kept out of the projection, reported) and never blocks
@@ -94,6 +135,19 @@ function run(opts) {
   return result;
 }
 
+
+// Reference auto-bind (future automation): after a real projection write, re-extract the external ids declared in the approved notes and regenerate the Reference Layer
+// projection (tools/reference/build.py → data/reference.bindings.js). Non-fatal by design: the research projection is already written and is never touched by this step;
+// a failure (e.g. no python) is reported in the summary and the previous bindings stay in place.
+function refreshReferenceBindings() {
+  const cp = require("child_process"), steps = [];
+  const go = (label, cmd, args) => { const r = cp.spawnSync(cmd, args, { cwd: ROOT, encoding: "utf8" }); steps.push({ step: label, ok: r.status === 0, detail: ((r.stdout || "") + (r.stderr || "")).trim().split(String.fromCharCode(10)).pop() || (r.error && r.error.message) || "" }); return r.status === 0; };
+  if (!go("external-refs", process.execPath, [path.join(__dirname, "external-refs.js")])) return { ok: false, steps };
+  const py = ["python", "py"].find((c) => cp.spawnSync(c, ["--version"], { encoding: "utf8" }).status === 0);
+  if (!py) { steps.push({ step: "reference-build", ok: false, detail: "python not found — run `python tools/reference/build.py` manually" }); return { ok: false, steps }; }
+  return { ok: go("reference-build", py, [path.join(ROOT, "tools", "reference", "build.py")]), steps };
+}
+
 // ---------------------------------------------------------------- all configured records → one shared projection + one Scripture Entity Index
 function ingest(opts) {
   opts = opts || {};
@@ -103,11 +157,19 @@ function ingest(opts) {
   const results = [], failed = [];
   for (const d of disc.found) {
     const rc = (cfg.records || {})[d.document_id] || {}, overlayFile = rc.overlay ? path.join(opts.rootDir || ROOT, rc.overlay) : null;
-    if (!rc.expected_identity) { results.push({ doc: d, skipped: "no ingest configuration for this record (expected_identity missing) — not ingested" }); continue; }
-    const r = run({ source: d.abs, krv, overlay: overlayFile && fs.existsSync(overlayFile) ? overlayFile : path.join(__dirname, "empty-overlay.json"), syncFile, approval: rc.approval, expected: rc.expected_identity, cacheDir: opts.cacheDir, resolveMode: opts.resolveMode });
-    r.doc = d; results.push(r); if (!r.validation.ok) failed.push(r);
+    // zero-config discovery: a Place note found in the vault needs no ingest.config entry. Without one, the identity pin is the note's own Place.stable_id (the approval gate V33 still applies;
+    // an unapproved note is reported as awaiting approval, never generated). A config entry stays available to pin an identity, supply an overlay or record an approval override.
+    const r = run({ source: d.abs, krv, overlay: overlayFile && fs.existsSync(overlayFile) ? overlayFile : path.join(__dirname, "empty-overlay.json"), syncFile, approval: rc.approval, expected: rc.expected_identity || d.stable_id, cacheDir: opts.cacheDir, resolveMode: opts.resolveMode });
+    r.doc = d;
+    if (d.duplicate) { r.validation = { ok: false, errors: ["DUPLICATE_RESEARCH_ID: more than one note carries research id " + d.document_id + " — ambiguous source, not ingested"], warnings: [], checks: [] }; delete r.sync; }
+    if (!rc.expected_identity && !r.validation.ok && r.validation.errors.length && r.validation.errors.every((e) => /^V33/.test(e))) { results.push({ doc: d, gate: "AWAITING_APPROVAL", skipped: "eligibility gate: " + r.validation.errors[0] + " — not ingested" }); continue; }
+    results.push(r); if (!r.validation.ok) failed.push(r);
   }
-  const ok = results.filter((r) => r.validation && r.validation.ok), summary = { discovery: disc, records: [], preserved_last_known_good: [], wrote: false };
+  // stable id collision: two Place notes claiming one viewer id fail closed together (the last known good entry of that id is kept by the failure path below)
+  const byId = {}; results.forEach((r) => { if (r.validation && r.validation.ok) (byId[r.doc.stable_id] = byId[r.doc.stable_id] || []).push(r); });
+  Object.keys(byId).filter((k) => byId[k].length > 1).forEach((k) => byId[k].forEach((r) => { r.validation = { ok: false, errors: ["STABLE_ID_COLLISION: viewer id " + k + " is claimed by " + byId[k].map((x) => x.doc.document_id).join(", ")], warnings: [], checks: [] }; failed.push(r); }));
+  const realWrite = !opts.dryRun && path.resolve(dataDir) === path.resolve(ROOT, "data"), srcChanges = realWrite ? guardSources(disc, results, prevProj, opts) : [];   // throws before anything is written
+  const ok = results.filter((r) => r.validation && r.validation.ok), summary = { discovery: disc, records: [], preserved_last_known_good: [], wrote: false, source_changes: srcChanges };
   const places = {}, metaRecords = [], parts = [];
   for (const r of results) {
     if (r.skipped) { summary.records.push({ document_id: r.doc.document_id, ok: false, skipped: r.skipped }); continue; }
@@ -120,17 +182,32 @@ function ingest(opts) {
       summary.records.push(entry);
     }
   }
-  const projection = { meta: { schema: "JUDEBIBLE_CONTEXT_PROJECTION_v0.2", generated_by: "tools/pipeline/run.js v0.2", gate: "BEERSHEBA_PRE_IMPLEMENTATION_GATE_v0.1", records: metaRecords }, places };
-  const index = sidx.combine(parts, krv); index.meta.krv_sha256 = krvHash;
+  // Region pass (entity-type dispatch): Region notes are discovered/normalized/validated by the shared region modules, vault only, fail-closed with last known good.
+  // Without Region records the output format is exactly what it was before (no `regions` key).
+  const reg = cfg._no_region_pass ? { regions: {}, regionMeta: [], parts: [], records: [], preserved: [] } : regionPass({ cfg, krv, vault: disc.vault || null, claimedAbs: new Set(disc.found.map((f) => f.abs)), prevProj, prevIdx, activationState: "NOT_ACTIVATED", approvalsDir: opts.approvalsDir, placeIds: new Set(Object.keys(places)) });
+  summary.region_records = reg.records;
+  // Relation binding (whole-graph): every projected entity is matched against every other; only explicit / approved identities bind, the rest is recorded as VERIFY / HOLD / true gap.
+  const relBind = rb.bindRelations({ places, regions: reg.regions }, { prev: prevProj }); relBind.provenance_references = rb.provenanceReferences(disc.found.concat(reg.found || []), rb.buildIndex({ places, regions: reg.regions })); summary.relation_binding = relBind;
+  // Asset discovery report: one line per eligible-looking research asset, whatever its entity type — what was found, which adapter took it, and where the eligibility gate stopped it.
+  const stat = (r) => (r.ok ? "ingested" : r.gate === "AWAITING_APPROVAL" || r.skipped ? "awaiting_approval" : "failed_closed");
+  summary.assets = results.map((r) => ({ document_id: r.doc.document_id, entity_type: "place", path: r.doc.vrel, status: r.skipped ? "awaiting_approval" : r.validation.ok ? "ingested" : "failed_closed", reason: r.skipped || (r.validation && !r.validation.ok ? r.validation.errors[0] : undefined) }))
+    .concat(reg.records.map((r) => ({ document_id: r.document_id, entity_type: "region", profile: r.profile, stable_id: r.stable_id, status: stat(r), identity_source: r.identity_source, approval_record: r.approval_record, reason: r.skipped || (r.errors && r.errors[0]) || undefined, errors: r.errors })))
+    .concat(disc.skipped.concat(reg.skipped || []).filter((x) => x.entity_type).map((x) => ({ path: x.path, entity_type: x.entity_type, status: "no_adapter", reason: x.reason })));
+   summary.preserved_last_known_good = summary.preserved_last_known_good.concat(reg.preserved);
+  const hasRegions = Object.keys(reg.regions).length > 0, projection = { meta: Object.assign({ schema: "JUDEBIBLE_CONTEXT_PROJECTION_v0.2", generated_by: "tools/pipeline/run.js v0.2", gate: "BEERSHEBA_PRE_IMPLEMENTATION_GATE_v0.1", records: metaRecords }, hasRegions ? { regions: reg.regionMeta } : {}), places };
+  if (hasRegions) projection.regions = reg.regions;
+  const index = sidx.combine(parts.concat(reg.parts), krv); index.meta.krv_sha256 = krvHash;
   summary.projection = projection; summary.index = index; summary.results = results;
-  if (!opts.dryRun && ok.length) {
-    const hdr = metaRecords.map((m) => "//   " + m.stable_id + "  ←  " + m.source.path + "  sha256: " + m.source.sha256).join("\n");
-    write(projFile, "// GENERATED by tools/pipeline/run.js from the approved research notes — do not edit by hand.\n" + hdr + "\n// App-side reader fields come from data/projection.overlay.*.json (see meta.records[].overlay_fields).\nwindow.BVC_PROJECTION = " + JSON.stringify(projection, null, 2) + ";\n");
-    write(idxFile, "// GENERATED by tools/pipeline/run.js — Scripture Entity Index (verified against KRV offsets at load; KRV itself is untouched).\nwindow.BVC_SCRIPTURE_INDEX = " + JSON.stringify(index, null, 2) + ";\n");
+  if (!opts.dryRun && (ok.length || hasRegions)) {
+    const hdr = metaRecords.concat(hasRegions ? reg.regionMeta : []).map((m) => "//   " + m.stable_id + "  ←  " + m.source.path + "  sha256: " + m.source.sha256).join("\n");
+    const pair = stagePair(); try {
+    pair.stage(projFile, "// GENERATED by tools/pipeline/run.js from the approved research notes — do not edit by hand.\n" + hdr + "\n// App-side reader fields come from data/projection.overlay.*.json (see meta.records[].overlay_fields).\nwindow.BVC_PROJECTION = " + JSON.stringify(projection, null, 2) + ";\n");
+    pair.stage(idxFile, "// GENERATED by tools/pipeline/run.js — Scripture Entity Index (verified against KRV offsets at load; KRV itself is untouched).\nwindow.BVC_SCRIPTURE_INDEX = " + JSON.stringify(index, null, 2) + ";\n");
+    pair.flush(); } catch (e) { pair.abort(); throw e; }
     let prevSync = {}; try { prevSync = JSON.parse(fs.readFileSync(syncFile, "utf8")).records || {}; } catch (e) {}
     for (const r of ok) prevSync[r.doc.stable_id] = r.sync.now;
     write(syncFile, JSON.stringify({ schema: "JBC_MEDIA_SYNC_v0.2", records: prevSync }, null, 2) + "\n");
-    summary.wrote = true;
+    summary.wrote = true; if (realWrite) summary.reference_bindings = refreshReferenceBindings(); if (realWrite) recordLineage(results.concat(reg.regionMeta.map((m) => ({ doc: { stable_id: m.stable_id }, meta: { source: m.source } }))), disc, srcChanges);
   }
   if (!opts.dryRun && opts.writeArtifacts !== false) {
     const strip = (p) => ({ source: p.source, frontmatter: p.frontmatter, order: p.order, sections: Object.fromEntries(p.order.map((k) => [k, { heading: p.sections[k].heading, level: p.sections[k].level, textLines: p.sections[k].text.length, quotes: p.sections[k].quotes, fields: p.sections[k].fields, tables: p.sections[k].tables.map((t) => ({ header: t.header, rows: t.rows.length })), yamlBlocks: p.sections[k].yaml.length }])) });
@@ -139,7 +216,8 @@ function ingest(opts) {
       write(path.join(d, "01-parsed.json"), JSON.stringify(strip(r.parsed), null, 2)); write(path.join(d, "02-validation.json"), JSON.stringify(r.validation, null, 2));
       write(path.join(d, "03-normalized.json"), JSON.stringify({ record: r.norm.record, provenance: r.norm.provenance, warnings: r.norm.warnings, skipped: r.norm.skipped, overlayFields: r.norm.overlayFields }, null, 2));
       if (r.mediaReport) { write(path.join(d, "04-projection-entry.json"), JSON.stringify(r.norm.record, null, 2)); write(path.join(d, "05-scripture-index.json"), JSON.stringify(r.index, null, 2)); write(path.join(d, "06-media-report.json"), JSON.stringify(r.mediaReport, null, 2)); } }
-    write(path.join(outDir, "run-summary.json"), JSON.stringify({ discovery: { found: disc.found.map((f) => f.vrel), skipped: disc.skipped, excluded: disc.excluded, scanned: disc.scanned }, records: summary.records, preserved_last_known_good: summary.preserved_last_known_good, wrote: summary.wrote }, null, 2));
+    write(path.join(outDir, "relation-binding-report.json"), JSON.stringify(Object.assign({ schema: "JBC_RELATION_BINDING_REPORT_v0.1" }, relBind), null, 2));
+    write(path.join(outDir, "run-summary.json"), JSON.stringify({ assets: summary.assets, discovery: { found: disc.found.map((f) => f.vrel), skipped: disc.skipped, excluded: disc.excluded, scanned: disc.scanned }, records: summary.records, relation_binding: relBind.counts, preserved_last_known_good: summary.preserved_last_known_good, wrote: summary.wrote }, null, 2));
   }
   return summary;
 }
@@ -157,8 +235,8 @@ async function refresh(opts) {
 
 if (require.main === module) (async () => {
   if (process.argv.includes("--resolve-media")) console.log(JSON.stringify({ resolver_refresh: await refresh() }, null, 1));
-  const s = ingest({ dryRun: process.argv.includes("--dry") });
-  console.log(JSON.stringify({ discovery: { found: s.discovery.found.map((f) => f.vrel), skipped: s.discovery.skipped, scanned: s.discovery.scanned }, records: s.records, preserved_last_known_good: s.preserved_last_known_good, wrote: s.wrote }, null, 1));
-  process.exit(s.records.length && s.records.every((r) => r.ok) ? 0 : 1);
+  let s; try { s = ingest({ dryRun: process.argv.includes("--dry"), allowMirror: process.argv.includes("--allow-mirror"), acceptSourceChange: process.argv.includes("--accept-source-change") }); } catch (e) { console.error(e.message); process.exit(e.message.indexOf("STALE_SOURCE_GUARD") === 0 ? 3 : 1); }
+  console.log(JSON.stringify({ discovery: { found: s.discovery.found.map((f) => f.vrel), skipped: s.discovery.skipped, scanned: s.discovery.scanned }, assets: s.assets, records: s.records, region_records: s.region_records, relation_binding: s.relation_binding.counts, relation_holds: s.relation_binding.hold, preserved_last_known_good: s.preserved_last_known_good, source_changes: s.source_changes, wrote: s.wrote }, null, 1));
+  process.exit(s.records.length && s.records.every((r) => r.ok) && (s.region_records || []).every((r) => r.ok || r.skipped) && !s.relation_binding.hold.length && !(s.relation_binding.contract_failures || []).length ? 0 : 1);
 })();
-module.exports = { run, ingest, refresh, discover, loadConfig, loadKrv, SOURCE, GERAR, OVERLAY, CONFIG, ROOT };
+module.exports = { stagePair, run, ingest, refresh, discover, loadConfig, loadKrv, SOURCE, GERAR, OVERLAY, CONFIG, ROOT };

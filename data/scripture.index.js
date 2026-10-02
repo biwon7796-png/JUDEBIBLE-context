@@ -8,12 +8,22 @@ window.BVC_SCRIPTURE_INDEX = {
       {
         "record": "JBC-CR-PLACE-BEERSHEBA-001",
         "research_id": "JBC_BEERSHEBA_CONNECTED_WORBS_20260930_01",
-        "source_sha256": "ff3bd3789f737b7eaac65cb6eab1fdf303d21bb57379c71d3f48b46599966d90"
+        "source_sha256": "c02853f748254bf22a9de5ac0258c66475b85b6ea172b95b494f32bf878e5e39"
       },
       {
         "record": "JBC-CR-PLACE-GERAR-001",
         "research_id": "JBC_GERAR_CONNECTED_WORBS_20260930_01",
         "source_sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+      },
+      {
+        "record": "JBC-CR-PLACE-ACHAIA-001",
+        "research_id": "JBC_ACHAIA_CONNECTED_WORBS_20260930_01",
+        "source_sha256": "0d2bab5901047ce867ed29b6f996b79b87f48b0bf2f7a7a405ffec68862c7b42"
+      },
+      {
+        "record": "JBC-CR-PLACE-AMALEK-001",
+        "research_id": "JBC_AMALEK_CONNECTED_WORBS_20261001_01",
+        "source_sha256": "a3cbe2f93f4802efbf0ced1241deb3f0dd18e430b8afc9e6a46ac5f7735e0a87"
       }
     ],
     "translation": "KRV",
@@ -281,6 +291,495 @@ window.BVC_SCRIPTURE_INDEX = {
           ]
         ]
       }
+    ],
+    "act-18:12": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            5,
+            8
+          ]
+        ]
+      }
+    ],
+    "act-18:27": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            5,
+            8
+          ]
+        ]
+      }
+    ],
+    "act-19:21": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            21,
+            24
+          ]
+        ]
+      }
+    ],
+    "rom-15:26": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            9,
+            12
+          ]
+        ]
+      }
+    ],
+    "1co-16:15": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            16,
+            19
+          ]
+        ]
+      }
+    ],
+    "2co-1:1": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            63,
+            66
+          ]
+        ]
+      }
+    ],
+    "2co-9:2": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            38,
+            41
+          ]
+        ]
+      }
+    ],
+    "2co-11:10": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            19,
+            22
+          ]
+        ]
+      }
+    ],
+    "1th-1:7": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            15,
+            18
+          ]
+        ]
+      }
+    ],
+    "1th-1:8": [
+      {
+        "stable_id": "JBC-CR-PLACE-ACHAIA-001",
+        "group": "direct",
+        "surface": "아가야",
+        "spans": [
+          [
+            21,
+            24
+          ]
+        ]
+      }
+    ],
+    "exo-17:8": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            3,
+            6
+          ]
+        ]
+      }
+    ],
+    "exo-17:9": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            36,
+            39
+          ]
+        ]
+      }
+    ],
+    "exo-17:10": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            18,
+            21
+          ]
+        ]
+      }
+    ],
+    "exo-17:11": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            27,
+            30
+          ]
+        ]
+      }
+    ],
+    "exo-17:13": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            10,
+            13
+          ]
+        ]
+      }
+    ],
+    "exo-17:14": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            55,
+            58
+          ]
+        ]
+      }
+    ],
+    "exo-17:16": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            22,
+            25
+          ]
+        ]
+      }
+    ],
+    "num-13:29": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            0,
+            3
+          ]
+        ]
+      }
+    ],
+    "num-24:20": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            2,
+            5
+          ],
+          [
+            23,
+            26
+          ]
+        ]
+      }
+    ],
+    "deu-25:17": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            16,
+            19
+          ]
+        ]
+      }
+    ],
+    "deu-25:19": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            93,
+            96
+          ]
+        ]
+      }
+    ],
+    "jdg-3:13": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            9,
+            12
+          ]
+        ]
+      }
+    ],
+    "jdg-5:14": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            14,
+            17
+          ]
+        ]
+      }
+    ],
+    "jdg-6:3": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            21,
+            24
+          ]
+        ]
+      }
+    ],
+    "jdg-6:33": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            11,
+            14
+          ]
+        ]
+      }
+    ],
+    "jdg-7:12": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            8,
+            11
+          ]
+        ]
+      }
+    ],
+    "jdg-10:12": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            9,
+            12
+          ]
+        ]
+      }
+    ],
+    "1sa-15:2": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            21,
+            24
+          ]
+        ]
+      }
+    ],
+    "1sa-15:3": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            6,
+            9
+          ]
+        ]
+      }
+    ],
+    "1sa-15:5": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            4,
+            7
+          ]
+        ]
+      }
+    ],
+    "1sa-15:8": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            0,
+            3
+          ]
+        ]
+      }
+    ],
+    "1sa-15:20": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            51,
+            54
+          ],
+          [
+            66,
+            69
+          ]
+        ]
+      }
+    ],
+    "1sa-15:32": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            13,
+            16
+          ]
+        ]
+      }
+    ],
+    "1sa-28:18": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            29,
+            32
+          ]
+        ]
+      }
+    ],
+    "2sa-8:12": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            25,
+            28
+          ]
+        ]
+      }
+    ],
+    "1ch-18:11": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            42,
+            45
+          ]
+        ]
+      }
+    ],
+    "psa-83:7": [
+      {
+        "stable_id": "JBC-CR-PLACE-AMALEK-001",
+        "group": "direct",
+        "surface": "아말렉",
+        "spans": [
+          [
+            8,
+            11
+          ]
+        ]
+      }
     ]
   },
   "stats": {
@@ -317,6 +816,39 @@ window.BVC_SCRIPTURE_INDEX = {
         "gen-20:1-18",
         "gen-21:22-34",
         "gen-26:1-33"
+      ]
+    },
+    "JBC-CR-PLACE-ACHAIA-001": {
+      "direct_ranges": 10,
+      "verses_in_ranges": 10,
+      "verses_tagged": 10,
+      "verses_without_surface": [],
+      "related_links_not_tagged": [
+        "act-18:1-18",
+        "act-18:24-28",
+        "act-19:1",
+        "rom-16:1"
+      ]
+    },
+    "JBC-CR-PLACE-AMALEK-001": {
+      "direct_ranges": 28,
+      "verses_in_ranges": 28,
+      "verses_tagged": 27,
+      "verses_without_surface": [
+        "num-24:24"
+      ],
+      "related_links_not_tagged": [
+        "gen-14:7",
+        "gen-36:12",
+        "gen-36:16",
+        "num-14:43-45",
+        "deu-1:44",
+        "jdg-12:15",
+        "1sa-15:7",
+        "1sa-27:8",
+        "1sa-30:1-20",
+        "1ch-1:36",
+        "1ch-4:42-43"
       ]
     }
   }

@@ -34,12 +34,12 @@ function parseNote(file) {
   for (let n = 0; n < lines.length; n++) {
     const line = lines[n];
     if (fence) {
-      if (/^```\s*$/.test(line)) { if (/^ya?ml$/i.test(fence.lang)) { try { cur.yaml.push({ line: fence.start, data: yaml.parse(fence.buf.join("\n")) }); } catch (e) { cur.yaml.push({ line: fence.start, error: String(e.message || e) }); } } fence = null; }
+      if (line.trim() === fence.mark) { if (/^ya?ml$/i.test(fence.lang)) { try { cur.yaml.push({ line: fence.start, data: yaml.parse(fence.buf.join("\n")) }); } catch (e) { cur.yaml.push({ line: fence.start, error: String(e.message || e) }); } } fence = null; }
       else fence.buf.push(line);
       continue;
     }
-    const f = /^```(\w*)/.exec(line);
-    if (f) { fence = { lang: f[1], start: n + 1, buf: [] }; continue; }
+    const f = /^(```|~~~)(\w*)/.exec(line);   // ``` and ~~~ fences; a fence is closed only by its own marker
+    if (f) { fence = { mark: f[1], lang: f[2], start: n + 1, buf: [] }; continue; }
 
     const h = /^(#{1,6})\s+(.*?)\s*$/.exec(line);
     if (h) {

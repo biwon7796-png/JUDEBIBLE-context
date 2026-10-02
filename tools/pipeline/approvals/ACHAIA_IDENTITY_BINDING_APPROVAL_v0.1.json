@@ -1,0 +1,39 @@
+{
+  "record_schema": "JBC_APPROVAL_RECORD_v0.1",
+  "approval_record_id": "APR-JBC-ACHAIA-IDBIND-20261002-001",
+  "approval_authority": "CAPTAIN",
+  "approval_state": "CAPTAIN_APPROVED",
+  "approval_scope": "IDENTITY_BINDING_ONLY",
+  "approval_date": "2026-10-02",
+  "recorded_at": "2026-10-02T15:39:21+09:00",
+  "approved_asset": "JBC_ACHAIA_CONNECTED_WORBS_20260930_01",
+  "approved_stable_identity": "JBC-CR-PLACE-ACHAIA-001",
+  "source_reference": {
+    "registry_id": "BAT01-PLACE-0016",
+    "role": "REFERENCE_ONLY",
+    "equivalence_semantics": "NOT_AUTOMATIC_CROSSWALK"
+  },
+  "asset_reference": {
+    "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/아가야/JBC_ACHAIA_CONNECTED_WORBS_20260930_01.md",
+    "sha256_at_recording": "0d2bab5901047ce867ed29b6f996b79b87f48b0bf2f7a7a405ffec68862c7b42",
+    "note": "informational: the approval covers the identity binding (ids + semantics), not a specific byte version of the research text. The research note itself still states approval_status PENDING_CAPTAIN_REVIEW; that value is kept as note_approval_status."
+  },
+  "scope_limits": {
+    "coordinate_authorization": false,
+    "geometry_authorization": false,
+    "reader_layer_authorization": false,
+    "live_projection_activation": false,
+    "registry_effect": "NONE",
+    "research_content_changed": false,
+    "VERIFY_HOLD": "PRESERVED",
+    "automatic_merge": false,
+    "BAT01_crosswalk": false
+  },
+  "evidence": {
+    "kind": "CONTROL_INSTRUCTION",
+    "statement": "Captain instruction IMPLEMENT_OBSIDIAN_APPROVED_RESEARCH_AUTO_DISCOVERY_TO_JUDEBIBLE_v0.1 named Achaia (existing Obsidian research, no new research) as the first real fixture, and the Captain confirmed in the implementation session to record that instruction as the approval of the Achaia identity binding (viewer id JBC-CR-PLACE-ACHAIA-001; BAT01-PLACE-0016 kept REFERENCE_ONLY). This record only makes it durable.",
+    "original_message_available_in_this_repo": false,
+    "re_approval_requested": false
+  },
+  "recorded_by": "IMPLEMENTATION_PROJECT (on control instruction)"
+}

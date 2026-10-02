@@ -1,10 +1,16 @@
 {
   "schema": "JBC_INGEST_CONFIG_v0.1",
-  "_comment": "Discovery boundary and per-record inputs for tools/pipeline/run.js. Only the include folders are ingested; the exclude folders never are. Approval overrides are recorded verbatim in the record (authority.note_approval_status keeps what the note itself says).",
+  "_comment": "AUTO-DISCOVERY: the whole 02_연구물/ root is scanned; a note becomes an asset only through the eligibility gate (research header + entity identity block + approval record), so no per-asset registration is needed. The records map below is OPTIONAL (identity pin / overlay / approval override). Discovery boundary and per-record inputs for tools/pipeline/run.js. Only the include folders are ingested; the exclude folders never are. Approval overrides are recorded verbatim in the record (authority.note_approval_status keeps what the note itself says).",
   "vault_env": "JBC_VAULT",
   "mirror_root": "docs/architecture",
-  "include": ["02_연구물/브엘세바/", "02_연구물/그랄/"],
-  "exclude": ["01_소스들/", "03_산출물/", "99_운영문서/"],
+  "include": [
+    "02_연구물/"
+  ],
+  "exclude": [
+    "01_소스들/",
+    "03_산출물/",
+    "99_운영문서/"
+  ],
   "records": {
     "JBC_BEERSHEBA_CONNECTED_WORBS_20260930_01": {
       "expected_identity": "JBC-CR-PLACE-BEERSHEBA-001",
@@ -16,6 +22,14 @@
       "approval": {
         "value": "CAPTAIN_APPROVED",
         "source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); the research note itself still states PENDING_CAPTAIN_REVIEW"
+      }
+    },
+    "JBC_AMALEK_CONNECTED_WORBS_20261001_01": {
+      "entity_type": "region",
+      "expected_identity": "JBC-CR-PLACE-AMALEK-001",
+      "approval": {
+        "record_id": "APR-JBC-AMALEK-IDBIND-20261002-001",
+        "record_file": "tools/pipeline/approvals/AMALEK_IDENTITY_BINDING_APPROVAL_v0.1.json"
       }
     }
   }

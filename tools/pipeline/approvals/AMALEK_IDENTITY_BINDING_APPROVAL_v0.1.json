@@ -1,0 +1,39 @@
+{
+  "record_schema": "JBC_APPROVAL_RECORD_v0.1",
+  "approval_record_id": "APR-JBC-AMALEK-IDBIND-20261002-001",
+  "approval_authority": "CAPTAIN",
+  "approval_state": "CAPTAIN_APPROVED",
+  "approval_scope": "IDENTITY_BINDING_ONLY",
+  "approval_date": "2026-10-02",
+  "recorded_at": "2026-10-02T11:07:39+09:00",
+  "approved_asset": "JBC_AMALEK_CONNECTED_WORBS_20261001_01",
+  "approved_stable_identity": "JBC-CR-PLACE-AMALEK-001",
+  "source_reference": {
+    "registry_id": "BAT01-PLACE-0059",
+    "role": "REFERENCE_ONLY",
+    "equivalence_semantics": "NOT_AUTOMATIC_CROSSWALK"
+  },
+  "asset_reference": {
+    "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/아말렉/JBC_AMALEK_CONNECTED_WORBS_20261001_01.md",
+    "sha256_at_recording": "a3cbe2f93f4802efbf0ced1241deb3f0dd18e430b8afc9e6a46ac5f7735e0a87",
+    "note": "informational: the approval covers the identity binding (ids + semantics), not a specific byte version of the research text"
+  },
+  "scope_limits": {
+    "coordinate_authorization": false,
+    "geometry_authorization": false,
+    "reader_layer_authorization": false,
+    "live_projection_activation": false,
+    "registry_effect": "NONE",
+    "research_content_changed": false,
+    "VERIFY_HOLD": "PRESERVED",
+    "automatic_merge": false,
+    "BAT01_crosswalk": false
+  },
+  "evidence": {
+    "kind": "CONTROL_INSTRUCTION",
+    "statement": "Captain approval of the Amalek identity binding was stated as already given in the control instruction MATERIALIZE_AMALEK_EXISTING_CAPTAIN_APPROVAL_RECORD_v0.1; this record only makes it durable.",
+    "original_message_available_in_this_repo": false,
+    "re_approval_requested": false
+  },
+  "recorded_by": "IMPLEMENTATION_PROJECT (on control instruction)"
+}

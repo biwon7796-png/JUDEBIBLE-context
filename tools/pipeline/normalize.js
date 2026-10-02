@@ -24,7 +24,7 @@ function parseRef(str) {
 }
 
 // License names as written in the notes → normalized rights (BY = attribution required, SA = ShareAlike). Unknown names stay unnormalized.
-const LICENSES = { "CC BY 4.0": { code: "CC-BY-4.0", by: true, sa: false }, "CC BY-SA 4.0": { code: "CC-BY-SA-4.0", by: true, sa: true }, "CC BY-SA 3.0": { code: "CC-BY-SA-3.0", by: true, sa: true }, "CC BY 3.0": { code: "CC-BY-3.0", by: true, sa: false }, "CC0 1.0": { code: "CC0-1.0", by: false, sa: false }, "CC0_1.0": { code: "CC0-1.0", by: false, sa: false } };
+const LICENSES = { "CC BY 4.0": { code: "CC-BY-4.0", by: true, sa: false }, "CC BY-SA 4.0": { code: "CC-BY-SA-4.0", by: true, sa: true }, "CC BY-SA 3.0": { code: "CC-BY-SA-3.0", by: true, sa: true }, "CC BY 3.0": { code: "CC-BY-3.0", by: true, sa: false }, "CC0 1.0": { code: "CC0-1.0", by: false, sa: false }, "CC0_1.0": { code: "CC0-1.0", by: false, sa: false }, "Public domain": { code: "PUBLIC-DOMAIN", by: false, sa: false } };
 // Per-media incremental hash: sha256 over the canonical JSON of the asset (without its own hash), keys sorted.
 const canon = (o) => Array.isArray(o) ? "[" + o.map(canon).join(",") + "]" : o && typeof o === "object" ? "{" + Object.keys(o).sort().map((k) => JSON.stringify(k) + ":" + canon(o[k])).join(",") + "}" : JSON.stringify(o === undefined ? null : o);
 // A source URL is accepted only when it is explicit (supplied by the note/overlay) and is a Wikimedia Commons file page whose title matches
@@ -192,9 +192,9 @@ function normalize(parsed, overlay, opts) {
   const peopleY = findYaml(parsed, (d) => Array.isArray(d.related_people)), eventsY = findYaml(parsed, (d) => Array.isArray(d.events) && !d.map_ready), placesY = findYaml(parsed, (d) => d.related_places || (d.primary && d.related_places));
   const asList = (v) => (v && v._items ? v._items : Array.isArray(v) ? v : []);
   const conn = {
-    people: peopleY ? peopleY.data.related_people.map((x) => (x && typeof x === "object" ? { label: unt(x.label), passage: x.passage || null, merge_with_other: x.merge_with_other_Abimelech === "NOT_AUTHORIZED" ? "not_authorized" : null } : { label: unt(x) })) : [],
-    events: eventsY ? eventsY.data.events.map((x) => ({ event_id: x.event_id || null, scope: x.scope || null, label: unt(x.label), passage: x.passage || null, certainty: x.certainty || null })) : (MR ? asList(MR.events).map((x) => ({ label: unt(x) })) : []),
-    places: placesY ? asList(placesY.data.related_places).map((x) => ({ name: unt(x.name), relation: x.relation || null, known_parent_asset_identity: x.known_parent_asset_identity || null })) : [],
+    people: peopleY ? peopleY.data.related_people.map((x) => (x && typeof x === "object" ? { label: unt(x.label || x.name), global_person_id: x.global_person_id || x.stable_id || null, relation: x.relation || null, evidence: x.evidence || null, certainty: x.certainty || null, passage: x.passage || null, merge_with_other: x.merge_with_other_Abimelech === "NOT_AUTHORIZED" ? "not_authorized" : null } : { label: unt(x), global_person_id: null })) : [],
+    events: eventsY ? eventsY.data.events.map((x) => ({ global_event_id: x.global_event_id || null, event_id: x.event_id || null, scope: x.scope || null, label: unt(x.label || x.event), event: unt(x.event || x.label), relation: x.relation || null, evidence: x.evidence || null, passage: x.passage || null, certainty: x.certainty || null })) : (MR ? asList(MR.events).map((x) => ({ label: unt(x), event: unt(x), global_event_id: null })) : []),
+    places: placesY ? asList(placesY.data.related_places).map((x) => ({ stable_id: x.stable_id || x.ref || x.known_parent_asset_identity || null, name: unt(x.name || x.label), relation: x.relation || null, evidence: x.evidence || null, certainty: x.certainty || null, known_parent_asset_identity: x.known_parent_asset_identity || x.stable_id || x.ref || null })) : [],
     routes: MR && MR.routes ? asList(MR.routes).map((x) => (x && typeof x === "object" ? { label: unt(x.route_label), basis: x.basis || null, geometry: x.geometry || "NOT_ASSIGNED" } : { label: unt(x), geometry: MR.routes.geometry || "NOT_ASSIGNED" })) : []
   };
   if (Object.values(conn).some((v) => v.length)) rec.connected = conn;
