@@ -9,6 +9,8 @@ on:
       - "styles.css"
       - "data/**"
       - "vendor/**"
+      - ".github/workflows/deploy-pages.yml"
+      - "tools/release/**"
   workflow_dispatch:
 
 permissions:
