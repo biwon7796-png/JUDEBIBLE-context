@@ -1,0 +1,7 @@
+{
+  "schema": "JBC_REFERENCE_CROSSWALK_v0.1",
+  "role": "EXPLICIT_EXTERNAL_ID_AND_APPROVED_ALIAS_CROSSWALK",
+  "rule": "Only explicit mappings belong here (external id → existing JudeBible stable_id). A name match is never an entry. Entries create CROSS_REFERENCE_NOT_MERGE bindings; they never promote external data to research. basis: explicit_external_id_crosswalk | approved_alias_crosswalk.",
+  "entry_shape": {"provider": "Natural Earth | OpenBible.info | Wikidata | GeoNames | Pleiades", "ext_id": "provider's own id (NE fid, OpenBible id, Q-id…)", "stable_id": "existing JudeBible stable_id", "basis": "explicit_external_id_crosswalk", "role": "optional", "approved_by": "who approved", "note": "why"},
+  "entries": []
+}

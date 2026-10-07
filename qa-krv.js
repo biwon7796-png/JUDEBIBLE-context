@@ -9,7 +9,7 @@
     return new Promise(function (res) {
       var f = document.createElement("iframe"); f.style.cssText = "width:1200px;height:600px;border:0";
       f.onload = function () { var w = f.contentWindow; w.__errs = []; w.addEventListener("error", function (e) { w.__errs.push(e.message); }); setTimeout(function () { res({ f: f, w: w, d: w.document, B: w.BVC }); }, 60); };
-      f.src = "index.html" + (hash || ""); host.appendChild(f);
+      f.src = "index.html?qa=fixture" + (hash || ""); host.appendChild(f);
     });
   }
   function click(x, sel) { var e = typeof sel === "string" ? x.d.querySelector(sel) : sel; ok(e, "not found: " + sel); e.dispatchEvent(new x.w.MouseEvent("click", { bubbles: true, cancelable: true })); return e; }
@@ -63,7 +63,7 @@
   t("K07", "기존 fixture 관계 회귀 없음: 실제 본문 위 entity/문맥/관련 본문/지도/사진", async function (ev) {
     var x = await load(""); click(x, '[data-vbtn="2"]');
     var tags = [].map.call(x.d.querySelectorAll('[data-verse="2"] .tag'), function (e) { return e.dataset.kind + "." + e.dataset.id + "=" + e.textContent; }); ev.push("gen-22:2 tags=" + J(tags)); ok(tags.indexOf("p.isaac=이삭") >= 0 && tags.indexOf("l.moriah=모리아") >= 0, "entity not recognised in real text");
-    x.B.setTab("places"); ok(x.d.querySelector('#panel .item[data-id="moriah"]')); click(x, 'svg.smap .pin[data-id="moriah"]'); ok(x.B.state.entity.id === "moriah" && x.d.querySelector(".tag.l.active"));
+    x.B.setTab("places"); ok(x.d.querySelector('#panel .item[data-id="moriah"]')); click(x, '.tag.l[data-id="moriah"]'); ok(x.B.state.entity.id === "moriah" && x.d.querySelector(".tag.l.active") && x.d.querySelector("#map-body svg.gmap") && !x.d.querySelector('#map-body g.gm[data-place="moriah"]'), "entity linkage survives while unlocated Moriah gets no geographic marker");
     click(x, "#panel [data-clear-entity]"); x.B.setTab("crossref"); click(x, "#panel [data-goto]"); ev.push("crossref → " + J(snap(x))); ok(x.B.state.passage === "heb-11" && x.B.state.verse === 17 && /아브라함/.test(x.d.querySelector(".verse.sel").textContent));
     x.B.go("gen-12", 1); x.B.setTab("context"); ok(x.d.querySelector('#panel [data-section="theme"]'), "gen-12 context"); x.B.go("jhn-3", 16); x.B.setTab("context"); ev.push("unannotated context panel=" + x.d.getElementById("panel").textContent.trim().slice(0, 30)); ok(!x.d.querySelector('#panel [data-ov="context"]') && x.d.querySelector('#panel [data-ov="notes"]') && !x.d.querySelector("#panel .degraded") && !x.d.querySelector("#verses .tag"), "unannotated chapter must be plain text with graceful empty context");
     ok(x.w.__errs.length === 0); x.f.remove();

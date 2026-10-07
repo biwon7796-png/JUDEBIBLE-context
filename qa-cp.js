@@ -1,0 +1,10 @@
+// Common Place/Person panel chrome QA. Run with ?qa=cp
+(function(){"use strict";if(!/[?&]qa=cp/.test(location.search))return;
+var ok=(c,m)=>{if(!c)throw Error(m)},sleep=ms=>new Promise(r=>setTimeout(r,ms)),res=[];
+async function t(id,name,fn){var ev=[],pass=true,err="";try{await fn(ev)}catch(e){pass=false;err=e.message}res.push({id,name,pass,err,evidence:ev})}
+(async()=>{
+await t("CP-01","Place fixed chrome uses common contract",async ev=>{BVC.go("gen-20",1);BVC.entityExplorer.select("JBC-CR-PLACE-GERAR-001");await sleep(40);var f=document.querySelector("#place-fixed-head"),b=document.querySelector("#side-pane .pane-bar");ok(f&&!f.hidden,"fixed head");ok(b.getBoundingClientRect().height===45,"bar height");ok(f.getBoundingClientRect().height>=(innerWidth<=760?65:69),"identity min-height");ok(document.querySelector(".pane-title").textContent.trim()==="성읍·도시","short type");ok(document.querySelector(".entity-top-action-button").textContent.trim()==="본문연구","study action");ev.push("bar=45; identity>=68")});
+await t("CP-02","Place title hierarchy stays reader-first",async ev=>{var f=document.querySelector("#place-fixed-head");ok(parseFloat(getComputedStyle(f.querySelector(".detail-name")).fontSize)>=24,"title size");ok(document.querySelector("#panel article[data-detail=l]"),"place detail");ev.push(f.querySelector(".detail-name").textContent)});
+await t("CP-03","Common subhead highlighter contract applies to Place and Person selectors",async ev=>{var s=[...document.styleSheets].some(ss=>{try{return [...ss.cssRules].some(r=>String(r.cssText||"").includes('article.detail[data-detail="p"] h5.d-sub'))}catch(e){return false}});ok(s,"person shared subhead css missing");ev.push("shared Place/Person subhead CSS present")});
+var p=res.filter(x=>x.pass).length;window.BVC_CP_QA={pass:p,total:res.length,verdict:p===res.length?"PASS":"FAIL",results:res};})();
+})();

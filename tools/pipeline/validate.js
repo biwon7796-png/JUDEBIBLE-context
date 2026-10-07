@@ -141,10 +141,10 @@ function validate(rec, parsed, ctx) {
   check("V23_no_name_only_relations", (rec.relations || []).every((r) => r.resolved === false && r.from_id === null), "relations must not be resolved by name");
   check("V24_no_invented_relations", (rec.relations || []).length > 0 ? true : true, "relations only as written");
 
-  // navigation metadata (lock §9): validate when present, report when absent
+  // navigation metadata (lock §9): explicit only; one record may carry multiple approved paths using the same stable_id.
   if (rec.navigation) {
-    const n = rec.navigation;
-    check("V25_navigation_metadata", !!(n.domain && n.period && n.story && n.scene) && (n.places || []).every((p) => /^JBC-CR-/.test(p)), "navigation metadata needs domain/period/story/scene and research ids");
+    const top = new Set(["기초 지리", "자연환경", "구약 역사", "중간기", "신약"]), paths = Array.isArray(rec.navigation) ? rec.navigation : [rec.navigation];
+    check("V25_navigation_metadata", paths.length > 0 && paths.every((n) => !!(n && n.domain && n.period && n.story && n.scene) && top.has(n.domain) && (n.places || []).every((p) => /^JBC-CR-/.test(p))), "navigation paths need an approved NAV_TOP_5 domain + period/story/scene + explicit research ids");
   } else warnings.push("V25_navigation_metadata: absent in source → no Navigation candidate generated (nothing invented)");
 
   return { ok: errors.length === 0, errors, warnings, checks };

@@ -1,0 +1,20 @@
+{
+  "schema": "JBC_DAILY_VALIDATED_RELEASE_v0.1",
+  "branch": "main",
+  "remote": "origin",
+  "receiptDir": "docs/receipts/daily-research",
+  "allowedProjectionPaths": [
+    "data/projection.research.js",
+    "data/scripture.index.js",
+    "data/contextual.research.js",
+    "data/projection.person.js",
+    "data/research.projection.js",
+    "data/reference.bindings.js",
+    "data/reference.features.js",
+    "data/reference.sources.js"
+  ],
+  "acceptedResearchStatuses": ["PASS", "PASS_WITH_VERIFY"],
+  "requiredProjectionStatus": "APPLIED",
+  "requiredQaStatus": "PASS",
+  "commitPrefix": "research: daily JudeBible validated update"
+}

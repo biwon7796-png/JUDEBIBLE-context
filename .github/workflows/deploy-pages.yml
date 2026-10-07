@@ -1,0 +1,67 @@
+name: Deploy JudeBible Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "*.js"
+      - "styles.css"
+      - "data/**"
+      - "vendor/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: judebible-pages
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax check generated JavaScript
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in data/projection.research.js data/scripture.index.js data/contextual.research.js data/projection.person.js data/research.projection.js data/reference.bindings.js data/reference.features.js data/reference.sources.js; do
+            if [ -f "$f" ]; then node --check "$f"; fi
+          done
+      - name: Static entrypoint exists
+        run: test -f index.html
+
+  deploy:
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Smoke test deployed entrypoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="${{ steps.deployment.outputs.page_url }}"
+          test -n "$url"
+          for i in {1..12}; do
+            if curl -fsSL --max-time 20 "$url" | grep -qi "<html"; then
+              echo "Smoke PASS: $url"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Smoke FAIL: $url" >&2
+          exit 1

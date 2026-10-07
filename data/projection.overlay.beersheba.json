@@ -3,6 +3,7 @@
   "stable_id": "JBC-CR-PLACE-BEERSHEBA-001",
   "legacy_key": "beersheba",
   "reader_type": "성읍·도시",
+  "primaryPassage": "gen-21:31",
   "hero_caption": "브엘세바의 유력한 고고학 후보지",
   "hide_quick_fact_rows": [
     "중요한 인물"
@@ -68,5 +69,12 @@
     }
   },
   "hero_subject": "텔 브엘세바 고고학 유적",
-  "_source_url_provenance": "media_bindings[*].source_url are the canonical file-page URLs returned (fullurl) by the official Wikimedia Commons API for each research file title on 2026-09-30, which also confirmed the file exists. They were not built from file names; the pipeline re-validates host, File: title match and license/creator before anything is used."
+  "_source_url_provenance": "media_bindings[*].source_url are the canonical file-page URLs returned (fullurl) by the official Wikimedia Commons API for each research file title on 2026-09-30, which also confirmed the file exists. They were not built from file names; the pipeline re-validates host, File: title match and license/creator before anything is used.",
+  "visibility": {
+    "published": true,
+    "publishable": true,
+    "approved_by": "CAPTAIN control instruction IMPLEMENT_JUDEBIBLE_PLACE_VISIBILITY_METADATA_CONTRACT_v0.1",
+    "approved_on": "2026-10-02",
+    "scope": "CONSUMER_VISIBILITY_ONLY"
+  }
 }

@@ -32,6 +32,10 @@ function validateRegion(rec, ctx) {
   check("R16_no_publication", rec.activation && rec.activation.publishable === false && ["ISOLATED_DRY_RUN_ONLY", "NOT_ACTIVATED"].includes(rec.activation.state), "approval never publishes: never publishable; state is ISOLATED_DRY_RUN_ONLY (dry run) or NOT_ACTIVATED (canonical file carries the region but nothing consumes or activates it)");
   const g = rec.geometry || {};
   check("R17_geometry_contract", g.status === "none" ? (g.type === null && g.approved === false && g.approximate_area === null && g.map_polygon === "OMIT" && g.detail === "AVAILABLE" && g.relations === "AVAILABLE") : (["polygon", "multipolygon", "approximate_area"].includes(g.type) && g.approved === true && !!g.approval_source), "geometry: none is allowed (polygon omitted, detail + relations available); polygon / multipolygon / approximate_area only with explicit approved geometry and its approval source");
+  if (rec.navigation) {
+    const top = new Set(["기초 지리", "자연환경", "구약 역사", "중간기", "신약"]), paths = Array.isArray(rec.navigation) ? rec.navigation : [rec.navigation];
+    check("R19_navigation_metadata", paths.length > 0 && paths.every((n) => !!(n && n.domain && n.period && n.story && n.scene) && top.has(n.domain) && (n.places || []).every((p) => /^JBC-CR-/.test(p))), "Region navigation paths must be explicit approved NAV_TOP_5 paths; no taxonomy inference");
+  } else warnings.push("R19_navigation_metadata: absent in source → no Navigation candidate generated (nothing invented)");
   return { ok: errors.length === 0, errors, warnings, checks };
 }
 module.exports = { validateRegion };

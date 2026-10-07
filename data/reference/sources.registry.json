@@ -1,0 +1,276 @@
+{
+  "schema": "JUDEBIBLE_REFERENCE_SOURCE_REGISTRY_v0.1",
+  "policy": {
+    "trust_level": "SOURCE_LEVEL",
+    "per_record_human_review": false,
+    "default_destination": "REFERENCE_LAYER",
+    "research_authority": false,
+    "name_only_merge": false,
+    "research_overwrite": false,
+    "certainty_upgrade": false,
+    "conflict_handling": "PRESERVE_BOTH_ESCALATE_CONFLICT_ONLY",
+    "license_allowlist": [
+      "PUBLIC_DOMAIN",
+      "OPEN_ATTRIBUTION_REQUIRED"
+    ]
+  },
+  "sources": [
+    {
+      "id": "MAPZEN-TERRAIN-TILES",
+      "name": "Mapzen Terrain Tiles (AWS Open Data)",
+      "kind": "terrain",
+      "publisher": "Mapzen / Amazon Web Services Open Data",
+      "version": "terrarium tiles, zoom 5-10 snapshot",
+      "license": {
+        "id": "OPEN_ATTRIBUTION_REQUIRED",
+        "text": "Open data distributed through the AWS Open Data registry; upstream elevation sources require attribution. Exact license wording was taken from the repository's own terrain meta, not re-fetched.",
+        "attribution_required": true
+      },
+      "attribution": "지형 Mapzen Terrain Tiles (AWS Open Data) · USGS SRTM/GMTED · NOAA ETOPO1",
+      "source_url": "https://registry.opendata.aws/terrain-tiles/",
+      "enabled": true,
+      "artifacts": [
+        {
+          "path": "data/terrain.tiles.js",
+          "kind": "file"
+        },
+        {
+          "path": "data/terrain.tiles.meta.json",
+          "kind": "file"
+        },
+        {
+          "path": "data/terrain_tiles",
+          "kind": "tree"
+        }
+      ],
+      "meta_checks": [
+        {
+          "file": "data/terrain.tiles.meta.json",
+          "json": {
+            "role": "REFERENCE_BASEMAP_ONLY",
+            "labels": "NONE",
+            "roads": "NONE",
+            "poi": "NONE",
+            "admin_boundaries": "NONE"
+          }
+        }
+      ],
+      "app_gate": "terrain",
+      "attr_short": {
+        "role": "지형",
+        "name": "Mapzen·USGS"
+      }
+    },
+    {
+      "id": "USGS-SRTM",
+      "name": "USGS SRTM / GMTED elevation (upstream of the terrain tiles)",
+      "kind": "terrain",
+      "publisher": "U.S. Geological Survey",
+      "version": "as delivered inside MAPZEN-TERRAIN-TILES",
+      "license": {
+        "id": "PUBLIC_DOMAIN",
+        "text": "U.S. Government work; attribution requested.",
+        "attribution_required": true
+      },
+      "attribution": "SRTM/GMTED terrain data courtesy of the U.S. Geological Survey",
+      "source_url": "https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-shuttle-radar-topography-mission-srtm",
+      "enabled": true,
+      "delivered_via": "MAPZEN-TERRAIN-TILES",
+      "artifacts": [],
+      "app_gate": null,
+      "attr_short": {
+        "role": "지형",
+        "name": "Mapzen·USGS"
+      }
+    },
+    {
+      "id": "NE-LAND-COASTLINE",
+      "name": "Natural Earth — land / coastline / shaded relief",
+      "kind": "coastline",
+      "publisher": "Natural Earth",
+      "version": "ne_10m_land (current upstream snapshot) · ne_110m_land · NE2_50M_SR 3.2.0",
+      "license": {
+        "id": "PUBLIC_DOMAIN",
+        "text": "Natural Earth is public domain; attribution is courtesy.",
+        "attribution_required": false
+      },
+      "attribution": "해안선 Natural Earth (Public Domain)",
+      "source_url": "https://www.naturalearthdata.com/",
+      "enabled": true,
+      "artifacts": [
+        {
+          "path": "data/basemap.ne110m.js",
+          "kind": "file"
+        },
+        {
+          "path": "data/basemap.ne10m.js",
+          "kind": "file"
+        },
+        {
+          "path": "data/source/ne_10m_land.geojson",
+          "kind": "file"
+        },
+        {
+          "path": "data/terrain.levant.ne2.jpg",
+          "kind": "file"
+        },
+        {
+          "path": "data/terrain.levant.ne2.meta.json",
+          "kind": "file"
+        }
+      ],
+      "app_gate": "land",
+      "attr_short": {
+        "role": "해안선",
+        "name": "Natural Earth (Public Domain)"
+      }
+    },
+    {
+      "id": "NE-HYDROLOGY",
+      "name": "Natural Earth — lakes and river centerlines",
+      "kind": "hydrology",
+      "publisher": "Natural Earth",
+      "version": "5.0.0",
+      "license": {
+        "id": "PUBLIC_DOMAIN",
+        "text": "Natural Earth is public domain; attribution is courtesy.",
+        "attribution_required": false
+      },
+      "attribution": "수계 Natural Earth (Public Domain)",
+      "source_url": "https://www.naturalearthdata.com/",
+      "enabled": true,
+      "artifacts": [
+        {
+          "path": "data/hydrology.ne10m.js",
+          "kind": "file"
+        },
+        {
+          "path": "data/source/hydrology/lakes/ne_10m_lakes.dbf",
+          "kind": "file",
+          "version_file": "data/source/hydrology/lakes/ne_10m_lakes.VERSION.txt",
+          "version": "5.0.0"
+        },
+        {
+          "path": "data/source/hydrology/rivers/ne_10m_rivers_lake_centerlines.dbf",
+          "kind": "file",
+          "version_file": "data/source/hydrology/rivers/ne_10m_rivers_lake_centerlines.VERSION.txt",
+          "version": "5.0.0"
+        }
+      ],
+      "app_gate": "hydrology",
+      "attr_short": {
+        "role": "수계",
+        "name": "Natural Earth (Public Domain)"
+      }
+    },
+    {
+      "id": "NE-GEOGRAPHY-NAMES",
+      "name": "Natural Earth — marine and physical-region names",
+      "kind": "physical_names",
+      "publisher": "Natural Earth",
+      "version": "marine 5.1.0 · regions 5.0.0",
+      "license": {
+        "id": "PUBLIC_DOMAIN",
+        "text": "Natural Earth is public domain; attribution is courtesy.",
+        "attribution_required": false
+      },
+      "attribution": "수역·지역 이름 Natural Earth (Public Domain)",
+      "source_url": "https://www.naturalearthdata.com/",
+      "enabled": true,
+      "artifacts": [
+        {
+          "path": "data/source/labels/ne_10m_geography_marine_polys/ne_10m_geography_marine_polys.dbf",
+          "kind": "file",
+          "version_file": "data/source/labels/ne_10m_geography_marine_polys/ne_10m_geography_marine_polys.VERSION.txt",
+          "version": "5.1.0"
+        },
+        {
+          "path": "data/source/labels/ne_10m_geography_regions_polys/ne_10m_geography_regions_polys.dbf",
+          "kind": "file",
+          "version_file": "data/source/labels/ne_10m_geography_regions_polys/ne_10m_geography_regions_polys.VERSION.txt",
+          "version": "5.0.0"
+        }
+      ],
+      "app_gate": "names_physical",
+      "attr_short": {
+        "role": null,
+        "name": "Natural Earth (Public Domain)"
+      }
+    },
+    {
+      "id": "NE-POPULATED-PLACES",
+      "name": "Natural Earth — populated places (modern reference places)",
+      "kind": "modern_places",
+      "publisher": "Natural Earth",
+      "version": "5.1.2",
+      "license": {
+        "id": "PUBLIC_DOMAIN",
+        "text": "Natural Earth is public domain; attribution is courtesy.",
+        "attribution_required": false
+      },
+      "attribution": "현대 지명 Natural Earth (Public Domain)",
+      "source_url": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/",
+      "enabled": true,
+      "artifacts": [
+        {
+          "path": "data/source/labels/ne_10m_populated_places/ne_10m_populated_places.shp",
+          "kind": "file",
+          "version_file": "data/source/labels/ne_10m_populated_places/ne_10m_populated_places.VERSION.txt",
+          "version": "5.1.2"
+        },
+        {
+          "path": "data/source/labels/ne_10m_populated_places/ne_10m_populated_places.dbf",
+          "kind": "file"
+        },
+        {
+          "path": "data/source/labels/ne_10m_populated_places/ne_10m_populated_places.shx",
+          "kind": "file"
+        }
+      ],
+      "bulk_ingest": {
+        "dataset": "ne_10m_populated_places",
+        "bounds": {
+          "west": 8,
+          "east": 52,
+          "south": 10,
+          "north": 50
+        },
+        "feature_identity": "NE_ID"
+      },
+      "app_gate": "names_modern",
+      "attr_short": {
+        "role": "현대 지명",
+        "name": "Natural Earth (Public Domain)"
+      }
+    }
+  ],
+  "pins": {
+    "MAPZEN-TERRAIN-TILES": {
+      "data/terrain.tiles.js": "69ad5cd1bc5a59726fa020351b9a7b72ee602d46fe21bdfe24a87ec83e70332a",
+      "data/terrain.tiles.meta.json": "8be4f3a60d5f6965e72062c5e7506e0d29ffef1739fde71e8984267445ea94db",
+      "data/terrain_tiles": "78bd3e5fa527cf0eed5e603e43b25d442ed876802c71eac42e59b08202210288"
+    },
+    "USGS-SRTM": {},
+    "NE-LAND-COASTLINE": {
+      "data/basemap.ne110m.js": "b6bc3f1cd90f117cbc42c026e7fb188b6212a2d91ce62eea56311b3e63f9ca60",
+      "data/basemap.ne10m.js": "d8eb6d8bfd6ddef7912e367496bdf6575c2df59be273d61852236eb7c04d5a05",
+      "data/source/ne_10m_land.geojson": "1ac90796408bc6ad6911d69448485d3c4dbf2190370080368a09976e1c9f7416",
+      "data/terrain.levant.ne2.jpg": "082710fe22de2ee2e50fca52855bbc99b7d93f1999524ece8b4b41cd4f90f8ed",
+      "data/terrain.levant.ne2.meta.json": "4dd284c7da4ae057ad807787ef57139ed05035875c71fd14ddef5d1fee841013"
+    },
+    "NE-HYDROLOGY": {
+      "data/hydrology.ne10m.js": "08a1555cd14a98932ea013450bb42e8c0c663f4e73a046ffc6e88d6e92708afc",
+      "data/source/hydrology/lakes/ne_10m_lakes.dbf": "0edaa87f76c2221c986f0796ce0b54b1c418e9032afba46f8e302edc41193495",
+      "data/source/hydrology/rivers/ne_10m_rivers_lake_centerlines.dbf": "68079fde5fde6167d0c7c4f03e498164badcc3b687a93c436278ade83882b564"
+    },
+    "NE-GEOGRAPHY-NAMES": {
+      "data/source/labels/ne_10m_geography_marine_polys/ne_10m_geography_marine_polys.dbf": "7bc656599a3ca0410479dc620e3a4202c13961efcafb797ee52145ca1c21f8f4",
+      "data/source/labels/ne_10m_geography_regions_polys/ne_10m_geography_regions_polys.dbf": "142d853c15315e6c553ac9ca7665e65be80a1cbc821774688b143d4d4acf8801"
+    },
+    "NE-POPULATED-PLACES": {
+      "data/source/labels/ne_10m_populated_places/ne_10m_populated_places.shp": "f4073365d248dfe35a44cca6715bf5b4812fa723294ed6a37043d7a3e09cc998",
+      "data/source/labels/ne_10m_populated_places/ne_10m_populated_places.dbf": "eff834a8727e06f28fc52b04393c462d074aecf9a7acd1b870e766240a995b6c",
+      "data/source/labels/ne_10m_populated_places/ne_10m_populated_places.shx": "cdbad984f9e40948f2b77c87f73319477775d7bc95d47112455abea30ad39757"
+    }
+  }
+}

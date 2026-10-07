@@ -24,6 +24,11 @@ window.BVC_SCRIPTURE_INDEX = {
         "record": "JBC-CR-PLACE-AMALEK-001",
         "research_id": "JBC_AMALEK_CONNECTED_WORBS_20261001_01",
         "source_sha256": "a3cbe2f93f4802efbf0ced1241deb3f0dd18e430b8afc9e6a46ac5f7735e0a87"
+      },
+      {
+        "record": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "research_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "source_sha256": "e75c9378dab8794728edf4021aecb986cf285ec63818afa067330a059bc2bf66"
       }
     ],
     "translation": "KRV",
@@ -147,6 +152,17 @@ window.BVC_SCRIPTURE_INDEX = {
             26
           ]
         ]
+      },
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            37,
+            39
+          ]
+        ]
       }
     ],
     "gen-46:5": [
@@ -212,6 +228,17 @@ window.BVC_SCRIPTURE_INDEX = {
             39
           ]
         ]
+      },
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            33,
+            35
+          ]
+        ]
       }
     ],
     "gen-26:6": [
@@ -223,6 +250,17 @@ window.BVC_SCRIPTURE_INDEX = {
           [
             4,
             6
+          ]
+        ]
+      },
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
           ]
         ]
       }
@@ -238,6 +276,17 @@ window.BVC_SCRIPTURE_INDEX = {
             13
           ]
         ]
+      },
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
       }
     ],
     "gen-26:20": [
@@ -249,6 +298,21 @@ window.BVC_SCRIPTURE_INDEX = {
           [
             0,
             2
+          ]
+        ]
+      },
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            8,
+            10
+          ],
+          [
+            40,
+            42
           ]
         ]
       }
@@ -780,6 +844,1592 @@ window.BVC_SCRIPTURE_INDEX = {
           ]
         ]
       }
+    ],
+    "1ch-1:28": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            10,
+            12
+          ]
+        ]
+      }
+    ],
+    "1ch-1:34": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            6,
+            8
+          ],
+          [
+            15,
+            17
+          ]
+        ]
+      }
+    ],
+    "1ch-16:16": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            19,
+            21
+          ]
+        ]
+      }
+    ],
+    "1ch-29:18": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            12,
+            14
+          ]
+        ]
+      }
+    ],
+    "1ki-18:36": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            40,
+            42
+          ]
+        ]
+      }
+    ],
+    "2ch-30:6": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            81,
+            83
+          ]
+        ]
+      }
+    ],
+    "2ki-13:23": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            12,
+            14
+          ]
+        ]
+      }
+    ],
+    "act-3:13": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            6,
+            8
+          ]
+        ]
+      }
+    ],
+    "act-7:8": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            23,
+            25
+          ],
+          [
+            44,
+            46
+          ]
+        ]
+      }
+    ],
+    "act-7:32": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            21,
+            23
+          ]
+        ]
+      }
+    ],
+    "amo-7:9": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "amo-7:16": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            47,
+            49
+          ]
+        ]
+      }
+    ],
+    "deu-1:8": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            19,
+            21
+          ]
+        ]
+      }
+    ],
+    "deu-6:10": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            23,
+            25
+          ]
+        ]
+      }
+    ],
+    "deu-9:5": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            119,
+            121
+          ]
+        ]
+      }
+    ],
+    "deu-9:27": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            11,
+            13
+          ]
+        ]
+      }
+    ],
+    "deu-29:13": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            34,
+            36
+          ]
+        ]
+      }
+    ],
+    "deu-30:20": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            73,
+            75
+          ]
+        ]
+      }
+    ],
+    "deu-34:4": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            27,
+            29
+          ]
+        ]
+      }
+    ],
+    "exo-2:24": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            25,
+            27
+          ]
+        ]
+      }
+    ],
+    "exo-3:6": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            33,
+            35
+          ]
+        ]
+      }
+    ],
+    "exo-3:15": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            78,
+            80
+          ]
+        ]
+      }
+    ],
+    "exo-3:16": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            53,
+            55
+          ]
+        ]
+      }
+    ],
+    "exo-4:5": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            37,
+            39
+          ]
+        ]
+      }
+    ],
+    "exo-6:3": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            9,
+            11
+          ]
+        ]
+      }
+    ],
+    "exo-6:8": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            9,
+            11
+          ]
+        ]
+      }
+    ],
+    "exo-32:13": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            11,
+            13
+          ]
+        ]
+      }
+    ],
+    "exo-33:1": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            60,
+            62
+          ]
+        ]
+      }
+    ],
+    "gal-4:28": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            9,
+            11
+          ]
+        ]
+      }
+    ],
+    "gen-17:19": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            47,
+            49
+          ]
+        ]
+      }
+    ],
+    "gen-17:21": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            28,
+            30
+          ]
+        ]
+      }
+    ],
+    "gen-21:3": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            37,
+            39
+          ]
+        ]
+      }
+    ],
+    "gen-21:4": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "gen-21:5": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            11,
+            13
+          ]
+        ]
+      }
+    ],
+    "gen-21:8": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            14,
+            16
+          ]
+        ]
+      }
+    ],
+    "gen-21:10": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            47,
+            49
+          ]
+        ]
+      }
+    ],
+    "gen-21:12": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            59,
+            61
+          ]
+        ]
+      }
+    ],
+    "gen-22:2": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            26,
+            28
+          ]
+        ]
+      }
+    ],
+    "gen-22:3": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            41,
+            43
+          ]
+        ]
+      }
+    ],
+    "gen-22:6": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            25,
+            27
+          ]
+        ]
+      }
+    ],
+    "gen-22:7": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ],
+          [
+            57,
+            59
+          ]
+        ]
+      }
+    ],
+    "gen-22:9": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            55,
+            57
+          ]
+        ]
+      }
+    ],
+    "gen-24:4": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            21,
+            23
+          ]
+        ]
+      }
+    ],
+    "gen-24:14": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            89,
+            91
+          ]
+        ]
+      }
+    ],
+    "gen-24:62": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            3,
+            5
+          ]
+        ]
+      }
+    ],
+    "gen-24:63": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-24:64": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            11,
+            13
+          ]
+        ]
+      }
+    ],
+    "gen-24:66": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            13,
+            15
+          ]
+        ]
+      }
+    ],
+    "gen-24:67": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ],
+          [
+            51,
+            53
+          ]
+        ]
+      }
+    ],
+    "gen-25:5": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            6,
+            8
+          ]
+        ]
+      }
+    ],
+    "gen-25:6": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            34,
+            36
+          ]
+        ]
+      }
+    ],
+    "gen-25:9": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "gen-25:11": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            22,
+            24
+          ],
+          [
+            34,
+            36
+          ]
+        ]
+      }
+    ],
+    "gen-25:19": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            9,
+            11
+          ],
+          [
+            29,
+            31
+          ]
+        ]
+      }
+    ],
+    "gen-25:20": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-25:21": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-25:26": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            60,
+            62
+          ]
+        ]
+      }
+    ],
+    "gen-25:28": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-26:8": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ],
+          [
+            16,
+            18
+          ]
+        ]
+      }
+    ],
+    "gen-26:9": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            9,
+            11
+          ],
+          [
+            47,
+            49
+          ]
+        ]
+      }
+    ],
+    "gen-26:12": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-26:16": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            6,
+            8
+          ]
+        ]
+      }
+    ],
+    "gen-26:18": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            63,
+            65
+          ]
+        ]
+      }
+    ],
+    "gen-26:19": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-26:25": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-26:27": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-26:31": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            22,
+            24
+          ]
+        ]
+      }
+    ],
+    "gen-26:32": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ],
+          [
+            28,
+            30
+          ]
+        ]
+      }
+    ],
+    "gen-26:35": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            4,
+            6
+          ]
+        ]
+      }
+    ],
+    "gen-27:1": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-27:5": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-27:20": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-27:21": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-27:22": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            9,
+            11
+          ],
+          [
+            21,
+            23
+          ]
+        ]
+      }
+    ],
+    "gen-27:26": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "gen-27:30": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ],
+          [
+            28,
+            30
+          ]
+        ]
+      }
+    ],
+    "gen-27:32": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "gen-27:33": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-27:37": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-27:39": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "gen-27:46": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "gen-28:1": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-28:5": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            3,
+            5
+          ]
+        ]
+      }
+    ],
+    "gen-28:6": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            7,
+            9
+          ]
+        ]
+      }
+    ],
+    "gen-28:8": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            26,
+            28
+          ]
+        ]
+      }
+    ],
+    "gen-28:13": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            50,
+            52
+          ]
+        ]
+      }
+    ],
+    "gen-31:18": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            59,
+            61
+          ]
+        ]
+      }
+    ],
+    "gen-31:42": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            26,
+            28
+          ]
+        ]
+      }
+    ],
+    "gen-31:53": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            59,
+            61
+          ]
+        ]
+      }
+    ],
+    "gen-32:9": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            34,
+            36
+          ]
+        ]
+      }
+    ],
+    "gen-35:12": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            9,
+            11
+          ]
+        ]
+      }
+    ],
+    "gen-35:27": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            24,
+            26
+          ],
+          [
+            50,
+            52
+          ]
+        ]
+      }
+    ],
+    "gen-35:28": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-35:29": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "gen-48:15": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            35,
+            37
+          ]
+        ]
+      }
+    ],
+    "gen-48:16": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            60,
+            62
+          ]
+        ]
+      }
+    ],
+    "gen-49:31": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            24,
+            26
+          ]
+        ]
+      }
+    ],
+    "gen-50:24": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            61,
+            63
+          ]
+        ]
+      }
+    ],
+    "heb-11:9": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            52,
+            54
+          ]
+        ]
+      }
+    ],
+    "heb-11:17": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            21,
+            23
+          ]
+        ]
+      }
+    ],
+    "heb-11:18": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            27,
+            29
+          ]
+        ]
+      }
+    ],
+    "heb-11:20": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            5,
+            7
+          ]
+        ]
+      }
+    ],
+    "jas-2:21": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            17,
+            19
+          ]
+        ]
+      }
+    ],
+    "jer-33:26": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            44,
+            46
+          ]
+        ]
+      }
+    ],
+    "jos-24:3": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            71,
+            73
+          ]
+        ]
+      }
+    ],
+    "jos-24:4": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            0,
+            2
+          ]
+        ]
+      }
+    ],
+    "lev-26:42": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            16,
+            18
+          ]
+        ]
+      }
+    ],
+    "luk-3:34": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            17,
+            19
+          ]
+        ]
+      }
+    ],
+    "luk-13:28": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            10,
+            12
+          ]
+        ]
+      }
+    ],
+    "luk-20:37": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            54,
+            56
+          ]
+        ]
+      }
+    ],
+    "mat-1:2": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            6,
+            8
+          ],
+          [
+            13,
+            15
+          ]
+        ]
+      }
+    ],
+    "mat-8:11": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            35,
+            37
+          ]
+        ]
+      }
+    ],
+    "mat-22:32": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            15,
+            17
+          ]
+        ]
+      }
+    ],
+    "mrk-12:26": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            78,
+            80
+          ]
+        ]
+      }
+    ],
+    "num-32:11": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            38,
+            40
+          ]
+        ]
+      }
+    ],
+    "psa-105:9": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            19,
+            21
+          ]
+        ]
+      }
+    ],
+    "rom-9:7": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            27,
+            29
+          ]
+        ]
+      }
+    ],
+    "rom-9:10": [
+      {
+        "stable_id": "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01",
+        "group": "direct",
+        "surface": "이삭",
+        "spans": [
+          [
+            21,
+            23
+          ]
+        ]
+      }
     ]
   },
   "stats": {
@@ -849,6 +2499,62 @@ window.BVC_SCRIPTURE_INDEX = {
         "1sa-30:1-20",
         "1ch-1:36",
         "1ch-4:42-43"
+      ]
+    },
+    "JBC_ISAAC_PERSON_PROFILE_WORBS_20261005_01": {
+      "direct_ranges": 97,
+      "verses_in_ranges": 123,
+      "verses_tagged": 123,
+      "verses_without_surface": [],
+      "related_links_not_tagged": [
+        "gal-4:21-27",
+        "gal-4:29-31",
+        "gen-12:1-3",
+        "gen-15:1-21",
+        "gen-17:15-18",
+        "gen-18:9-15",
+        "gen-21:1-2",
+        "gen-21:6-7",
+        "gen-21:9",
+        "gen-21:11",
+        "gen-22:1",
+        "gen-22:4-5",
+        "gen-22:8",
+        "gen-22:10-19",
+        "gen-24:1-3",
+        "gen-24:5-13",
+        "gen-24:15-61",
+        "gen-24:65",
+        "gen-25:22-25",
+        "gen-25:27",
+        "gen-26:2-5",
+        "gen-26:7",
+        "gen-26:10-11",
+        "gen-26:13-15",
+        "gen-26:21-24",
+        "gen-26:26",
+        "gen-26:28-30",
+        "gen-26:33",
+        "gen-27:2-4",
+        "gen-27:6-19",
+        "gen-27:23-25",
+        "gen-27:27-29",
+        "gen-27:31",
+        "gen-27:34-36",
+        "gen-27:38",
+        "gen-27:40",
+        "gen-27:41-45",
+        "gen-28:2-4",
+        "gen-28:7",
+        "gen-28:9",
+        "heb-11:8",
+        "heb-11:10-16",
+        "heb-11:19",
+        "jas-2:20",
+        "jas-2:22-24",
+        "rom-9:6",
+        "rom-9:8-9",
+        "rom-9:11-13"
       ]
     }
   }

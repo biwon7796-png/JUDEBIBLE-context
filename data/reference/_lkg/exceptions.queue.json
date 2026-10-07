@@ -1,0 +1,7 @@
+{
+  "feature_conflicts": [],
+  "research_points_compared": 10,
+  "rule": "conflict_only: a reference feature is queued only when it disagrees with a research coordinate on an explicit shared id or an exact name; both sides stay untouched",
+  "schema": "JBC_REFERENCE_EXCEPTION_QUEUE_v0.1",
+  "source_exceptions": []
+}

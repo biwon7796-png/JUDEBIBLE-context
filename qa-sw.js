@@ -9,7 +9,7 @@
     return new Promise(function (res) {
       var f = document.createElement("iframe"); f.style.cssText = "width:" + (width || 1200) + "px;height:" + (height || 800) + "px;border:0";
       f.onload = function () { var w = f.contentWindow; w.__errs = []; w.addEventListener("error", function (e) { w.__errs.push(e.message); }); setTimeout(function () { res({ f: f, w: w, d: w.document, B: w.BVC }); }, 120); };
-      f.src = "index.html" + (hash || ""); host.appendChild(f);
+      f.src = "index.html?qa=fixture" + (hash || ""); host.appendChild(f);
     });
   }
   function clean(x) { if (x && x.f) x.f.remove(); }
@@ -40,7 +40,7 @@
 
   t("002", "desktop_large_workspace_and_multiline_result_cards", async function (ev) {
     var x = await load("#gen-22:2", 1200, 800); await typeHeader(x, "이삭"); var p = rect(x, ".sw-panel"), rows = $$(x, "#search-results .sr-row");
-    ev.push("panel " + Math.round(p.width) + "x" + Math.round(p.height) + " rows=" + rows.length + " summary=" + x.d.getElementById("sw-summary").textContent); ok(p.width >= 900 && p.height >= 400 && rows.length > 5, "workspace not large / no rows");
+    ev.push("panel " + Math.round(p.width) + "x" + Math.round(p.height) + " rows=" + rows.length + " summary=" + x.d.getElementById("sw-summary").textContent); ok(p.width >= x.w.innerWidth * 0.55 && p.height >= 400 && rows.length > 5, "workspace not large / no rows");
     var vrow = rows.filter(function (r) { return r.dataset.kind === "v"; })[0]; ok(vrow, "no verse rows"); var prev = vrow.querySelector(".sr-preview"), lh = parseFloat(cs(x, prev).lineHeight), hgt = prev.getBoundingClientRect().height;
     ev.push("verse row: ref=" + vrow.querySelector(".sr-ref").firstChild.textContent + " preview height=" + Math.round(hgt) + "px line-height=" + lh + " clamp=" + cs(x, prev).webkitLineClamp + " marks=" + prev.querySelectorAll("mark").length);
     ok(/장 \d+절/.test(vrow.querySelector(".sr-ref").textContent), "reference missing"); ok(hgt >= lh * 1.9 && hgt <= lh * 4.1, "preview should be 2–4 lines, got " + hgt / lh); ok(prev.querySelector("mark") && prev.querySelector("mark").textContent.indexOf("이삭") >= 0, "search term not highlighted");
@@ -62,23 +62,24 @@
   t("004", "desktop_underlying_passage_state_preserved", async function (ev) {
     var x = await load("#gen-22:6&tab=people"); x.B.setPanel("collapsed"); await anchorAt(x, 12); var S = snap(x), a0 = x.B.scrollAnchor(), y0 = x.w.scrollY, box = x.d.getElementById("verses"), muts = 0;
     var mo = new x.w.MutationObserver(function (l) { l.forEach(function (m) { if (m.type === "childList") muts++; }); }); mo.observe(box, { childList: true, subtree: true });
-    var closers = [["Escape", function () { key(x, x.d.activeElement, "Escape"); }], ["닫기 버튼", function () { click(x, "#sw-close"); }], ["backdrop", function () { click(x, ".sw-backdrop"); }]];
-    for (var c of closers) {
-      var hb = rect(x, "header.top"); ok(hb.top === 0 && hb.bottom > 0, "header should stay pinned while reading"); await typeHeader(x, "독생자"); ok(open(x), "search did not open from the pinned header"); x.d.getElementById("search-results").scrollTop = 200; c[1](); await sleep(120);
+    var leavers = [["rail 본문연구", function () { x.d.getElementById("rail-study").focus(); click(x, "#rail-study"); }], ["rail 연표 → 본문연구", function () { x.d.getElementById("rail-timeline").focus(); click(x, "#rail-timeline"); return sleep(80).then(function () { x.d.getElementById("rail-study").focus(); click(x, "#rail-study"); }); }]];
+    for (var c of leavers) {
+      var hb = rect(x, "header.top"); ok(hb.top === 0 && hb.bottom > 0, "header should stay pinned while reading"); await typeHeader(x, "독생자"); ok(open(x) && x.B.state.view === "explore", "search did not enter the explore workspace from the pinned header"); x.d.getElementById("search-results").scrollTop = 200;
+      key(x, x.d.activeElement, "Escape"); await sleep(60); ok(open(x), "Escape must not leave the explore workspace"); await c[1](); await sleep(120);
       var a1 = x.B.scrollAnchor(); ev.push(c[0] + ": open=" + open(x) + " state kept=" + (snap(x) === S) + " anchor " + J(a0) + "→" + J(a1) + " scrollY " + y0 + "→" + x.w.scrollY + " focus=" + (x.d.activeElement && x.d.activeElement.id));
-      ok(!open(x) && snap(x) === S && a1 && a1.verse === a0.verse && Math.abs(a1.offset - a0.offset) <= 2 && Math.abs(x.w.scrollY - y0) <= 1, "state disturbed after closing via " + c[0]); ok(x.d.activeElement && x.d.activeElement !== x.d.body, "focus should return to a control");
+      ok(!open(x) && snap(x) === S && a1 && a1.verse === a0.verse && Math.abs(a1.offset - a0.offset) <= 2 && Math.abs(x.w.scrollY - y0) <= 1, "state disturbed after leaving via " + c[0]); ok(x.d.activeElement && x.d.activeElement !== x.d.body, "focus should stay on a control");
     }
     mo.disconnect(); ok(muts === 0 && x.d.getElementById("verses") === box, "passage re-mounted"); ok(x.w.__errs.length === 0); clean(x);
   });
 
-  t("005", "mobile_fullscreen_results_sheet_and_return", async function (ev) {
+  t("005", "mobile_explore_workspace_and_return", async function (ev) {
     var x = await load("#gen-22:6", 375, 700); x.B.setSheet("full"); await anchorAt(x, 12); var S = snap(x), a0 = x.B.scrollAnchor(), y0 = x.w.scrollY;
-    await viaFab(x, "이삭"); var p = rect(x, ".sw-panel"), rows = $$(x, "#search-results .sr-row"), r0 = rows.filter(function (r) { return r.dataset.kind === "v"; })[0];
-    ev.push("panel " + Math.round(p.left) + "," + Math.round(p.top) + " " + Math.round(p.width) + "x" + Math.round(p.height) + " rows=" + rows.length); ok(p.width === x.d.documentElement.clientWidth && p.height === x.w.innerHeight && p.top === 0 && p.left === 0, "not full-screen on mobile");
+    await viaFab(x, "이삭"); var p = rect(x, ".sw-panel"), rows = $$(x, "#search-results .sr-row"), r0 = rows.filter(function (r) { return r.dataset.kind === "v"; })[0], vw = x.d.documentElement.clientWidth;
+    ev.push("panel " + Math.round(p.left) + "," + Math.round(p.top) + " " + Math.round(p.width) + "x" + Math.round(p.height) + " rows=" + rows.length); ok(p.width >= vw - 56 && p.left <= 20 && p.height >= 400 && p.bottom <= x.w.innerHeight + 1 && x.d.querySelector(".sw-backdrop") === null, "explore workspace does not fill the mobile viewport (or a backdrop exists)");
     var ref = r0.querySelector(".sr-ref").getBoundingClientRect(), prev = r0.querySelector(".sr-preview").getBoundingClientRect(), fs = parseFloat(cs(x, r0.querySelector(".sr-preview")).fontSize);
     ev.push("row stacked: ref.bottom=" + Math.round(ref.bottom) + " preview.top=" + Math.round(prev.top) + " font=" + fs + " row height=" + Math.round(r0.getBoundingClientRect().height)); ok(prev.top >= ref.bottom - 2 && fs >= 15 && r0.getBoundingClientRect().height >= 60, "rows not readable/stacked");
-    ok(cs(x, "#sw-query").fontSize === "16px" && !!x.d.getElementById("sw-close"), "mobile input/close");
-    click(x, "#sw-close"); await sleep(120); var a1 = x.B.scrollAnchor(); ev.push("closed → state kept=" + (snap(x) === S) + " anchor " + J(a0) + "→" + J(a1) + " scrollY " + y0 + "→" + x.w.scrollY); ok(!open(x) && snap(x) === S && a1 && a1.verse === a0.verse && Math.abs(x.w.scrollY - y0) <= 1, "did not return to the previous passage view");
+    ok(cs(x, "#sw-query").fontSize === "16px" && !x.d.getElementById("sw-close"), "mobile input; no separate close button (leaving = choosing a perspective)");
+    click(x, "#rail-study"); await sleep(120); var a1 = x.B.scrollAnchor(); ev.push("left → state kept=" + (snap(x) === S) + " anchor " + J(a0) + "→" + J(a1) + " scrollY " + y0 + "→" + x.w.scrollY); ok(!open(x) && snap(x) === S && a1 && a1.verse === a0.verse && Math.abs(x.w.scrollY - y0) <= 1, "did not return to the previous passage view");
     await viaFab(x, "독생자"); var v = $$(x, '#search-results .sr-row[data-id="jhn-3:16"]')[0]; ok(v, "jhn 3:16 row missing"); click(x, v); await sleep(160);
     ev.push("opened result → " + snap(x) + " workspace open=" + open(x)); ok(!open(x) && x.B.state.passage === "jhn-3" && x.B.state.verse === 16 && x.B.state.sheet === "full", "result open failed"); var sel = x.d.querySelector(".verse.sel").getBoundingClientRect(); ok(sel.bottom > 0 && sel.top < 700, "selected verse not visible"); ok(x.w.__errs.length === 0); clean(x);
   });
@@ -86,14 +87,14 @@
   t("006", "click_row_opens_passage_for_each_result_kind", async function (ev) {
     var x = await load("#gen-12"); await typeHeader(x, "독생자를"); click(x, '#search-results .sr-row[data-kind="v"][data-id="jhn-3:16"]'); await sleep(120); ev.push("verse row → " + snap(x)); ok(x.B.state.passage === "jhn-3" && x.B.state.verse === 16 && !open(x) && /^#jhn-3:16/.test(x.w.location.hash));
     await typeHeader(x, "창 22:2"); var first = x.d.querySelector("#search-results .sr-row"); ok(first && first.dataset.kind === "r", "reference row should be first"); ev.push("reference row preview=" + first.querySelector(".sr-preview").textContent.slice(0, 20)); ok(first.querySelector(".sr-preview").textContent.length > 10); click(x, first); await sleep(120); ev.push("reference row → " + snap(x)); ok(x.B.state.passage === "gen-22" && x.B.state.verse === 2 && !open(x));
-    await typeHeader(x, "이삭"); var ent = x.d.querySelector('#search-results .sr-row[data-kind="p"][data-id="isaac"]'); ok(ent, "entity row missing"); click(x, ent); await sleep(120); ev.push("entity row → " + snap(x)); ok(x.B.state.entity && x.B.state.entity.id === "isaac" && x.B.state.tab === "people" && !open(x)); ok(x.w.__errs.length === 0); clean(x);
+    await typeHeader(x, "이삭"); var ent = x.d.querySelector('#search-results .sr-row[data-kind="p"][data-id="isaac"]'); ok(ent, "entity row missing"); click(x, ent); await sleep(120); ev.push("entity row → " + snap(x)); ok(x.B.state.entity && x.B.state.entity.id === "isaac" && x.B.state.tab === "people" && open(x) && x.B.state.view === "explore", "an entity row selects it and keeps the explore workspace"); ok(x.w.__errs.length === 0); clean(x);
   });
 
-  t("007", "keyboard_focus_and_dialog_behavior", async function (ev) {
-    var x = await load("#gen-22"); await typeHeader(x, "요 3:16"); ev.push("focus after typing=" + (x.d.activeElement && x.d.activeElement.id)); ok(x.d.activeElement.id === "sw-query", "focus should move into the dialog input"); ok(x.d.querySelector(".sw-panel").getAttribute("role") === "dialog" && x.d.querySelector(".sw-panel").getAttribute("aria-modal") === "true");
-    key(x, x.d.activeElement, "Enter"); await sleep(120); ev.push("Enter → " + snap(x)); ok(x.B.state.passage === "jhn-3" && x.B.state.verse === 16 && !open(x), "Enter should open the first result");
-    await typeHeader(x, "이삭"); var fs = [].filter.call(x.d.getElementById("search-workspace").querySelectorAll("button, input, [tabindex]"), function (n) { return !n.disabled && !n.hidden && n.tabIndex >= 0 && n.offsetParent !== null; }); var last = fs[fs.length - 1]; last.focus(); key(x, last, "Tab"); ev.push("Tab on last focusable wraps to " + (x.d.activeElement.id || x.d.activeElement.className)); ok(x.d.activeElement === fs[0], "focus trap broken");
-    key(x, x.d.activeElement, "Tab", { shiftKey: true }); ok(x.d.activeElement === last, "shift+Tab wrap broken"); key(x, x.d.activeElement, "Escape"); await sleep(100); ok(!open(x) && x.d.activeElement.id === "search", "Escape/focus return"); clean(x);
+  t("007", "keyboard_focus_and_workspace_behavior", async function (ev) {
+    var x = await load("#gen-22"); await typeHeader(x, "요 3:16"); ev.push("focus after typing=" + (x.d.activeElement && x.d.activeElement.id)); ok(x.d.activeElement.id === "sw-query", "focus should move into the workspace input"); var pn = x.d.querySelector(".sw-panel"); ok(!pn.getAttribute("role") && !pn.getAttribute("aria-modal") && !x.d.getElementById("search-workspace").getAttribute("aria-modal") && x.d.getElementById("search-workspace").getAttribute("aria-label"), "a labelled workspace, not a modal dialog");
+    key(x, x.d.activeElement, "Enter"); await sleep(120); ev.push("Enter → " + snap(x)); ok(x.B.state.passage === "jhn-3" && x.B.state.verse === 16 && !open(x), "Enter should open the first result (a reference navigates to the Scripture)");
+    await typeHeader(x, "이삭"); var fs = [].filter.call(x.d.getElementById("search-workspace").querySelectorAll("button, input, [tabindex]"), function (n) { return !n.disabled && !n.hidden && n.tabIndex >= 0 && n.offsetParent !== null; }); var last = fs[fs.length - 1], tab = new x.w.KeyboardEvent("keydown", { key: "Tab", bubbles: true, cancelable: true }); last.focus(); last.dispatchEvent(tab); ok(tab.defaultPrevented === false, "no focus trap: Tab is left to the browser so focus can reach the rail and Detail");
+    key(x, x.d.activeElement, "Escape"); await sleep(100); ok(open(x), "Escape does not leave the explore workspace"); clean(x);
   });
 
   t("008", "search_term_highlight_correctness", async function (ev) {

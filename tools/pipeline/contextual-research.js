@@ -1,0 +1,37 @@
+"use strict";
+const fs=require("fs"),path=require("path"),crypto=require("crypto");
+const ROOT=path.resolve(__dirname,"..",".."),VAULT=process.env.JBC_VAULT;
+if(!VAULT||!fs.existsSync(VAULT))throw new Error("JBC_VAULT is not bound or unavailable");
+const SRC=path.join(VAULT,"02_연구물"),OUT=path.join(ROOT,"data","contextual.research.js");
+const BOOKS={Genesis:"gen",Exodus:"exo",Leviticus:"lev",Numbers:"num",Deuteronomy:"deu",Joshua:"jos",Judges:"jdg",Ruth:"rut","1 Samuel":"1sa","2 Samuel":"2sa","1 Kings":"1ki","2 Kings":"2ki","1 Chronicles":"1ch","2 Chronicles":"2ch",Ezra:"ezr",Nehemiah:"neh",Esther:"est",Job:"job",Psalms:"psa",Psalm:"psa",Proverbs:"pro",Ecclesiastes:"ecc","Song of Songs":"sng",Isaiah:"isa",Jeremiah:"jer",Lamentations:"lam",Ezekiel:"ezk",Daniel:"dan",Hosea:"hos",Joel:"jol",Amos:"amo",Obadiah:"oba",Jonah:"jon",Micah:"mic",Nahum:"nah",Habakkuk:"hab",Zephaniah:"zep",Haggai:"hag",Zechariah:"zec",Malachi:"mal",Matthew:"mat",Mark:"mrk",Luke:"luk",John:"jhn",Acts:"act",Romans:"rom","1 Corinthians":"1co","2 Corinthians":"2co",Galatians:"gal",Ephesians:"eph",Philippians:"php",Colossians:"col","1 Thessalonians":"1th","2 Thessalonians":"2th","1 Timothy":"1ti","2 Timothy":"2ti",Titus:"tit",Philemon:"phm",Hebrews:"heb",James:"jas","1 Peter":"1pe","2 Peter":"2pe","1 John":"1jn","2 John":"2jn","3 John":"3jn",Jude:"jud",Revelation:"rev"};
+const escRe=s=>s.replace(/[.*+?^$(){}|[\]\\]/g,"\\$&");
+const refRe=new RegExp("\\b("+Object.keys(BOOKS).sort((a,b)=>b.length-a.length).map(escRe).join("|")+")\\s+(\\d+):(\\d+)(?:[–-](\\d+))?","g");
+const sha=f=>crypto.createHash("sha256").update(fs.readFileSync(f)).digest("hex");
+function scalar(s){s=String(s||"").trim();if(/^["'].*["']$/.test(s))s=s.slice(1,-1);return s}
+function frontmatter(t){if(!t.startsWith("---"))return{};const e=t.indexOf("\n---",3);if(e<0)return{};const o={};t.slice(3,e).split(/\r?\n/).forEach(l=>{const m=/^([A-Za-z0-9_]+):\s*(.*)$/.exec(l);if(m)o[m[1]]=scalar(m[2])});return o}
+function section(t,n){const re=new RegExp("^##\\s+"+escRe(n)+"\\s*$","mi"),m=re.exec(t);if(!m)return"";const r=t.slice(m.index+m[0].length),q=/^##\s+/m.exec(r);return(q?r.slice(0,q.index):r).trim()}
+function table(s){const L=s.split(/\r?\n/).filter(x=>/^\|.*\|\s*$/.test(x.trim()));if(L.length<2)return[];const c=x=>x.trim().slice(1,-1).split("|").map(v=>v.trim()),h=c(L[0]);return L.slice(2).map(c).filter(r=>r.length===h.length).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]])))}
+const bullets=s=>s.split(/\r?\n/).map(x=>/^\s*[-*]\s+(.+)$/.exec(x)).filter(Boolean).map(x=>x[1].trim());
+const numbered=s=>s.split(/\r?\n/).map(x=>/^\s*\d+\.\s+(.+)$/.exec(x)).filter(Boolean).map(x=>x[1].trim());
+function refs(t){const o=[],seen={};let m;refRe.lastIndex=0;while((m=refRe.exec(t))){const b=BOOKS[m[1]],ch=+m[2],v1=+m[3],v2=m[4]?+m[4]:v1,k=b+"-"+ch+":"+v1+"-"+v2;if(!seen[k]){seen[k]=1;o.push({book:b,chapter:ch,v1,v2,key:k,source_text:m[0]})}}return o}
+function walk(d,o=[]){if(!fs.existsSync(d))return o;for(const e of fs.readdirSync(d,{withFileTypes:true})){const f=path.join(d,e.name);if(e.isDirectory())walk(f,o);else if(/^RN_.*\.md$/i.test(e.name))o.push(f)}return o}
+function note(f){
+ const t=fs.readFileSync(f,"utf8"),fm=frontmatter(t);if(fm.record_kind!=="ResearchNote")return null;
+ const claims=table(section(t,"Claims")).map(r=>({id:r["Claim ID"],statement:r.Statement,certainty:r.Certainty,evidence_refs:String(r["Evidence refs"]||"").split(";").map(x=>x.trim()).filter(Boolean),review:r.Review}));
+ const evidence=table(section(t,"Evidence")).map(r=>({id:r["Evidence ID"],source_record:r.SourceRecord,upstream_sources:r["Upstream source(s)"],locator:r.Locator,stance:r.Stance,verification:r.Verification}));
+ const entities=table(section(t,"Entity candidates")).map(r=>({id:r["Record ID"],type:String(r.Type||"").toLowerCase(),label:r.Label,canonical_entity_id:(!r.canonical_entity_id||String(r.canonical_entity_id).toLowerCase()==="null")?null:r.canonical_entity_id,identity_status:r.identity_status,source_refs:r["Source refs"],retained_flags:r["Retained flags"]}));
+ const relations=table(section(t,"Relation candidates")).map(r=>({id:r["Relation ID"],subject:r.Subject,predicate:r.Predicate,object:r.Object,claim_refs:r["Claim refs"],evidence_refs:r["Evidence refs"],certainty:r.Certainty,qualifiers:r.Qualifiers,review:r.Review}));
+ const summary=section(t,"독립 요약").split(/\r?\n/).filter(Boolean).join(" ").trim(), mm=/^#\s+ResearchNote[^\n]*\n##\s+([^\n]+)/m.exec(t), title=mm?mm[1]:path.basename(f,".md");
+ const passage_refs=refs(section(t,"Passage bindings")),verify=numbered(section(t,"retained_VERIFY — 6")).concat(numbered(section(t,"retained_VERIFY"))),hold=numbered(section(t,"HOLD — 7")).concat(numbered(section(t,"HOLD")));
+ const rights=Object.fromEntries(bullets(section(t,"Rights / provenance preservation")).map(x=>{const i=x.indexOf(":");return i>0?[x.slice(0,i).trim(),x.slice(i+1).trim()]:[x,true]}));
+ const research_objects=entities.map(e=>({stable_id:e.id,type:e.type,label:e.label,canonical_entity_id:e.canonical_entity_id,identity_status:e.identity_status,source_refs:e.source_refs,retained_flags:e.retained_flags,authority_state:"CANDIDATE_ONLY_NO_PROMOTION"}));
+ const event_objects=research_objects.filter(e=>e.type==="event"),route_objects=research_objects.filter(e=>e.type==="route"),person_objects=research_objects.filter(e=>e.type==="person"),place_objects=research_objects.filter(e=>e.type==="place");
+ return{record_id:fm.record_id||path.basename(f,".md"),note_id:fm.note_id||null,title,summary,source:{path:f.replace(/\\/g,"/"),sha256:sha(f)},review_status:fm.review_status||null,canonical_promotion:fm.canonical_promotion||null,public_projection:fm.public_projection||null,external_release:fm.external_release||null,retrieval_scope:rights.retrieval_scope||null,claims,evidence,entity_candidates:entities,research_objects,relation_candidates:relations,passage_refs,verify,hold,rights,timeline_binding:{status:"DATA_READY_UI_NOT_DESIGNED",passage_refs,persons:person_objects,places:place_objects,events:event_objects,routes:route_objects}};
+}
+const records=walk(SRC).map(note).filter(Boolean),by_passage={};
+records.forEach(r=>r.passage_refs.forEach(p=>{const k=p.book+"-"+p.chapter;(by_passage[k]=by_passage[k]||[]).push({record_id:r.record_id,v1:p.v1,v2:p.v2})}));
+const object_index={person:{},place:{},event:{},route:{}},relation_index={};
+records.forEach(r=>{(r.research_objects||[]).forEach(o=>{if(object_index[o.type])object_index[o.type][o.stable_id]=Object.assign({record_id:r.record_id,passage_refs:r.passage_refs},o)});(r.relation_candidates||[]).forEach(rel=>{relation_index[rel.id]=Object.assign({record_id:r.record_id},rel)})});
+const payload={meta:{schema:"JBC_CONTEXTUAL_RESEARCH_PROJECTION_v0.2",generated_by:"tools/pipeline/contextual-research.js",authority:"APPROVED_RESEARCH_CONTEXT_NO_CANONICAL_PROMOTION",graph_contract:"BIBLE_PASSAGE_CENTERED_EXISTING_OBJECTS_ONLY",vault:VAULT.replace(/\\/g,"/"),records:records.map(r=>({record_id:r.record_id,source:r.source}))},records,by_passage,object_index,relation_index,timeline_bindings:records.map(r=>Object.assign({record_id:r.record_id},r.timeline_binding))};
+fs.writeFileSync(OUT,"// GENERATED from Jude_Research ResearchNote assets. Candidate identity is never promoted here.\nwindow.JBC_CONTEXTUAL_RESEARCH = "+JSON.stringify(payload,null,2)+";\n");
+console.log(JSON.stringify({records:records.length,passage_keys:Object.keys(by_passage),output:OUT},null,2));

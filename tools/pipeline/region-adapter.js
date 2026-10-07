@@ -111,6 +111,11 @@ function buildRegion(parsed, o) {
   const readerSection = (re) => sections.find((s) => re.test(s.heading)), identitySec = readerSection(/^identity$/i), summarySec = readerSection(/^concise_summary$/i), factsSec = readerSection(/^quick_facts$/i);
   const identityText = identitySec ? identitySec.text.join(" ").replace(/\*\*/g, "").trim() : null, readerSummary = summarySec ? summarySec.text.join(" ").trim() : (S.semantic_note || null);
   const reader = { published: false, headline: identityText || null, concise_summary: readerSummary, quick_facts: factsSec && factsSec.tables[0] ? factsSec.tables[0].rows.map((r) => [r[0], r[1]]) : [] };
+  const navBlock = blocks.find((b) => { const d = b.data || {}; return d.navigation || d.navigation_paths || d.domain || d.period || d.story || d.scene; });
+  const navList = (v) => Array.isArray(v) ? v : v == null || v === "" ? [] : [v];
+  const navShape = (d) => ({ domain: d.domain || null, period: d.period || null, story: d.story || null, scene: d.scene || null, passage_refs: navList(d.passage_refs).map(parseRef).filter(Boolean), places: navList(d.places), people: navList(d.people), events: navList(d.events) });
+  let navigation = null;
+  if (navBlock) { const d = navBlock.data || {}, raw = Array.isArray(d.navigation_paths) ? d.navigation_paths : Array.isArray(d.navigation) ? d.navigation : d.navigation && typeof d.navigation === "object" ? [d.navigation] : [d]; navigation = raw.filter((x) => x && typeof x === "object").map(navShape); if (!navigation.length) navigation = null; }
   const link = (raw, group, source) => Object.assign({ group, source, raw }, parseRef(String(raw).replace(/[–—]/g, "-").replace(/^Psalm\s/, "Psalms ")));
   const links = S.direct.map((x) => link(x.raw, "direct", x.source)).concat(S.related.map((x) => link(x.raw, "related", x.source)));
   const verifyItems = S.verify.map((v) => ({ id: v.id, issue: v.issue, effect: v.effect }));
@@ -119,7 +124,7 @@ function buildRegion(parsed, o) {
   const rec = {
     entity_type: "Region", stable_id: B && B.id || null, display_label: S.name_ko, label_en: S.name_en, semantic_note: S.semantic_note,
     identity_binding: { viewer_stable_id: B && B.id, binding_role: B && B.role, source_registry_id: B && B.registry, source_registry_id_role: "REFERENCE_ONLY", equivalence_semantics: "NOT_AUTOMATIC_CROSSWALK", BAT01_PLACE_reuse: B && B.reuse, BAT01_P_crosswalk: B && B.crosswalk, automatic_merge: B && B.merge },
-    status: S.status, certainty: S.certainty,
+    status: S.status, certainty: S.certainty, navigation,
     authority: Object.assign({ module: S.module, approval: approvalStatus, registry_effect: S.registryEffect, BAT01_crosswalk: "NOT_PERFORMED" }, ovr ? { note_approval_status: noteApproval, approval_source: ovr.source, approval_origin: "ingest_authority", approval_record_id: ovr.record_id || null, approval_scope: ovr.scope || null, approval_recorded_at: ovr.recorded_at || null } : { approval_origin: "research_note" }),
     activation: { state: o.activationState || "ISOLATED_DRY_RUN_ONLY", note_declared: (B && B.activation) || null, publishable: false },   // approval does not publish: no live commit, no reader layer
     geometry: { status: "none", type: null, approved: false, approximate_area: null, map_polygon: "OMIT", detail: "AVAILABLE", relations: "AVAILABLE" },   // polygon / multipolygon / approximate area only from explicit approved geometry — none exists in the note

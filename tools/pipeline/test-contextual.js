@@ -1,0 +1,23 @@
+"use strict";
+const fs=require("fs"),path=require("path"),vm=require("vm");
+const ROOT=path.resolve(__dirname,"..",".."),data=path.join(ROOT,"data","contextual.research.js");
+let pass=0,fail=0; function t(name,ok){console.log((ok?"PASS ":"FAIL ")+name);ok?pass++:fail++}
+const box={window:{}};vm.runInNewContext(fs.readFileSync(data,"utf8"),box);const C=box.window.JBC_CONTEXTUAL_RESEARCH||{},R=(C.records||[]).find(r=>r.note_id==="RN-PART05-CH26");
+t("schema",C.meta&&C.meta.schema==="JBC_CONTEXTUAL_RESEARCH_PROJECTION_v0.2");
+t("graph contract",C.meta&&C.meta.graph_contract==="BIBLE_PASSAGE_CENTERED_EXISTING_OBJECTS_ONLY");
+t("CH26 materialized",!!R);
+t("CH26 claims preserved",R&&R.claims.length===7);
+t("CH26 candidates preserved",R&&R.entity_candidates.length===6);
+t("no canonical promotion",R&&R.canonical_promotion==="PROHIBITED"&&R.entity_candidates.every(e=>!e.canonical_entity_id));
+t("Joshua 19 binding",(C.by_passage["jos-19"]||[]).some(x=>x.record_id===R.record_id&&x.v1===15));
+t("Judges 12 binding",(C.by_passage["jdg-12"]||[]).some(x=>x.record_id===R.record_id&&x.v1===8&&x.v2===10));
+t("timeline data ready",R&&R.timeline_binding&&R.timeline_binding.status==="DATA_READY_UI_NOT_DESIGNED");
+t("candidate object index",C.object_index&&C.object_index.place&&Object.keys(C.object_index.place).length>=5);
+t("relation index",C.relation_index&&Object.keys(C.relation_index).length>=3);
+t("timeline typed arrays",R&&R.timeline_binding&&Array.isArray(R.timeline_binding.persons)&&Array.isArray(R.timeline_binding.places)&&Array.isArray(R.timeline_binding.events)&&Array.isArray(R.timeline_binding.routes));
+const app=fs.readFileSync(path.join(ROOT,"app.js"),"utf8"),html=fs.readFileSync(path.join(ROOT,"index.html"),"utf8"),run=fs.readFileSync(path.join(__dirname,"run.js"),"utf8");
+t("shared store supports approved object groups",["type: \"Person\"","type: \"Place\"","type: \"Region\"","type: \"Event\"","type: \"Route\""].every(x=>app.includes(x)));
+t("loader bound",html.includes('data/contextual.research.js'));
+t("implemented surfaces bound",["contextualResearchHtml","contextualMapNoticeHtml","contextualGuideHtml","contextualSearchHtml","data-context-ref"].every(x=>app.includes(x)));
+t("main pipeline auto-refresh",run.includes("refreshContextualResearch()")&&run.includes("summary.contextual_projection"));
+console.log("RESULT "+pass+"/"+(pass+fail));process.exit(fail?1:0);

@@ -1,0 +1,145 @@
+{
+  "schema": "JBC_DECLARED_EXTERNAL_REFS_v0.1",
+  "role": "DECLARATIONS_ONLY_NOT_BINDINGS",
+  "note": "Identifiers declared inside approved research notes. Resolution (bind / VERIFY / conflict) is done by tools/reference/build.py; nothing here is research authority or a merge.",
+  "entities": {
+    "JBC-CR-PLACE-BEERSHEBA-001": {
+      "source": {
+        "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/브엘세바/JBC_BEERSHEBA_CONNECTED_WORBS_20260930_01.md",
+        "sha256": "c02853f748254bf22a9de5ac0258c66475b85b6ea172b95b494f32bf878e5e39"
+      },
+      "declared": []
+    },
+    "JBC-CR-PLACE-GERAR-001": {
+      "source": {
+        "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/그랄/JBC_GERAR_CONNECTED_WORBS_20260930_01.md",
+        "sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+      },
+      "declared": [
+        {
+          "provider": "OpenBible.info",
+          "kind": "modern",
+          "ext_id": "m3f6c55",
+          "name": "Tell Jemmeh",
+          "url": "https://www.openbible.info/geo/modern/m3f6c55/tell-jemmeh",
+          "coords": null,
+          "role": null,
+          "locator": "10.2 External research sources",
+          "lines": [
+            742
+          ]
+        },
+        {
+          "provider": "OpenBible.info",
+          "kind": "modern",
+          "ext_id": "m489f67",
+          "name": "Tell Esh Sharia",
+          "url": "https://www.openbible.info/geo/modern/m489f67/tell-esh-sharia",
+          "coords": null,
+          "role": null,
+          "locator": "10.2 External research sources",
+          "lines": [
+            747
+          ]
+        },
+        {
+          "provider": "OpenBible.info",
+          "kind": "modern",
+          "ext_id": "maaf3b2",
+          "name": "Tel Haror",
+          "url": "https://www.openbible.info/geo/modern/maaf3b2/tel-haror",
+          "coords": null,
+          "role": null,
+          "locator": "10.2 External research sources",
+          "lines": [
+            737
+          ]
+        }
+      ]
+    },
+    "JBC-CR-PLACE-ACHAIA-001": {
+      "source": {
+        "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/아가야/JBC_ACHAIA_CONNECTED_WORBS_20260930_01.md",
+        "sha256": "0d2bab5901047ce867ed29b6f996b79b87f48b0bf2f7a7a405ffec68862c7b42"
+      },
+      "declared": [
+        {
+          "provider": "OpenBible.info",
+          "kind": "ancient",
+          "ext_id": "aef4242",
+          "name": null,
+          "url": null,
+          "coords": null,
+          "role": "ancient_identity",
+          "locator": "1. Region Identity",
+          "lines": [
+            92
+          ]
+        }
+      ]
+    },
+    "JBC-CR-PLACE-AMALEK-001": {
+      "source": {
+        "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/아말렉/JBC_AMALEK_CONNECTED_WORBS_20261001_01.md",
+        "sha256": "a3cbe2f93f4802efbf0ced1241deb3f0dd18e430b8afc9e6a46ac5f7735e0a87"
+      },
+      "declared": [
+        {
+          "provider": "OpenBible.info",
+          "kind": "ancient",
+          "ext_id": "ab95484",
+          "name": "Amalek",
+          "url": "https://a.openbible.info/geo/data/ab95484.geojson",
+          "coords": null,
+          "role": "ancient_identity",
+          "locator": "1. Source Authority Record — S066",
+          "lines": [
+            127,
+            157,
+            542,
+            570,
+            846,
+            1042,
+            1043,
+            1044
+          ]
+        },
+        {
+          "provider": "OpenBible.info",
+          "kind": "geometry",
+          "ext_id": "g3ccc7b",
+          "name": "Amalek",
+          "url": "https://a.openbible.info/geo/data/ab95484.geojson",
+          "coords": null,
+          "role": "isoband_reference_geometry",
+          "locator": "10. Geometry Validation",
+          "lines": [
+            591
+          ],
+          "inspected_sha256": "255712be072926fceb32945376f358cbaf9a7f378c2cfe69a5105974e57cf481"
+        },
+        {
+          "provider": "OpenBible.info",
+          "kind": "modern",
+          "ext_id": "m6da23a",
+          "name": "Ain el Qudeirat",
+          "url": null,
+          "coords": {
+            "lat": 30.648333,
+            "lon": 34.422222,
+            "semantics": "REPRESENTATIVE_POINT"
+          },
+          "role": "representative_basis",
+          "locator": "1. Source Authority Record — S066",
+          "lines": [
+            142,
+            543,
+            1046
+          ]
+        }
+      ]
+    }
+  },
+  "preserved": [],
+  "unreadable": []
+}

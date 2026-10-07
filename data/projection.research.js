@@ -21,6 +21,7 @@ window.BVC_PROJECTION = {
         "overlay_fields": [
           "legacy_key",
           "reader_type",
+          "primaryPassage",
           "hero_caption",
           "reader.glance",
           "location.lead",
@@ -54,6 +55,7 @@ window.BVC_PROJECTION = {
         "overlay_fields": [
           "legacy_key",
           "reader_type",
+          "primaryPassage",
           "hero_caption",
           "reader.glance",
           "location.lead",
@@ -77,6 +79,11 @@ window.BVC_PROJECTION = {
         }
       }
     ],
+    "event_adapter": {
+      "status": "ACTIVE_FROM_APPROVED_PARENT_ASSET",
+      "scope": "ASSET_LOCAL_ONLY",
+      "projected": 6
+    },
     "regions": [
       {
         "stable_id": "JBC-CR-PLACE-ACHAIA-001",
@@ -108,6 +115,7 @@ window.BVC_PROJECTION = {
       "legacy_key": "beersheba",
       "type": "place",
       "reader_type": "성읍·도시",
+      "primaryPassage": "gen-21:31",
       "hero_caption": "브엘세바의 유력한 고고학 후보지",
       "hero_subject": "텔 브엘세바 고고학 유적",
       "display_label": "브엘세바",
@@ -207,7 +215,14 @@ window.BVC_PROJECTION = {
             "핵심 주제",
             "우물 · 언약 · 예배"
           ]
-        ]
+        ],
+        "published": true
+      },
+      "activation": {
+        "publishable": true,
+        "approved_by": "CAPTAIN control instruction IMPLEMENT_JUDEBIBLE_PLACE_VISIBILITY_METADATA_CONTRACT_v0.1",
+        "approved_on": "2026-10-02",
+        "scope": "CONSUMER_VISIBILITY_ONLY"
       },
       "location": {
         "reader_status": "DISPUTED",
@@ -907,6 +922,8 @@ window.BVC_PROJECTION = {
       "stable_id": "JBC-CR-PLACE-GERAR-001",
       "legacy_key": "gerar",
       "type": "place",
+      "reader_type": "성읍·도시",
+      "primaryPassage": "gen-20:1",
       "display_label": "그랄",
       "label_en": "Gerar",
       "ancient_name": {
@@ -942,7 +959,7 @@ window.BVC_PROJECTION = {
         "registry_effect": "NONE",
         "BAT01_crosswalk": "NOT_PERFORMED",
         "note_approval_status": "PENDING_CAPTAIN_REVIEW",
-        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); the research note itself still states PENDING_CAPTAIN_REVIEW"
+        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor"
       },
       "source_refs": [
         {
@@ -1028,7 +1045,14 @@ window.BVC_PROJECTION = {
             "오늘의 위치",
             "텔 하로르가 주요 후보지만 다른 견해도 있음"
           ]
-        ]
+        ],
+        "published": true
+      },
+      "activation": {
+        "publishable": true,
+        "approved_by": "CAPTAIN control instruction IMPLEMENT_JUDEBIBLE_PLACE_VISIBILITY_METADATA_CONTRACT_v0.1",
+        "approved_on": "2026-10-02",
+        "scope": "CONSUMER_VISIBILITY_ONLY"
       },
       "location": {
         "reader_status": "DISPUTED",
@@ -1797,7 +1821,19 @@ window.BVC_PROJECTION = {
             "relation": null,
             "evidence": null,
             "passage": "Genesis_20_1_18",
-            "certainty": "HIGH"
+            "event_location": "Gerar",
+            "origin": null,
+            "destination_event_location": null,
+            "exact_geometry": null,
+            "route_geometry": null,
+            "certainty": "HIGH",
+            "resolved": true,
+            "binding": {
+              "state": "AUTO_BIND",
+              "rule": "exact_stable_id_match",
+              "target_id": "JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01",
+              "source_locator": "§1 Identity · connected.events[0]"
+            }
           },
           {
             "global_event_id": null,
@@ -1808,7 +1844,19 @@ window.BVC_PROJECTION = {
             "relation": null,
             "evidence": null,
             "passage": "Genesis_26_1_11",
-            "certainty": "HIGH"
+            "event_location": "Gerar",
+            "origin": null,
+            "destination_event_location": null,
+            "exact_geometry": null,
+            "route_geometry": null,
+            "certainty": "HIGH",
+            "resolved": true,
+            "binding": {
+              "state": "AUTO_BIND",
+              "rule": "exact_stable_id_match",
+              "target_id": "JBC-CR-EVENT-GERAR-ISAAC-SOJOURN-01",
+              "source_locator": "§1 Identity · connected.events[1]"
+            }
           },
           {
             "global_event_id": null,
@@ -1819,7 +1867,19 @@ window.BVC_PROJECTION = {
             "relation": null,
             "evidence": null,
             "passage": "Genesis_26_12_17",
-            "certainty": "HIGH"
+            "event_location": "Gerar_and_Gerar_valley_transition",
+            "origin": null,
+            "destination_event_location": null,
+            "exact_geometry": null,
+            "route_geometry": null,
+            "certainty": "HIGH",
+            "resolved": true,
+            "binding": {
+              "state": "AUTO_BIND",
+              "rule": "exact_stable_id_match",
+              "target_id": "JBC-CR-EVENT-GERAR-ISAAC-PROSPERITY-CONFLICT-01",
+              "source_locator": "§1 Identity · connected.events[2]"
+            }
           },
           {
             "global_event_id": null,
@@ -1830,7 +1890,19 @@ window.BVC_PROJECTION = {
             "relation": null,
             "evidence": null,
             "passage": "Genesis_26_18_22",
-            "certainty": "HIGH_NARRATIVE"
+            "event_location": "Valley_of_Gerar_and_subsequent_movement",
+            "origin": null,
+            "destination_event_location": null,
+            "exact_geometry": "NOT_ASSIGNED",
+            "route_geometry": null,
+            "certainty": "HIGH_NARRATIVE",
+            "resolved": true,
+            "binding": {
+              "state": "AUTO_BIND",
+              "rule": "exact_stable_id_match",
+              "target_id": "JBC-CR-EVENT-GERAR-WELLS-01",
+              "source_locator": "§1 Identity · connected.events[3]"
+            }
           },
           {
             "global_event_id": null,
@@ -1841,7 +1913,19 @@ window.BVC_PROJECTION = {
             "relation": null,
             "evidence": null,
             "passage": "Genesis_26_23_31",
-            "certainty": "HIGH_NARRATIVE"
+            "event_location": null,
+            "origin": "Gerar",
+            "destination_event_location": "Beersheba",
+            "exact_geometry": null,
+            "route_geometry": "NOT_ASSIGNED",
+            "certainty": "HIGH_NARRATIVE",
+            "resolved": true,
+            "binding": {
+              "state": "AUTO_BIND",
+              "rule": "exact_stable_id_match",
+              "target_id": "JBC-CR-EVENT-GERAR-BEERSHEBA-DELEGATION-01",
+              "source_locator": "§1 Identity · connected.events[4]"
+            }
           },
           {
             "global_event_id": null,
@@ -1852,7 +1936,19 @@ window.BVC_PROJECTION = {
             "relation": null,
             "evidence": null,
             "passage": "2_Chronicles_14_13_15",
-            "certainty": "HIGH_TEXTUAL"
+            "event_location": "Gerar_region",
+            "origin": null,
+            "destination_event_location": null,
+            "exact_geometry": null,
+            "route_geometry": null,
+            "certainty": "HIGH_TEXTUAL",
+            "resolved": true,
+            "binding": {
+              "state": "AUTO_BIND",
+              "rule": "exact_stable_id_match",
+              "target_id": "JBC-CR-EVENT-GERAR-ASA-01",
+              "source_locator": "§1 Identity · connected.events[5]"
+            }
           }
         ],
         "places": [
@@ -2122,6 +2218,7 @@ window.BVC_PROJECTION = {
         "NT_Roman_province_sense": "HIGH",
         "exact_period_boundary_geometry": "VERIFY"
       },
+      "navigation": null,
       "authority": {
         "module": "WORBS",
         "approval": "CAPTAIN_APPROVED",
@@ -2815,6 +2912,7 @@ window.BVC_PROJECTION = {
         "exact_boundary": "LOW",
         "archaeological_ethnicity": "VERIFY"
       },
+      "navigation": null,
       "authority": {
         "module": "WORBS",
         "approval": "CAPTAIN_APPROVED",
@@ -3905,6 +4003,380 @@ window.BVC_PROJECTION = {
       "relation_binding_status": "PARTIAL_WITH_EXPLICIT_UNBOUND",
       "media_binding_status": "BOUND",
       "geometry_status": "HOLD",
+      "projection_status": "PROJECTED"
+    }
+  },
+  "events": {
+    "JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01": {
+      "stable_id": "JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01",
+      "type": "Event",
+      "display_label": "Abraham_and_Sarah_in_Gerar",
+      "aliases": [],
+      "passage_refs": [
+        {
+          "book": "gen",
+          "chapter": 20,
+          "v1": 1,
+          "v2": 18
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "JBC_GERAR_CONNECTED_WORBS_20260930_01",
+          "version": "v0.1",
+          "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/그랄/JBC_GERAR_CONNECTED_WORBS_20260930_01.md",
+          "sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+        }
+      ],
+      "source_locator": "§6.3 Event · JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01",
+      "certainty": "HIGH",
+      "status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "scope": "ASSET_LOCAL",
+      "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+      "authority": {
+        "project": "01_목회연구_WORBS_BICS",
+        "module": "WORBS",
+        "approval": "CAPTAIN_APPROVED",
+        "registry_effect": "NONE",
+        "BAT01_crosswalk": "NOT_PERFORMED",
+        "note_approval_status": "PENDING_CAPTAIN_REVIEW",
+        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor",
+        "approval_scope": "PARENT_ASSET_CONTENT",
+        "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+        "event_scope": "ASSET_LOCAL"
+      },
+      "VERIFY_HOLD": {
+        "verify": true,
+        "hold": true,
+        "reason": "retained VERIFY-GR-01, VERIFY-GR-02, VERIFY-GR-03, VERIFY-GR-04, VERIFY-GR-05, VERIFY-GR-06 / HOLD 6건"
+      },
+      "event_location": "Gerar",
+      "origin": null,
+      "destination_event_location": null,
+      "exact_geometry": null,
+      "route_geometry": null,
+      "reader": {
+        "published": false
+      },
+      "activation": {
+        "publishable": false
+      },
+      "projection_role": "INTERNAL_CANONICAL_EVENT_FROM_APPROVED_PARENT_ASSET",
+      "research_status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "identity_binding_status": "BOUND",
+      "relation_binding_status": "BOUND",
+      "media_binding_status": "NO_MEDIA",
+      "geometry_status": "UNBOUND",
+      "projection_status": "PROJECTED"
+    },
+    "JBC-CR-EVENT-GERAR-ISAAC-SOJOURN-01": {
+      "stable_id": "JBC-CR-EVENT-GERAR-ISAAC-SOJOURN-01",
+      "type": "Event",
+      "display_label": "Isaac_sojourns_in_Gerar_during_famine",
+      "aliases": [],
+      "passage_refs": [
+        {
+          "book": "gen",
+          "chapter": 26,
+          "v1": 1,
+          "v2": 11
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "JBC_GERAR_CONNECTED_WORBS_20260930_01",
+          "version": "v0.1",
+          "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/그랄/JBC_GERAR_CONNECTED_WORBS_20260930_01.md",
+          "sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+        }
+      ],
+      "source_locator": "§6.3 Event · JBC-CR-EVENT-GERAR-ISAAC-SOJOURN-01",
+      "certainty": "HIGH",
+      "status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "scope": "ASSET_LOCAL",
+      "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+      "authority": {
+        "project": "01_목회연구_WORBS_BICS",
+        "module": "WORBS",
+        "approval": "CAPTAIN_APPROVED",
+        "registry_effect": "NONE",
+        "BAT01_crosswalk": "NOT_PERFORMED",
+        "note_approval_status": "PENDING_CAPTAIN_REVIEW",
+        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor",
+        "approval_scope": "PARENT_ASSET_CONTENT",
+        "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+        "event_scope": "ASSET_LOCAL"
+      },
+      "VERIFY_HOLD": {
+        "verify": true,
+        "hold": true,
+        "reason": "retained VERIFY-GR-01, VERIFY-GR-02, VERIFY-GR-03, VERIFY-GR-04, VERIFY-GR-05, VERIFY-GR-06 / HOLD 6건"
+      },
+      "event_location": "Gerar",
+      "origin": null,
+      "destination_event_location": null,
+      "exact_geometry": null,
+      "route_geometry": null,
+      "reader": {
+        "published": false
+      },
+      "activation": {
+        "publishable": false
+      },
+      "projection_role": "INTERNAL_CANONICAL_EVENT_FROM_APPROVED_PARENT_ASSET",
+      "research_status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "identity_binding_status": "BOUND",
+      "relation_binding_status": "BOUND",
+      "media_binding_status": "NO_MEDIA",
+      "geometry_status": "UNBOUND",
+      "projection_status": "PROJECTED"
+    },
+    "JBC-CR-EVENT-GERAR-ISAAC-PROSPERITY-CONFLICT-01": {
+      "stable_id": "JBC-CR-EVENT-GERAR-ISAAC-PROSPERITY-CONFLICT-01",
+      "type": "Event",
+      "display_label": "Isaac_prospers_and_is_asked_to_leave",
+      "aliases": [],
+      "passage_refs": [
+        {
+          "book": "gen",
+          "chapter": 26,
+          "v1": 12,
+          "v2": 17
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "JBC_GERAR_CONNECTED_WORBS_20260930_01",
+          "version": "v0.1",
+          "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/그랄/JBC_GERAR_CONNECTED_WORBS_20260930_01.md",
+          "sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+        }
+      ],
+      "source_locator": "§6.3 Event · JBC-CR-EVENT-GERAR-ISAAC-PROSPERITY-CONFLICT-01",
+      "certainty": "HIGH",
+      "status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "scope": "ASSET_LOCAL",
+      "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+      "authority": {
+        "project": "01_목회연구_WORBS_BICS",
+        "module": "WORBS",
+        "approval": "CAPTAIN_APPROVED",
+        "registry_effect": "NONE",
+        "BAT01_crosswalk": "NOT_PERFORMED",
+        "note_approval_status": "PENDING_CAPTAIN_REVIEW",
+        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor",
+        "approval_scope": "PARENT_ASSET_CONTENT",
+        "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+        "event_scope": "ASSET_LOCAL"
+      },
+      "VERIFY_HOLD": {
+        "verify": true,
+        "hold": true,
+        "reason": "retained VERIFY-GR-01, VERIFY-GR-02, VERIFY-GR-03, VERIFY-GR-04, VERIFY-GR-05, VERIFY-GR-06 / HOLD 6건"
+      },
+      "event_location": "Gerar_and_Gerar_valley_transition",
+      "origin": null,
+      "destination_event_location": null,
+      "exact_geometry": null,
+      "route_geometry": null,
+      "reader": {
+        "published": false
+      },
+      "activation": {
+        "publishable": false
+      },
+      "projection_role": "INTERNAL_CANONICAL_EVENT_FROM_APPROVED_PARENT_ASSET",
+      "research_status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "identity_binding_status": "BOUND",
+      "relation_binding_status": "BOUND",
+      "media_binding_status": "NO_MEDIA",
+      "geometry_status": "UNBOUND",
+      "projection_status": "PROJECTED"
+    },
+    "JBC-CR-EVENT-GERAR-WELLS-01": {
+      "stable_id": "JBC-CR-EVENT-GERAR-WELLS-01",
+      "type": "Event",
+      "display_label": "Gerar_valley_well_disputes",
+      "aliases": [],
+      "passage_refs": [
+        {
+          "book": "gen",
+          "chapter": 26,
+          "v1": 18,
+          "v2": 22
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "JBC_GERAR_CONNECTED_WORBS_20260930_01",
+          "version": "v0.1",
+          "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/그랄/JBC_GERAR_CONNECTED_WORBS_20260930_01.md",
+          "sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+        }
+      ],
+      "source_locator": "§6.3 Event · JBC-CR-EVENT-GERAR-WELLS-01",
+      "certainty": "HIGH_NARRATIVE",
+      "status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "scope": "ASSET_LOCAL",
+      "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+      "authority": {
+        "project": "01_목회연구_WORBS_BICS",
+        "module": "WORBS",
+        "approval": "CAPTAIN_APPROVED",
+        "registry_effect": "NONE",
+        "BAT01_crosswalk": "NOT_PERFORMED",
+        "note_approval_status": "PENDING_CAPTAIN_REVIEW",
+        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor",
+        "approval_scope": "PARENT_ASSET_CONTENT",
+        "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+        "event_scope": "ASSET_LOCAL"
+      },
+      "VERIFY_HOLD": {
+        "verify": true,
+        "hold": true,
+        "reason": "retained VERIFY-GR-01, VERIFY-GR-02, VERIFY-GR-03, VERIFY-GR-04, VERIFY-GR-05, VERIFY-GR-06 / HOLD 6건"
+      },
+      "event_location": "Valley_of_Gerar_and_subsequent_movement",
+      "origin": null,
+      "destination_event_location": null,
+      "exact_geometry": "NOT_ASSIGNED",
+      "route_geometry": null,
+      "reader": {
+        "published": false
+      },
+      "activation": {
+        "publishable": false
+      },
+      "projection_role": "INTERNAL_CANONICAL_EVENT_FROM_APPROVED_PARENT_ASSET",
+      "research_status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "identity_binding_status": "BOUND",
+      "relation_binding_status": "BOUND",
+      "media_binding_status": "NO_MEDIA",
+      "geometry_status": "UNBOUND",
+      "projection_status": "PROJECTED"
+    },
+    "JBC-CR-EVENT-GERAR-BEERSHEBA-DELEGATION-01": {
+      "stable_id": "JBC-CR-EVENT-GERAR-BEERSHEBA-DELEGATION-01",
+      "type": "Event",
+      "display_label": "Abimelech_delegation_from_Gerar_to_Isaac",
+      "aliases": [],
+      "passage_refs": [
+        {
+          "book": "gen",
+          "chapter": 26,
+          "v1": 23,
+          "v2": 31
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "JBC_GERAR_CONNECTED_WORBS_20260930_01",
+          "version": "v0.1",
+          "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/그랄/JBC_GERAR_CONNECTED_WORBS_20260930_01.md",
+          "sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+        }
+      ],
+      "source_locator": "§6.3 Event · JBC-CR-EVENT-GERAR-BEERSHEBA-DELEGATION-01",
+      "certainty": "HIGH_NARRATIVE",
+      "status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "scope": "ASSET_LOCAL",
+      "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+      "authority": {
+        "project": "01_목회연구_WORBS_BICS",
+        "module": "WORBS",
+        "approval": "CAPTAIN_APPROVED",
+        "registry_effect": "NONE",
+        "BAT01_crosswalk": "NOT_PERFORMED",
+        "note_approval_status": "PENDING_CAPTAIN_REVIEW",
+        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor",
+        "approval_scope": "PARENT_ASSET_CONTENT",
+        "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+        "event_scope": "ASSET_LOCAL"
+      },
+      "VERIFY_HOLD": {
+        "verify": true,
+        "hold": true,
+        "reason": "retained VERIFY-GR-01, VERIFY-GR-02, VERIFY-GR-03, VERIFY-GR-04, VERIFY-GR-05, VERIFY-GR-06 / HOLD 6건"
+      },
+      "event_location": null,
+      "origin": "Gerar",
+      "destination_event_location": "Beersheba",
+      "exact_geometry": null,
+      "route_geometry": "NOT_ASSIGNED",
+      "reader": {
+        "published": false
+      },
+      "activation": {
+        "publishable": false
+      },
+      "projection_role": "INTERNAL_CANONICAL_EVENT_FROM_APPROVED_PARENT_ASSET",
+      "research_status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "identity_binding_status": "BOUND",
+      "relation_binding_status": "BOUND",
+      "media_binding_status": "NO_MEDIA",
+      "geometry_status": "UNBOUND",
+      "projection_status": "PROJECTED"
+    },
+    "JBC-CR-EVENT-GERAR-ASA-01": {
+      "stable_id": "JBC-CR-EVENT-GERAR-ASA-01",
+      "type": "Event",
+      "display_label": "Asa_pursues_Cushites_to_Gerar",
+      "aliases": [],
+      "passage_refs": [
+        {
+          "book": "2ch",
+          "chapter": 14,
+          "v1": 13,
+          "v2": 15
+        }
+      ],
+      "source_refs": [
+        {
+          "id": "JBC_GERAR_CONNECTED_WORBS_20260930_01",
+          "version": "v0.1",
+          "path": "G:/내 드라이브/Projects/옵시디언/Jude_Research/02_연구물/그랄/JBC_GERAR_CONNECTED_WORBS_20260930_01.md",
+          "sha256": "6f9933d413bc0d675767df52c94bdc72fadce835407054227007a059a6f75937"
+        }
+      ],
+      "source_locator": "§6.3 Event · JBC-CR-EVENT-GERAR-ASA-01",
+      "certainty": "HIGH_TEXTUAL",
+      "status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "scope": "ASSET_LOCAL",
+      "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+      "authority": {
+        "project": "01_목회연구_WORBS_BICS",
+        "module": "WORBS",
+        "approval": "CAPTAIN_APPROVED",
+        "registry_effect": "NONE",
+        "BAT01_crosswalk": "NOT_PERFORMED",
+        "note_approval_status": "PENDING_CAPTAIN_REVIEW",
+        "approval_source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor",
+        "approval_scope": "PARENT_ASSET_CONTENT",
+        "parent_asset_id": "JBC-CR-PLACE-GERAR-001",
+        "event_scope": "ASSET_LOCAL"
+      },
+      "VERIFY_HOLD": {
+        "verify": true,
+        "hold": true,
+        "reason": "retained VERIFY-GR-01, VERIFY-GR-02, VERIFY-GR-03, VERIFY-GR-04, VERIFY-GR-05, VERIFY-GR-06 / HOLD 6건"
+      },
+      "event_location": "Gerar_region",
+      "origin": null,
+      "destination_event_location": null,
+      "exact_geometry": null,
+      "route_geometry": null,
+      "reader": {
+        "published": false
+      },
+      "activation": {
+        "publishable": false
+      },
+      "projection_role": "INTERNAL_CANONICAL_EVENT_FROM_APPROVED_PARENT_ASSET",
+      "research_status": "RESEARCH_COMPLETE_WITH_VERIFY",
+      "identity_binding_status": "BOUND",
+      "relation_binding_status": "BOUND",
+      "media_binding_status": "NO_MEDIA",
+      "geometry_status": "UNBOUND",
       "projection_status": "PROJECTED"
     }
   }

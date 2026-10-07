@@ -3,56 +3,172 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>주드-컨텍스트바이블 · JudeBible Context</title>
-<link rel="stylesheet" href="styles.css">
+<title>주드성경 · JudeBible</title>
+<meta name="color-scheme" content="light dark">
+<script>try{var __t=localStorage.getItem("jbc.theme")||localStorage.getItem("jbc.mapTheme");if(__t==="light"||__t==="dark"){document.documentElement.dataset.theme=__t;document.documentElement.dataset.mapTheme=__t;}}catch(e){}</script>
+<link rel="stylesheet" href="styles.css?v=20261007-shift-range1">
 </head>
 <body>
 <header class="top">
-  <h1 class="brand">주드-컨텍스트바이블 <small>JudeBible Context</small></h1>
-  <form id="ref-form" class="ref-form" role="search" aria-label="성경 참조 이동"><input id="ref-input" type="text" autocomplete="off" spellcheck="false" placeholder="참조 이동 (예: 창 22:2)" aria-label="성경 참조" aria-describedby="ref-error"><button type="submit" class="btn primary">이동</button></form>
-  <input id="search" type="search" placeholder="인물·장소·본문 검색" aria-label="검색" autocomplete="off">
+  <h1 class="brand"><button id="brand-home" class="brand-home" type="button" aria-label="주드성경 초기 화면으로 이동"><span class="brand-ico" data-ico="brand" aria-hidden="true"></span>주드성경 <small>JudeBible</small></button></h1>
+  <div id="ann-tools" class="ann-tools" role="toolbar" aria-orientation="horizontal" aria-label="지도 필기 도구">
+    <button type="button" data-ann-tool="hand" aria-pressed="true" aria-label="이동·선택" title="이동·선택 (V)" data-ico="hand"></button>
+    <button type="button" data-ann-tool="pen" aria-pressed="false" aria-label="펜" title="펜 (P)" data-ico="pen"></button>
+    <button type="button" data-ann-tool="hl" aria-pressed="false" aria-label="형광펜" title="형광펜 (M)" data-ico="highlighter"></button>
+    <button type="button" data-ann-tool="eraser" aria-pressed="false" aria-label="지우개" title="지우개 (E)" data-ico="eraser"></button>
+    <button type="button" data-ann-tool="dist" aria-pressed="false" aria-label="거리 측정" title="거리 측정 (D)" data-ico="ruler"></button>
+    <span class="map-tool-sep"></span>
+    <button type="button" data-ann-act="undo" aria-label="실행 취소" title="실행 취소 (Ctrl+Z)" data-ico="undo" disabled></button>
+    <button type="button" data-ann-act="clear" aria-label="모두 지우기" title="모두 지우기 (실행 취소로 되살림)" data-ico="trash" disabled></button>
+    <div id="ann-opts" class="ann-opts" role="group" aria-label="색상과 굵기"></div>
+    <span class="map-tool-sep"></span>
+    <button type="button" data-ann-act="visible" aria-pressed="true" aria-label="필기 보기" title="필기 보기/숨기기" data-ico="eye"></button>
+    <button type="button" data-ann-act="lecture" aria-pressed="false" aria-label="강의 모드" title="강의 모드 — 전체화면 (Esc: 종료)" data-ico="present"></button>
+  </div>
+  <div id="quick-search" class="qs" role="search" aria-label="빠른 전체검색">
+    <div class="qs-main"><input id="qs-input" class="qs-input" type="search" placeholder="성경 전체 검색 (본문·인물·장소)" aria-label="빠른 전체검색" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="qs-list" aria-autocomplete="list"></div>
+    <ul id="qs-list" class="qs-list" role="listbox" hidden></ul>
+  </div>
+  <form id="ref-form" class="ref-form" role="search" aria-label="성경 본문 이동"><input id="ref-input" type="text" autocomplete="off" spellcheck="false" placeholder="성경 본문 이동 (예: 창 22:2)" aria-label="성경 본문 이동" aria-describedby="ref-error"><div id="ref-pop" class="ref-pop" role="dialog" aria-label="성경 빠른 찾기" hidden></div></form>
   <button id="search-open" class="btn ghost search-open" type="button" aria-label="검색 열기">검색</button>
 </header>
-<div id="search-workspace" class="sw" hidden>
-  <div class="sw-backdrop" data-sw-close></div>
-  <section class="sw-panel" role="dialog" aria-modal="true" aria-labelledby="sw-title">
-    <header class="sw-head">
-      <h2 id="sw-title" class="sw-title">인물·장소 탐색</h2>
-      <input id="sw-query" type="search" placeholder="인물·장소·본문 검색 또는 참조" aria-label="검색어" autocomplete="off">
-      <button id="sw-close" class="btn ghost" type="button" aria-label="검색 닫기">닫기</button>
-    </header>
-    <div class="sw-filters" role="group" aria-label="검색 필터">
-      <div class="sw-fgroup"><span class="sw-flabel">종류</span><button type="button" data-swfilter="kind:all" aria-pressed="true">전체</button><button type="button" data-swfilter="kind:entity" aria-pressed="false">인물·장소</button><button type="button" data-swfilter="kind:verse" aria-pressed="false">구절</button></div>
-      <div class="sw-fgroup" data-entity-filter><span class="sw-flabel">대상</span><button type="button" data-swfilter="type:all" aria-pressed="true">전체</button><button type="button" data-swfilter="type:person" aria-pressed="false">인물</button><button type="button" data-swfilter="type:place" aria-pressed="false">장소</button></div>
-      <div class="sw-fgroup"><span class="sw-flabel">범위</span><button type="button" data-swfilter="testament:all" aria-pressed="true">전체</button><button type="button" data-swfilter="testament:ot" aria-pressed="false">구약</button><button type="button" data-swfilter="testament:nt" aria-pressed="false">신약</button></div>
-      <label class="sw-select"><span class="sw-flabel">시대</span><select id="sw-period" aria-label="시대 필터"><option value="all">전체</option></select></label>
-      <label class="sw-select"><span class="sw-flabel">지역</span><select id="sw-region" aria-label="지역 필터"><option value="all">전체</option></select></label>
-      <label class="sw-select"><span class="sw-flabel">정렬</span><select id="sw-sort" aria-label="정렬"><option value="label">가나다순</option><option value="bible">성경순</option><option value="period">시대순</option></select></label>
-      <div class="sw-fgroup sw-view" role="group" aria-label="보기 방식"><span class="sw-flabel">보기</span><button type="button" data-swfilter="view:card" aria-pressed="true">카드</button><button type="button" data-swfilter="view:list" aria-pressed="false">목록</button></div>
-    </div>
-    <p id="sw-summary" class="helper" aria-live="polite"></p>
-    <div id="search-results" class="sw-results"></div>
-    <div class="sw-more"><button id="sw-more" class="btn ghost" type="button" hidden>더 보기</button></div>
-  </section>
-</div>
+<section id="search-workspace" class="sw" aria-label="상세 통합검색" hidden>
+  <div class="sw-shell">
+    <aside class="sw-nav" aria-label="검색 조건">
+      <header class="sw-nav-head"><h2 id="sw-title" class="sw-title">통합검색</h2></header>
+      <div class="sw-mode" role="tablist" aria-label="검색 대상">
+        <button type="button" data-swmode="all" role="tab" aria-selected="true">전체</button>
+        <button type="button" data-swmode="verse" role="tab" aria-selected="false">본문</button>
+        <button type="button" data-swmode="person" role="tab" aria-selected="false">인물</button>
+        <button type="button" data-swmode="place" role="tab" aria-selected="false">장소</button>
+        <button type="button" data-swmode="event" role="tab" aria-selected="false">사건</button>
+        <button type="button" data-swmode="route" role="tab" aria-selected="false">경로</button>
+        <button type="button" data-swmode="research" role="tab" aria-selected="false">연구</button>
+      </div>
+      <label class="sw-search"><span class="sr-only">통합검색</span><input id="sw-query" type="search" placeholder="본문, 인물, 장소, 사건, 경로, 연구 검색" aria-label="통합검색" autocomplete="off"></label>
+      <div class="sw-nav-scroll">
+        <section class="sw-block"><h3>성경 범위</h3><div class="sw-choice"><button type="button" data-swfilter="testament:all" aria-pressed="true">전체</button><button type="button" data-swfilter="testament:ot" aria-pressed="false">구약</button><button type="button" data-swfilter="testament:nt" aria-pressed="false">신약</button></div></section>
+        <section class="sw-block" data-sw-place><h3>장소 유형</h3><label class="sw-select sw-select-stack"><select id="sw-place-type" aria-label="장소 유형"><option value="all">전체</option></select></label></section>
+        <section class="sw-block" data-sw-person hidden><h3>역할</h3><label class="sw-select sw-select-stack"><select id="sw-role" aria-label="인물 역할"><option value="all">전체</option></select></label></section>
+        <section class="sw-block"><h3>시대</h3><label class="sw-select sw-select-stack"><select id="sw-period" aria-label="시대"><option value="all">전체 시대</option></select></label></section>
+        <section class="sw-block"><h3>이야기</h3><label class="sw-select sw-select-stack"><select id="sw-story" aria-label="이야기"><option value="all">전체 이야기</option></select></label></section>
+        <section class="sw-block"><h3>여정</h3><label class="sw-select sw-select-stack"><select id="sw-journey" aria-label="여정"><option value="all">전체 여정</option></select></label></section>
+        <details id="sw-adv" class="sw-adv">
+          <summary>고급 필터</summary>
+          <div class="sw-adv-body">
+            <label class="sw-select sw-select-stack"><span class="sw-flabel">지역</span><select id="sw-region" aria-label="지역 필터"><option value="all">전체</option></select></label>
+            <label class="sw-select sw-select-stack" data-sw-place><span class="sw-flabel">위치 상태</span><select id="sw-location" aria-label="위치 상태"><option value="all">전체</option></select></label>
+            <label class="sw-check"><input id="sw-photo" type="checkbox"> 사진 있음</label>
+            <label class="sw-check" data-sw-place><input id="sw-archaeology" type="checkbox"> 고고학 자료</label>
+          </div>
+        </details>
+      </div>
+      <button id="sw-clear" class="btn ghost sw-clear" type="button">탐색 조건 초기화</button>
+    </aside>
+    <section class="sw-main" aria-label="검색 결과">
+      <header class="sw-resultbar">
+        <p id="sw-summary" class="helper" aria-live="polite"></p>
+        <div class="sw-view" role="group" aria-label="보기 방식"><button type="button" data-swfilter="view:card" aria-pressed="true">카드</button><button type="button" data-swfilter="view:list" aria-pressed="false">목록</button></div>
+        <label class="sw-select sw-sort"><span class="sr-only">정렬</span><select id="sw-sort" aria-label="정렬"><option value="label">가나다순</option><option value="bible">성경순</option><option value="period">시대순</option></select></label>
+      </header>
+      <div id="search-results" class="sw-results"></div>
+      <div class="sw-more"><button id="sw-more" class="btn ghost" type="button" hidden>더 보기</button></div>
+    </section>
+  </div>
+</section>
+<section id="topic-board" class="tb" role="dialog" aria-label="주제 탐색" aria-modal="false" hidden></section>
 <p id="ref-error" role="status"></p>
 <main id="workspace">
   <div id="stage" class="stage">
-    <section id="text-pane" aria-label="본문"><div class="pane-head"><h2 id="passage-title"></h2><button id="panel-open" class="btn ghost" type="button" aria-controls="side-pane" hidden>맥락 열기</button></div><div id="verses"></div>
-      <div id="chapter-nav" class="chapter-nav"><button class="btn ghost" data-step="-1">‹ 이전 장</button><button class="btn ghost" data-step="1">다음 장 ›</button></div><p id="crumb" class="helper"></p></section>
-    <section id="map-pane" aria-label="지도">
-      <div class="mp-head"><h2 class="mp-title">지도</h2><span id="mp-cap" class="meta"></span><span class="mp-zoom" role="group" aria-label="지도 확대 축소"><button type="button" class="btn ghost" id="map-zoom-out" data-zoom="-1" aria-label="축소">−</button><button type="button" class="btn ghost" id="map-zoom-in" data-zoom="1" aria-label="확대">+</button><button type="button" class="btn ghost" id="map-zoom-fit" data-zoom="0">맞춤</button></span><button id="map-mode" class="btn ghost" type="button" aria-pressed="false" hidden>지리 지도 ›</button><button id="map-tiles" class="btn ghost" type="button" aria-pressed="false" hidden>현대 지도</button><button id="map-toggle" class="btn ghost" type="button" aria-controls="map-body" aria-expanded="true">접기</button></div>
-      <div id="map-body"></div>
+    <section id="text-pane" class="scripture-panel" aria-label="본문"><div class="pane-head scripture-head"><div class="chapter-head-nav" role="group" aria-label="현재 장 이동"><button type="button" data-step="-1" aria-label="이전 장" title="이전 장">‹</button><h2 id="passage-title"></h2><button type="button" data-step="1" aria-label="다음 장" title="다음 장">›</button></div><button id="panel-open" class="btn ghost" type="button" aria-controls="side-pane" hidden>맥락 열기</button></div><div id="verses" class="scripture-scroll-area"></div>
+      <div class="scripture-bottom-rail" aria-hidden="true"></div></section>
+    <section id="map-pane" aria-label="주드성경 지리지도">
+      <div class="mp-head"><h2 class="mp-title">주드성경 지리지도</h2><span id="mp-cap" class="meta"></span><button id="map-toggle" class="btn ghost" type="button" aria-controls="map-body" aria-expanded="true">접기</button></div>
+      <button id="map-tiles" type="button" hidden aria-pressed="false">현대 지도</button>
+      <button id="panel-edge-open" class="jb-research-edge-open" type="button" hidden aria-label="본문연구 패널 펼치기" title="본문연구 패널 펼치기"><span>본문연구</span></button>
+      <div id="map-body" class="jb-map-region"></div>
+      <svg id="ann-layer" class="ann-layer" data-role="lecture-annotation-not-research" aria-hidden="true" preserveAspectRatio="xMidYMid slice" hidden><g id="ann-shapes"></g><g id="ann-live"></g></svg>
+      <p id="ann-print-note" class="ann-print-note" hidden>강의 필기(임시 표시)가 포함되어 있습니다 · 연구 자료·확정된 경로·거리가 아닙니다</p>
       <section id="side-pane" aria-label="맥락 패널">
-    <div class="pane-bar"><h2 class="pane-title">상세</h2><button id="panel-toggle" class="btn ghost" type="button" aria-controls="panel" aria-expanded="true">접기</button></div>
-    <div id="panel" role="tabpanel"></div>
+    <div class="pane-bar"><h2 class="pane-title">본문연구</h2><button id="panel-toggle" class="btn ghost" type="button" aria-controls="panel" aria-expanded="true">접기</button></div>
+    <div class="panel-stack"><div id="rs-shell" class="rs-shell" data-part="research-shell" hidden></div><div id="place-fixed-head" hidden></div><div id="panel" role="tabpanel"></div></div>
   </section>
     </section>
     <div id="split" role="separator" aria-orientation="vertical" aria-label="지도와 본문 너비 조절" aria-valuemin="20" aria-valuemax="85" aria-valuenow="40" tabindex="0" title="드래그하여 지도와 본문 너비 조절 (더블클릭: 초기화)"></div>
   </div>
   <nav id="rail" aria-label="관점과 도구">
-    <div class="rail-group" role="group" aria-label="관점"><button type="button" id="rail-study" class="rail-btn" data-perspective="study">본문연구</button><button type="button" id="rail-map" class="rail-btn" data-perspective="map">지도</button><button type="button" id="rail-timeline" class="rail-btn" data-perspective="timeline">연표</button></div>
-    <div class="rail-group rail-util" role="group" aria-label="도구"><button type="button" id="rail-search" class="rail-btn util" data-util="search">검색</button><button type="button" id="rail-settings" class="rail-btn util" data-util="settings" aria-haspopup="dialog" aria-expanded="false">설정</button></div>
+    <div class="rail-group" role="group" aria-label="관점"><button type="button" id="rail-study" class="rail-btn" data-perspective="study" data-ico="book"><span class="rail-lab">본문연구</span></button><button type="button" id="rail-timeline" class="rail-btn" data-perspective="timeline" data-ico="timeline"><span class="rail-lab">연표</span></button><button type="button" id="rail-search" class="rail-btn" data-perspective="explore" data-ico="search" aria-controls="search-workspace"><span class="rail-lab">검색</span></button></div>
+    <div id="map-tools" class="map-tools rail-map-tools" role="toolbar" aria-label="지도 도구">
+      <button type="button" id="map-zoom-in" data-map-action="zoom-in" aria-label="확대" title="확대" data-ico="plus"></button>
+      <button type="button" id="map-zoom-out" data-map-action="zoom-out" aria-label="축소" title="축소" data-ico="minus"></button>
+      <span class="map-tool-sep"></span>
+      <button type="button" data-map-action="israel-home" aria-label="이스라엘 기본 보기" title="이스라엘 기본 보기" data-ico="locate"></button>
+      <button type="button" data-map-action="world" aria-label="성경세계 전체 보기" title="성경세계 전체 보기" data-ico="compass"></button>
+      <button type="button" id="map-zoom-fit" data-zoom="0" hidden aria-label="현재 지도대상 맞춤"></button>
+      <span class="map-tool-sep"></span>
+      <button type="button" data-map-action="route-range" aria-label="추정 이동 경로 켜기/끄기" title="본문 연구에 근거한 추정 이동 경로를 점선으로 표시" aria-pressed="true" data-ico="route"></button>
+      <button type="button" data-map-action="settings" aria-label="지도 설정" aria-expanded="false" title="지도 설정" data-ico="layers"></button>
+      <span class="map-tool-sep"></span>
+      <button type="button" data-map-action="save-image" aria-label="지도 이미지 저장" title="지도 이미지 저장" data-ico="download"></button>
+      <button type="button" data-map-action="print" aria-label="지도 인쇄" title="지도 인쇄" data-ico="print"></button>
+    </div>
+    <div id="map-settings-pop" class="map-settings-pop" role="dialog" aria-label="지도 설정" hidden>
+      <div class="pop-head"><h3>지도 설정</h3><button type="button" class="set-x" data-map-settings-close aria-label="지도 설정 닫기" title="닫기"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      <section class="set-grp" data-set-group="names"><h4 class="set-h">지명</h4>
+        <label><span>성경 지명</span><input type="checkbox" data-map-layer="labels" checked></label>
+        <label><span>고대 참고 지명</span><input type="checkbox" data-map-layer="ancientRef" checked></label>
+        <label><span>현대 지명</span><input type="checkbox" data-map-layer="modernNames" checked></label>
+        <label><span>현대 지명 진하기</span><select data-map-pref="modernOpacity" aria-label="현대 지명 진하기"><option value="faint">흐리게</option><option value="normal" selected>보통</option><option value="strong">진하게</option></select></label>
+        <label><span>현대 지명 밀도</span><select data-map-pref="modernDetail" aria-label="현대 지명 밀도"><option value="few">적게</option><option value="normal" selected>보통</option><option value="many">많이</option></select></label></section>
+      <section class="set-grp" data-set-group="nature"><h4 class="set-h">자연·지형</h4>
+        <label><span>강·호수·바다</span><input type="checkbox" data-map-layer="hydrology" checked></label>
+        <label><span>지형 음영</span><input type="checkbox" data-map-layer="terrain" checked></label></section>
+      <section class="set-grp" data-set-group="routes"><h4 class="set-h">이동·경로</h4>
+        <label class="is-disabled"><span>확정 경로</span><input type="checkbox" disabled></label>
+        <label><span>추정 이동 경로</span><input type="checkbox" data-map-layer="routes" checked></label>
+        <label><span>범례</span><input type="checkbox" data-map-layer="legend" checked></label>
+        <label><span>경로 강조</span><select data-map-pref="routeStyle" aria-label="경로 강조"><option value="subtle">은은하게</option><option value="standard" selected>보통</option><option value="emphasis">강하게</option></select></label>
+        <p>추정 이동 경로는 실제 고대 도로를 확정하지 않는 점선 표시입니다. 확정 경로는 승인된 경로 자료가 연결되면 사용할 수 있습니다.</p></section>
+      <section class="set-grp" data-set-group="base"><h4 class="set-h">지도 배경</h4>
+        <label><span>지형 지도</span><input type="radio" name="map-base" checked disabled></label>
+        <label class="is-disabled"><span>현대 지도</span><input type="radio" name="map-base" disabled></label></section>
+      <div class="set-reset"><button type="button" class="btn-plain" data-map-action="reset-prefs" title="지도 표시 설정을 처음 값으로 되돌립니다">지도 설정 기본값으로</button><p>지도 설정은 이 기기에 저장되며, 장면·시대·장소를 바꿔도 유지됩니다.</p></div>
+      <div class="map-info" data-part="map-information" role="group" aria-label="지도 정보">
+        <section class="mi-sec" data-mi="research"><h4 class="mi-h">연구 표시</h4><ul class="mi-list">
+          <li><i class="lg-mark lg-mk-confirmed" aria-hidden="true"></i>확인된 위치</li>
+          <li><i class="lg-mark lg-mk-estimated" aria-hidden="true"></i>추정 위치 (유력한·가능성 있는 위치)</li>
+          <li><i class="lg-mark lg-mk-site" aria-hidden="true"></i>고고학 후보지</li>
+          <li><i class="lg-line lg-solid" aria-hidden="true"></i>승인된 경로 — 승인된 경로 자료가 있을 때만 실선</li></ul></section>
+        <section class="mi-sec" data-mi="reference"><h4 class="mi-h">참고 표시</h4><ul class="mi-list">
+          <li><i class="lg-mark lg-mk-modern" aria-hidden="true"></i>현대 참고 (현대 도시)</li>
+          <li><span class="mi-aa" aria-hidden="true">가</span>참고 지명 (수역·지역·현대 지명)</li>
+          <li><span class="mi-bg" aria-hidden="true"></span>참고 배경 (지형·해안선·강과 호수)</li></ul></section>
+        <section class="mi-sec" data-mi="uncertainty"><h4 class="mi-h">위치·범위 불확실성</h4><ul class="mi-list">
+          <li><span class="mi-aa" aria-hidden="true">?</span>추정 위치 — 일반 지명과 같은 점으로 표시하고 지명 옆에 ?를 붙입니다</li>
+          <li><span class="mi-aa" aria-hidden="true">·</span>표시할 만한 연구 후보점도 없으면 점을 만들지 않습니다</li>
+          <li><i class="lg-line" aria-hidden="true"></i>추정 이동 경로 — 본문 이동 관계를 점선으로 표시하며 실제 경로는 미확정</li>
+          <li><i class="lg-area" aria-hidden="true"></i>개략 범위 — 승인된 자료가 있을 때만 흐린 경계로</li></ul></section>
+        <p class="mi-note">연구 표시는 연구 자료에 근거하고, 참고 표시는 배경 정보라서 성경 장소를 확정하지 않습니다. 이 지도는 교육용 참고 자료입니다.</p>
+        <div class="map-src" data-part="map-sources" role="group" aria-label="자료 출처">
+          <p class="map-src-h">자료 출처</p>
+          <ul class="map-src-list">
+            <li><span class="map-src-k">지형</span><a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noopener noreferrer">Mapzen Terrain Tiles</a> · <a href="https://www.usgs.gov/centers/eros/science/usgs-eros-archive-digital-elevation-shuttle-radar-topography-mission-srtm-1" target="_blank" rel="noopener noreferrer">USGS SRTM</a></li>
+            <li><span class="map-src-k">해안선·강과 호수</span><a href="https://www.naturalearthdata.com/" target="_blank" rel="noopener noreferrer">Natural Earth</a></li>
+            <li><span class="map-src-k">현대 지명</span><a href="https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/" target="_blank" rel="noopener noreferrer">Natural Earth 현대 지명</a></li>
+            <li><span class="map-src-k">참고 위치</span><button type="button" class="map-src-btn" data-map-src-info="research" aria-expanded="false" aria-controls="map-src-research">주드성경 연구 자료</button></li>
+          </ul>
+          <p id="map-src-research" class="map-src-info" hidden>참고 위치는 연구 자료에 근거한 후보지·현대 도시 표시입니다. 추정 이동 경로의 점선은 화면 설명용이며 연구 데이터의 route_geometry로 저장되지 않습니다.</p>
+        </div>
+        <details class="mi-more"><summary>자세히 보기</summary>
+          <p>지형·해안선·강과 호수·현대 지명은 참고 배경이며 어떤 성경 장소의 위치도 확정하지 않습니다. 지명 옆의 작은 ?는 대표 연구 후보점을 이용한 추정 위치라는 뜻이며 확정 좌표가 아닙니다.</p>
+          <p>참고 자료는 사람이 근거와 출처, 사용 조건을 검토한 뒤에만 연구 근거로 채택될 수 있으며, 자동으로 바뀌지 않습니다. 채택되어도 원래 출처와 다른 견해는 함께 남습니다.</p>
+          <p>추정 경로와 개략 범위는 확정된 길이나 경계가 아니라 대략적인 이동과 범위를 보여 주는 표시입니다.</p>
+          <p>표시된 점은 고고학 후보지와 현대 도시이며, 성경의 장소가 정확히 그곳이라는 뜻은 아닙니다. 기본 지도는 지리적 참고 배경이며 성경 시대의 경계·경로·지명 위치를 확정하지 않습니다.</p>
+          <p class="mi-src-line">기본 지형: Mapzen Terrain Tiles / AWS Open Data · SRTM/GMTED: USGS · 수계: Natural Earth 10m v5.0.0 (Public Domain) · JudeBible 무라벨 음영 처리</p>
+        </details>
+      </div>
+    </div>
+    <div class="rail-group rail-util" role="group" aria-label="도구"><button type="button" id="rail-settings" class="rail-btn util" data-util="settings" aria-haspopup="dialog" aria-expanded="false" data-ico="settings"><span class="rail-lab">설정</span></button><button type="button" id="rail-theme" class="rail-btn util" data-theme-toggle data-ico="moon" aria-pressed="false" aria-label="다크 모드" title="다크 모드"><span class="rail-lab">다크</span></button></div>
     <div id="settings-pop" role="dialog" aria-label="설정" hidden><p class="sec-h">설정</p><button type="button" class="btn" id="reset-split">지도·본문 분할 비율 초기화</button><p class="helper">이 기기에만 저장되는 화면 설정입니다. 그 외 설정 항목은 아직 정의되지 않았습니다.</p></div>
   </nav>
   <aside id="guide-pane" aria-label="네비게이션"></aside>
@@ -66,9 +182,33 @@
 <script src="data/krv.js"></script>
 <script src="data/fixture.js"></script>
 <script src="data/guide.fixture.js"></script>
+<script src="data/basemap.ne110m.js"></script>
+<script src="data/basemap.ne10m.js"></script>
+<script src="data/terrain.tiles.js"></script>
+<script src="data/hydrology.ne10m.js"></script>
+<script src="data/labels.reference.js"></script>
+<script src="data/reference.sources.js"></script>
+<script src="data/reference.features.js"></script>
+<script src="data/reference.bindings.js"></script>
 <script src="data/projection.research.js"></script>
+<script src="data/geography.foundation.ch01.js?v=20261007-hba01"></script>
+<script src="data/place.profiles.js"></script>
+<script src="data/presentation.routes.js"></script>
+<script src="data/exploration.topics.js?v=20261007-jn40"></script>
+<script src="data/contextual.research.js"></script>
 <script src="data/scripture.index.js"></script>
-<script src="app.js"></script>
+<script src="data/research.projection.js"></script>
+<script src="data/projection.person.js"></script>
+<script src="data/research.gen22.reader.js"></script>
+<script src="verse-research-projection.js"></script>
+<script src="app.js?v=20261008-hba01-foundation"></script>
+<script src="original-language-loader.js"></script>
+<script src="research-projection.js"></script>
+<script src="original-language-word-card.js"></script>
+<script src="original-language-view.js"></script>
+<script src="research-evidence.js"></script>
+<script src="annotate.js"></script>
+<script src="scripture-annotate.js?v=20261007-shift-range1"></script>
 <script src="self-qa.js"></script>
 <script src="qa-auth.js"></script>
 <script src="qa-krv.js"></script>
@@ -76,10 +216,24 @@
 <script src="qa-w2.js"></script>
 <script src="qa-sw.js"></script>
 <script src="qa-nav.js"></script>
+<script src="qa-ni.js"></script>
 <script src="qa-ws.js"></script>
 <script src="qa-bs.js"></script>
+<script src="qa-gr.js"></script>
 <script src="qa-pl.js"></script>
 <script src="qa-geo.js"></script>
 <script src="qa-ee.js"></script>
+<script src="qa-rg.js"></script>
+<script src="qa-rf.js"></script>
+<script src="qa-vg.js"></script>
+<script src="qa-fa.js"></script>
+<script src="qa-an.js"></script>
+<script src="qa-sa.js"></script>
+<script src="qa-cp.js"></script>
+<script src="qa-jn.js"></script>
+<script src="qa-ml.js"></script>
+<script src="qa-ol.js"></script>
+<script src="qa-rp.js"></script>
+<script src="qa-linkage.js"></script>
 </body>
 </html>

@@ -1,0 +1,18 @@
+{
+  "outputs": {
+    "bindingq": "63476b1d45811b56908b0732c44117e4b9a10f4b2eed14c0506491e9e5f4e471",
+    "bindings": "d0e8c96fc538603c0868791b0f9fd84794f5904eaf5c222087cfde22d4478cf5",
+    "exceptions": "feedf1c9e2855b65cbf024e78b7de69bd735a2e6f5d4f0ab629beffc819dde7b",
+    "features": "66e17f85990e4bbb386ee04c07894bdf41bed4451a755814e2cb8d32701b49c8",
+    "sources": "1a2433bf13a5198abc38ff934f7f9351c7bb0b1f9e667e0c5edde150109c7a30"
+  },
+  "schema": "JBC_REFERENCE_BUILD_MANIFEST_v0.1",
+  "sources": {
+    "MAPZEN-TERRAIN-TILES": "PASS",
+    "NE-GEOGRAPHY-NAMES": "PASS",
+    "NE-HYDROLOGY": "PASS",
+    "NE-LAND-COASTLINE": "PASS",
+    "NE-POPULATED-PLACES": "PASS",
+    "USGS-SRTM": "PASS"
+  }
+}

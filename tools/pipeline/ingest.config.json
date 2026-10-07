@@ -16,12 +16,83 @@
       "expected_identity": "JBC-CR-PLACE-BEERSHEBA-001",
       "overlay": "data/projection.overlay.beersheba.json"
     },
+    "JBC_BEERSHEBA_FULL_CANONICAL_PLACE_PROFILE_WORBS_20261004_01": {
+      "expected_identity": "JBC-CR-PLACE-BEERSHEBA-001",
+      "projection_mode": "DETAIL_ONLY",
+      "detail_projection": "data/place.profile.beersheba.js",
+      "approval": {
+        "value": "CAPTAIN_APPROVED",
+        "source": "PROJECT01_BEERSHEBA_FULL_PLACE_PROFILE_PROFESSIONAL_ADOPTION_20261004 + Captain lifecycle approval"
+      },
+      "detail_contract": {
+        "source_rel": "02_연구물/브엘세바/JBC_BEERSHEBA_FULL_CANONICAL_PLACE_PROFILE_WORBS_20261004_01.md",
+        "expected_sha256": "ca65d402d5685455107b50c1dfc652bd04efd96c1815205ca075ed5a1ec1a07f",
+        "output": "data/place.profile.beersheba.js",
+        "expected": {
+          "inline_refs": 107,
+          "unique_refs": 59,
+          "story": 13,
+          "significance": 5,
+          "direct_mentions": 33
+        },
+        "evidence": {
+          "adoption_sha256": "cb47576b8cd66740c14dc91c8a060bd21a0350e7be0c2a1c8f59c545a0784705"
+        },
+        "reader_defaults": {
+          "detailed_type": "성읍·우물·족장 거주지",
+          "headline": "우물과 맹세, 약속과 예배, 남방 경계의 기억이 여러 시대에 걸쳐 겹쳐지는 장소이다.",
+          "region": "네게브 북부 · 브엘세바 계곡",
+          "name_meaning": "일곱의 우물 / 맹세의 우물의 언어유희",
+          "location": "추정 위치 ? · 정확한 성경 시대 위치 미확정"
+        },
+        "correction_delta": {
+          "direct_mentions": 33,
+          "stale_source_register_value": 32
+        }
+      }
+    },
     "JBC_GERAR_CONNECTED_WORBS_20260930_01": {
       "expected_identity": "JBC-CR-PLACE-GERAR-001",
       "overlay": "data/projection.overlay.gerar.json",
       "approval": {
         "value": "CAPTAIN_APPROVED",
-        "source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); the research note itself still states PENDING_CAPTAIN_REVIEW"
+        "source": "control instruction NEXT_TASK 2026-09-30 (Gerar use: SECOND_REAL_RECORD, approval CAPTAIN_APPROVED); retained as compatibility/spatial/media predecessor"
+      }
+    },
+    "JBC_GERAR_FULL_CANONICAL_PLACE_PROFILE_WORBS_20261005_01": {
+      "expected_identity": "JBC-CR-PLACE-GERAR-001",
+      "projection_mode": "DETAIL_ONLY",
+      "detail_projection": "data/place.profile.gerar.js",
+      "approval": {
+        "value": "CAPTAIN_APPROVED",
+        "source": "PROJECT01_GERAR_FULL_CANONICAL_PLACE_PROFILE_CAPTAIN_LIFECYCLE_APPROVAL_20261005 + webapp handoff 2026-10-05"
+      },
+      "detail_contract": {
+        "source_rel": "02_연구물/그랄/JBC_GERAR_FULL_CANONICAL_PLACE_PROFILE_WORBS_20261005_01.md",
+        "expected_sha256": "d07b08ab20a46fd7ea0022d1a23234cd80ed86fcfd651326e6471c2e1dddb24e",
+        "output": "data/place.profile.gerar.js",
+        "expected": {
+          "inline_refs": 61,
+          "unique_refs": 41,
+          "story": 9,
+          "significance": 5,
+          "direct_mentions": 10
+        },
+        "evidence": {
+          "approval_sha256": "3ae0553d511a1f0abce19fc1bf02c85b4a22097d2481703462cb2f2e29e86436",
+          "handoff_sha256": "70044d09b1dc6720bd8a428505b1503511426bc9f7d5d22f95eae85e96419c7d"
+        },
+        "reader_defaults": {
+          "detailed_type": "성읍·정착지·족장 체류지",
+          "headline": "기근과 낯선 땅에서 약속, 두려움, 갈등, 평화가 교차하는 장소이다.",
+          "region": "가나안 남부 · 북서 네게브–가사 배후권",
+          "name_meaning": "어원 확정 보류",
+          "location": "추정 위치 · 정확한 성경 시대 좌표 미확정"
+        },
+        "caution": "Tel Haror는 그랄의 주요 위치 후보이지만, 이를 성경의 그랄과 확정적으로 동일시하거나 발굴 유구를 아브라함·이삭의 특정 사건과 직접 연결하지 않습니다.",
+        "correction_delta": {
+          "direct_mentions": 10
+        }
       }
     },
     "JBC_AMALEK_CONNECTED_WORBS_20261001_01": {

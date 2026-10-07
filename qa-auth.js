@@ -17,7 +17,7 @@
         var w = f.contentWindow; w.__errs = []; w.addEventListener("error", function (e) { w.__errs.push(e.message); });
         setTimeout(function () { res({ f: f, w: w, d: w.document, B: w.BVC }); }, 60);
       };
-      f.onerror = rej; f.src = "index.html" + (hash || ""); host.appendChild(f);
+      f.onerror = rej; f.src = "index.html?qa=fixture" + (hash || ""); host.appendChild(f);
     });
   }
   async function reload(x) {

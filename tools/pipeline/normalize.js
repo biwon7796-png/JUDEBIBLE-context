@@ -58,7 +58,7 @@ function normalize(parsed, overlay, opts) {
   const links = findYaml(parsed, (d) => d.DIRECT_MENTION || (d.PassageLink && d.PassageLink.DIRECT_MENTION));
   const vh = findYaml(parsed, (d) => d.retained_VERIFY || d.retained_HOLD);
   const mediaRightsBlock = findYaml(parsed, (d) => d.structured_media_rights);
-  const navBlock = findYaml(parsed, (d) => d.domain || d.period || d.story || d.scene);
+  const navBlock = findYaml(parsed, (d) => d.navigation || d.navigation_paths || d.domain || d.period || d.story || d.scene);
   const P = place && place.data.Place, H = head && head.data, HO = hand && hand.data.MINIMUM_HANDOFF, MR = mapReady && mapReady.data.map_ready;
   if (!P) return { record: null, provenance: prov, warnings: ["no Place block"] };
 
@@ -70,6 +70,7 @@ function normalize(parsed, overlay, opts) {
     legacy_key: overlay.legacy_key || null,
     type: "place",
     reader_type: overlay.reader_type,
+    primaryPassage: overlay.primaryPassage || null,
     hero_caption: overlay.hero_caption,
     hero_subject: overlay.hero_subject,
     display_label: P.canonical_name_ko,
@@ -98,6 +99,8 @@ function normalize(parsed, overlay, opts) {
   const hide = new Set(overlay.hide_quick_fact_rows || []);
   rec.reader = { headline, concise_summary: summary, quick_facts: (qfTab ? qfTab.rows : []).filter((r) => !hide.has(r[0])).map((r) => [r[0], plain(r[1])]), glance: overlay.glance || (qfTab ? qfTab.rows : []).filter((r) => !hide.has(r[0])).map((r) => [r[0], plain(r[1])]) };
   prov.reader = "Reader Layer > identity / concise_summary / quick_facts";
+  // Consumer visibility metadata (Canonical Consumer Visibility Gate): app-side projection control. Only an explicit overlay `visibility` block sets it; nothing is inferred and no other field is touched.
+  if (overlay.visibility && typeof overlay.visibility === "object") { rec.reader.published = overlay.visibility.published === true; rec.activation = { publishable: overlay.visibility.publishable === true, approved_by: overlay.visibility.approved_by || null, approved_on: overlay.visibility.approved_on || null, scope: overlay.visibility.scope || null }; prov["reader.published"] = prov["activation.publishable"] = "overlay.visibility (app-side projection control)"; }
 
   // --- Location (reader status derived from the note's coordinate_certainty; sentences per overlay spec)
   const st = /^(VERIFIED|LIKELY|PLAUSIBLE|DISPUTED|UNKNOWN|VERIFY|HOLD)/.exec(rec.coordinate_certainty || "");
@@ -193,7 +196,7 @@ function normalize(parsed, overlay, opts) {
   const asList = (v) => (v && v._items ? v._items : Array.isArray(v) ? v : []);
   const conn = {
     people: peopleY ? peopleY.data.related_people.map((x) => (x && typeof x === "object" ? { label: unt(x.label || x.name), global_person_id: x.global_person_id || x.stable_id || null, relation: x.relation || null, evidence: x.evidence || null, certainty: x.certainty || null, passage: x.passage || null, merge_with_other: x.merge_with_other_Abimelech === "NOT_AUTHORIZED" ? "not_authorized" : null } : { label: unt(x), global_person_id: null })) : [],
-    events: eventsY ? eventsY.data.events.map((x) => ({ global_event_id: x.global_event_id || null, event_id: x.event_id || null, scope: x.scope || null, label: unt(x.label || x.event), event: unt(x.event || x.label), relation: x.relation || null, evidence: x.evidence || null, passage: x.passage || null, certainty: x.certainty || null })) : (MR ? asList(MR.events).map((x) => ({ label: unt(x), event: unt(x), global_event_id: null })) : []),
+    events: eventsY ? eventsY.data.events.map((x) => ({ global_event_id: x.global_event_id || null, event_id: x.event_id || null, scope: x.scope || null, label: unt(x.label || x.event), event: unt(x.event || x.label), relation: x.relation || null, evidence: x.evidence || null, passage: x.passage || null, event_location: x.event_location || null, origin: x.origin || null, destination_event_location: x.destination_event_location || null, exact_geometry: x.exact_geometry || null, route_geometry: x.route_geometry || null, certainty: x.certainty || null })) : (MR ? asList(MR.events).map((x) => ({ label: unt(x), event: unt(x), global_event_id: null })) : []),
     places: placesY ? asList(placesY.data.related_places).map((x) => ({ stable_id: x.stable_id || x.ref || x.known_parent_asset_identity || null, name: unt(x.name || x.label), relation: x.relation || null, evidence: x.evidence || null, certainty: x.certainty || null, known_parent_asset_identity: x.known_parent_asset_identity || x.stable_id || x.ref || null })) : [],
     routes: MR && MR.routes ? asList(MR.routes).map((x) => (x && typeof x === "object" ? { label: unt(x.route_label), basis: x.basis || null, geometry: x.geometry || "NOT_ASSIGNED" } : { label: unt(x), geometry: MR.routes.geometry || "NOT_ASSIGNED" })) : []
   };
@@ -220,11 +223,18 @@ function normalize(parsed, overlay, opts) {
   if (!rec.spatial.degradation.markers) rec.spatial.degradation.reason = rec.coordinates || rec.candidates.some((c) => c.lat !== null) ? "coordinates_present_but_status_not_drawable" : "no_coordinates_supplied";
   // </spatial-binding>
 
-  // --- Navigation metadata (lock §9): only when the note states it. Never invented.
-  rec.navigation = navBlock ? { domain: navBlock.data.domain || null, period: navBlock.data.period || null, story: navBlock.data.story || null, scene: navBlock.data.scene || null, passage_refs: (navBlock.data.passage_refs || []).map(parseRef).filter(Boolean), places: navBlock.data.places || [], people: navBlock.data.people || [], events: navBlock.data.events || [] } : null;
-  if (!navBlock) warn.push("note has no navigation metadata (domain / period / story / scene); none was generated");
+  // --- Navigation metadata (lock §9): explicit only. Single path and approved multi-path array are both supported; nothing is inferred.
+  const navList = (v) => Array.isArray(v) ? v : v == null || v === "" ? [] : [v];
+  const navShape = (d) => ({ domain: d.domain || null, period: d.period || null, story: d.story || null, scene: d.scene || null, passage_refs: navList(d.passage_refs).map(parseRef).filter(Boolean), places: navList(d.places), people: navList(d.people), events: navList(d.events) });
+  let navPaths = [];
+  if (navBlock) {
+    const d = navBlock.data || {}, raw = Array.isArray(d.navigation_paths) ? d.navigation_paths : Array.isArray(d.navigation) ? d.navigation : d.navigation && typeof d.navigation === "object" ? [d.navigation] : [d];
+    navPaths = raw.filter((x) => x && typeof x === "object").map(navShape);
+  }
+  rec.navigation = navPaths.length ? navPaths : null;
+  if (!navPaths.length) warn.push("note has no explicit navigation metadata (domain / period / story / scene); none was generated");
 
-  return { record: rec, provenance: prov, warnings: warn, skipped, overlayFields: ["legacy_key", "reader_type", "hero_caption", "reader.glance", "location.lead", "location.sentences", "candidates[].label", "candidates[].reader_label", "media[].reader_caption", "media[].target_ref", "representative_media_id", "hero_subject", "reader.glance(fallback)", "candidate labels", "reader.quick_facts(hide rows)"] };
+  return { record: rec, provenance: prov, warnings: warn, skipped, overlayFields: ["legacy_key", "reader_type", "primaryPassage", "hero_caption", "reader.glance", "location.lead", "location.sentences", "candidates[].label", "candidates[].reader_label", "media[].reader_caption", "media[].target_ref", "representative_media_id", "hero_subject", "reader.glance(fallback)", "candidate labels", "reader.quick_facts(hide rows)"] };
 }
 
 module.exports = { normalize, siteMarker, LICENSES, mediaHash, checkSourceUrl, parseRef, BOOKS, sentences };

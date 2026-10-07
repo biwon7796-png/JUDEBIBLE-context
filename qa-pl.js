@@ -10,7 +10,7 @@
   function mk(w, h) { var f = document.createElement("iframe"); f.style.cssText = "width:" + (w || 1400) + "px;height:" + (h || 800) + "px;border:0"; return f; }
   function ready(f, res) { f.onload = function () { var w = f.contentWindow; w.__errs = []; w.addEventListener("error", function (e) { w.__errs.push(e.message); }); setTimeout(function () { res({ f: f, w: w, d: w.document, B: w.BVC }); }, 150); }; }
   function load(hash, w, h) { return new Promise(function (res) { var f = mk(w, h); ready(f, res); f.src = "index.html" + (hash || ""); host.appendChild(f); }); }
-  function variant(edit, hash) { return fetch("index.html").then(function (r) { return r.text(); }).then(function (t) { var html = edit(t.replace("<head>", '<head><base href="' + location.origin + '/">')); return new Promise(function (res) { var f = mk(1400, 800); ready(f, res); f.srcdoc = html; host.appendChild(f); }); }); }
+  function variant(edit, hash) { return fetch("index.html").then(function (r) { return r.text(); }).then(function (t) { var html = edit(t.replace("<head>", '<head><base href="' + location.origin + '/"><script>window.BVC_QA_FIXTURE=true</script>')); return new Promise(function (res) { var f = mk(1400, 800); ready(f, res); f.srcdoc = html; host.appendChild(f); }); }); }
   function clean(x) { if (x && x.f) x.f.remove(); }
   function q(x, sel) { return x.d.querySelector(sel); }
   function qa(x, sel) { return [].slice.call(x.d.querySelectorAll(sel)); }
@@ -36,7 +36,7 @@
   t("PL-02", "the_app_runs_the_generated_projection_and_index_not_hand_written_data", async function (ev) {
     var x = await load("#gen-22:19"), proj = await jget("04-projection-entry.json"), idx = await jget("05-scripture-index.json");
     ok(J(x.B.projection.places[SID]) === J(proj), "running projection entry == generated projection entry"); ok(J(entriesOf(x.B.scriptureIndex, SID)) === J(idx.entries), "running index entries == generated index entries");
-    var P = x.B.data.places.beersheba, pv = x.B.store.provenance(); ev.push("store.provenance=" + J(pv)); ok(P.stable_id === SID && P.research && P.research.source_refs[0].sha256 === idx.meta.source_sha256 && pv.index_ok === true && pv.records.length === 2, "shared store trusts the index only when its source hash matches the projection");
+    var P = x.B.data.places.beersheba, pv = x.B.store.provenance(); ev.push("store.provenance=" + J(pv)); ok(P.stable_id === SID && P.research && P.research.source_refs[0].sha256 === idx.meta.source_sha256 && pv.index_ok === true && pv.records.length === 3 && pv.records.filter(function (r) { return /PLACE-(BEERSHEBA|GERAR)-/.test(r.record); }).every(function (r) { return r.index_ok === true; }) && pv.records.filter(function (r) { return /AMALEK/.test(r.record); }).every(function (r) { return r.index_ok === false; }), "shared store trusts the index only when its source hash matches the projection (2 Place records trusted; the Region record is carried but not consumed by the app)");
     ok(x.B.projection.meta.generated_by.indexOf("tools/pipeline/run.js") === 0 && x.B.projection.meta.records.length === 2 && x.B.projection.meta.records[0].overlay_fields.indexOf("hero_caption") >= 0, "generated header + declared app-overlay fields"); ok(x.w.__errs.length === 0); clean(x);
   });
 
@@ -59,7 +59,7 @@
   t("PL-05", "clicking_a_newly_linked_verse_resolves_one_stable_id_across_scripture_detail_map_guide", async function (ev) {
     var x = await load("#gen-21:31"), tag = q(x, '#verses [data-verse="31"] .tag'); ok(tag, "tag in Genesis 21:31");
     click(x, tag); await sleep(100); var det = q(x, "#panel .detail"), B = x.B;
-    var surfaces = { scripture: tag.dataset.stableId, detail: det.dataset.stableId, state: B.stableId(B.state.entity.kind, B.state.entity.id), guide_step: guideCur(x), map_note: (q(x, ".map-note") || {}).dataset && q(x, ".map-note").dataset.stableId, url: x.w.location.hash };
+    var surfaces = { scripture: tag.dataset.stableId, detail: det.dataset.stableId, state: B.stableId(B.state.entity.kind, B.state.entity.id), guide_step: guideCur(x), map_note: q(x, "#map-body g.gm").dataset.stableId, url: x.w.location.hash };
     ev.push("surfaces=" + J(surfaces)); ok(surfaces.scripture === SID && surfaces.detail === SID && surfaces.state === SID && surfaces.map_note === SID && /e=l\.beersheba/.test(surfaces.url) && B.state.panel === "open", "same identity + Detail opened by the explicit click");
     ok(!q(x, '#map-body .pin[data-id="beersheba"]'), "still no exact marker for the biblical place"); var dims = qa(x, "#verses .verse.dim").length; ev.push("dimmed verses (not linked)=" + dims); ok(dims > 0 && !q(x, '#verses [data-verse="31"].dim'), "selection dims verses without the place and keeps linked verses");
     var pass0 = B.state.passage, y = 0; click(x, '#panel [data-part="scripture"] [data-open-ref="gen-22:19"]'); await sleep(120); ok(B.state.passage === "gen-22" && B.state.entity.id === "beersheba" && q(x, ".tag.l.active"), "related passage → featured chapter, same entity, active tag"); ok(x.w.__errs.length === 0); clean(x);
@@ -68,7 +68,7 @@
   t("PL-06", "overview_and_map_for_a_newly_linked_chapter_use_the_same_place_without_new_data", async function (ev) {
     var x = await load("#gen-26:23"); x.B.setPanel("open"); await sleep(80); var ov = q(x, '#panel [data-ov="places"]');
     ev.push("gen-26 overview places=" + (ov ? qa(x, '#panel [data-ov="places"] .item').map(function (i) { return i.dataset.id + "/" + i.dataset.stableId; }).join(",") : "(none)")); ok(ov && ov.querySelector('.item[data-id="beersheba"]').dataset.stableId === SID, "등장 장소 lists the research place with the shared stable_id");
-    ok(q(x, '#map-body .map-note[data-place="beersheba"]') && !q(x, "#map-body svg.smap .pin") && !q(x, "#map-body svg.smap polyline"), "map: natural-language note only, no pin, no route, no invented geometry"); click(x, '#panel [data-ov="places"] .item[data-id="beersheba"]'); await sleep(60); ok(q(x, "#panel .detail").dataset.stableId === SID, "card → Detail with the same id");
+    ok(!q(x, '#map-body .map-note') && !q(x, "#map-body svg.smap .pin") && !q(x, "#map-body svg.smap polyline"), "map: natural-language note only, no pin, no route, no invented geometry"); click(x, '#panel [data-ov="places"] .item[data-id="beersheba"]'); await sleep(60); ok(q(x, "#panel .detail").dataset.stableId === SID, "card → Detail with the same id");
     var y = await load("#gen-26:1"); ok(!qa(y, "#verses .verse").filter(function (v) { return +v.dataset.verse <= 22 && v.querySelector(".tag[data-id=beersheba]"); }).length && qa(y, "#verses .tag[data-id=beersheba]").length === 2, "gen-26:1–22 (strongly related, not a direct mention) stays untagged; only 26:23 and 26:33 carry the link"); var z = await load("#jhn-3:16"); ok(!qa(z, "#verses .tag").length && z.w.__errs.length === 0, "unrelated chapter untouched"); clean(y); clean(z); clean(x);
   });
 
@@ -155,7 +155,7 @@
   t("RP-02", "Scripture_pane_becomes_active_immediately", async function (ev) {
     var x = await withEntity(); var B = x.B; click(x, RPSEL); var v = q(x, '#verses [data-verse="23"]', 0);   // no waiting: the very first click must already have done everything
     ok(x.d.activeElement === v && q(x, "#text-pane").contains(x.d.activeElement) && !q(x, "#text-pane").inert && q(x, "#text-pane").getAttribute("aria-hidden") === "false" && B.state.view === "study", "focus is inside the Scripture pane on the target verse right after the click");
-    x.B.setView("map"); await sleep(120); ok(B.state.view === "map" && q(x, "#panel .detail"), "map perspective with the Entity Detail open"); click(x, '#panel [data-part="scripture"] [data-open-ref="gen-21:31"]'); ok(B.state.view === "study" && B.state.passage === "gen-21" && !q(x, "#text-pane").inert && x.d.activeElement === q(x, '#verses [data-verse="31"]') && B.state.entity.id === "beersheba", "from the map perspective the Scripture is brought to the front in the same click"); ok(x.w.__errs.length === 0); clean(x);
+    x.B.setView("map"); await sleep(120); ok(B.state.view === "study" && q(x, "#panel .detail") && q(x, "#map-body svg.gmap"), "legacy map request stays in the research workspace with the Entity Detail open"); click(x, '#panel [data-part="scripture"] [data-open-ref="gen-21:31"]'); ok(B.state.view === "study" && B.state.passage === "gen-21" && !q(x, "#text-pane").inert && x.d.activeElement === q(x, '#verses [data-verse="31"]') && B.state.entity.id === "beersheba", "from the map perspective the Scripture is brought to the front in the same click"); ok(x.w.__errs.length === 0); clean(x);
   });
 
   t("RP-03", "selected_entity_is_preserved", async function (ev) {

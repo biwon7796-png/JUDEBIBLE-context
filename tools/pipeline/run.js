@@ -6,7 +6,8 @@
 // Source notes are opened read-only. Only ingest.config.json "include" folders are read; "exclude" folders never are.
 const fs = require("fs"), path = require("path"), vm = require("vm"), crypto = require("crypto");
 const { regionPass } = require("./region-stage");   // canonical Region pass (entity-type dispatch for Region records)
-const { parseNote } = require("./parse"), { validate, mediaErrors } = require("./validate"), { normalize, mediaHash } = require("./normalize"), sidx = require("./scripture-index"), resolver = require("./media-resolver"), rb = require("./relation-binding");
+const { runPersonAdapter } = require("./person-adapter"); // Project01-approved Person projection; no identity/Registry promotion
+const { parseNote } = require("./parse"), { validate, mediaErrors } = require("./validate"), { normalize, mediaHash, parseRef } = require("./normalize"), sidx = require("./scripture-index"), resolver = require("./media-resolver"), rb = require("./relation-binding");
 
 const ROOT = path.resolve(__dirname, "..", ".."), OUT = path.join(__dirname, "out");
 const CONFIG = path.join(__dirname, "ingest.config.json");
@@ -147,6 +148,11 @@ function refreshReferenceBindings() {
   if (!py) { steps.push({ step: "reference-build", ok: false, detail: "python not found — run `python tools/reference/build.py` manually" }); return { ok: false, steps }; }
   return { ok: go("reference-build", py, [path.join(ROOT, "tools", "reference", "build.py")]), steps };
 }
+function refreshContextualResearch() {
+  const cp = require("child_process"), script = path.join(__dirname, "contextual-research.js");
+  const r = cp.spawnSync(process.execPath, [script], { cwd: ROOT, encoding: "utf8", env: process.env });
+  return { ok: r.status === 0, status: r.status, detail: ((r.stdout || "") + (r.stderr || "")).trim().split(String.fromCharCode(10)).pop() || (r.error && r.error.message) || "" };
+}
 
 // ---------------------------------------------------------------- all configured records → one shared projection + one Scripture Entity Index
 function ingest(opts) {
@@ -156,7 +162,9 @@ function ingest(opts) {
   const disc = discover(cfg, opts), prevProj = loadGenerated(projFile, "BVC_PROJECTION"), prevIdx = loadGenerated(idxFile, "BVC_SCRIPTURE_INDEX"), krvHash = sha256(path.join(ROOT, "data", "krv.js"));
   const results = [], failed = [];
   for (const d of disc.found) {
-    const rc = (cfg.records || {})[d.document_id] || {}, overlayFile = rc.overlay ? path.join(opts.rootDir || ROOT, rc.overlay) : null;
+    const rc = (cfg.records || {})[d.document_id] || {};
+    if (rc.projection_mode === "DETAIL_ONLY") continue;   // approved Full Place Profile is projected by the dedicated detail stage; do not collide with the compatibility spatial/media record
+    const overlayFile = rc.overlay ? path.join(opts.rootDir || ROOT, rc.overlay) : null;
     // zero-config discovery: a Place note found in the vault needs no ingest.config entry. Without one, the identity pin is the note's own Place.stable_id (the approval gate V33 still applies;
     // an unapproved note is reported as awaiting approval, never generated). A config entry stays available to pin an identity, supply an overlay or record an approval override.
     const r = run({ source: d.abs, krv, overlay: overlayFile && fs.existsSync(overlayFile) ? overlayFile : path.join(__dirname, "empty-overlay.json"), syncFile, approval: rc.approval, expected: rc.expected_identity || d.stable_id, cacheDir: opts.cacheDir, resolveMode: opts.resolveMode });
@@ -186,19 +194,60 @@ function ingest(opts) {
   // Without Region records the output format is exactly what it was before (no `regions` key).
   const reg = cfg._no_region_pass ? { regions: {}, regionMeta: [], parts: [], records: [], preserved: [] } : regionPass({ cfg, krv, vault: disc.vault || null, claimedAbs: new Set(disc.found.map((f) => f.abs)), prevProj, prevIdx, activationState: "NOT_ACTIVATED", approvalsDir: opts.approvalsDir, placeIds: new Set(Object.keys(places)) });
   summary.region_records = reg.records;
-  // Relation binding (whole-graph): every projected entity is matched against every other; only explicit / approved identities bind, the rest is recorded as VERIFY / HOLD / true gap.
-  const relBind = rb.bindRelations({ places, regions: reg.regions }, { prev: prevProj }); relBind.provenance_references = rb.provenanceReferences(disc.found.concat(reg.found || []), rb.buildIndex({ places, regions: reg.regions })); summary.relation_binding = relBind;
+  // Event adapter: only explicit event_id records carried by an already CAPTAIN-approved canonical parent asset are projected.
+  // Scope remains ASSET_LOCAL; this does not create a global Event Registry identity, public exposure, geometry, or new research meaning.
+  const events = {}, eventRecords = [], eventOwner = {};
+  Object.keys(places).forEach((parentId) => {
+    const parent = places[parentId], approved = parent && parent.authority && parent.authority.approval === "CAPTAIN_APPROVED";
+    if (!approved) return;
+    ((parent.connected && parent.connected.events) || []).forEach((ev) => {
+      if (!ev || !ev.event_id || ev.scope !== "ASSET_LOCAL") return;
+      const id = ev.event_id;
+      if (eventOwner[id] && eventOwner[id] !== parentId) { delete events[id]; eventRecords.push({ stable_id:id, parent_asset_id:parentId, ok:false, errors:["EVENT_STABLE_ID_COLLISION: "+id+" also declared by "+eventOwner[id]] }); return; }
+      eventOwner[id] = parentId;
+      const passage = ev.passage ? parseRef(ev.passage) : null;
+      events[id] = {
+        stable_id:id, type:"Event", display_label:ev.label || ev.event || id, aliases:[], passage_refs:passage ? [passage] : [],
+        source_refs:(parent.source_refs || []).map((x) => Object.assign({}, x)), source_locator:"§6.3 Event · "+id,
+        certainty:ev.certainty || null, status:parent.status, scope:ev.scope, parent_asset_id:parentId,
+        authority:Object.assign({}, parent.authority, { approval_scope:"PARENT_ASSET_CONTENT", parent_asset_id:parentId, event_scope:ev.scope }),
+        VERIFY_HOLD:parent.VERIFY_HOLD || { verify:false, hold:false, reason:null },
+        event_location:ev.event_location || null, origin:ev.origin || null, destination_event_location:ev.destination_event_location || null,
+        exact_geometry:ev.exact_geometry || null, route_geometry:ev.route_geometry || null,
+        reader:{ published:false }, activation:{ publishable:false }, projection_role:"INTERNAL_CANONICAL_EVENT_FROM_APPROVED_PARENT_ASSET"
+      };
+      eventRecords.push({ stable_id:id, parent_asset_id:parentId, ok:true, scope:ev.scope, passage:ev.passage || null });
+    });
+  });
+  summary.event_records = eventRecords;
+  // Person pass: resolve only Project01 lifecycle records that explicitly carry PROFESSIONAL_RESEARCH_PASS
+  // + APPROVED_DOWNSTREAM_PROJECTION and exact source SHA. Projection key stays the research identity;
+  // no Registry/global stable identity is minted or promoted.
+  const person = disc.vault
+    ? runPersonAdapter({ vault: disc.vault, project01Root: opts.project01Root, krv, write: realWrite })
+    : { ok: true, status: "SKIPPED_NO_AUTHORITATIVE_VAULT", count: 0, records: {}, parts: [], assets: [], authority_effect: "NONE", registry_effect: "NONE", identity_issuance: "NONE" };
+  summary.person_projection = person;
+  const people = person.records || {};
+  // Projection-local research identities are searchable/scripture-bindable, but they are not global Person identities.
+  // Until an explicit stable identity is issued, keep them out of cross-entity relation auto/verify matching so a name match cannot mutate Place/Event semantics.
+  const bindablePeople = Object.fromEntries(Object.entries(people).filter(([sid, rec]) => /^JBC-CR-PERSON-[A-Z0-9_]+-\d{3}$/.test(sid) && rec.identity_binding && rec.identity_binding.global_identity_issued === true));
+  // Relation binding (whole-graph): only entities with approved/global relation identities participate in cross-entity binding.
+  const graph = { places, regions: reg.regions, people: bindablePeople, events };
+  const relBind = rb.bindRelations(graph, { prev: prevProj }); relBind.provenance_references = rb.provenanceReferences(disc.found.concat(reg.found || []), rb.buildIndex(graph)); summary.relation_binding = relBind;
   // Asset discovery report: one line per eligible-looking research asset, whatever its entity type — what was found, which adapter took it, and where the eligibility gate stopped it.
   const stat = (r) => (r.ok ? "ingested" : r.gate === "AWAITING_APPROVAL" || r.skipped ? "awaiting_approval" : "failed_closed");
+  const personIds = new Set((person.assets || []).map((a) => a.document_id));
   summary.assets = results.map((r) => ({ document_id: r.doc.document_id, entity_type: "place", path: r.doc.vrel, status: r.skipped ? "awaiting_approval" : r.validation.ok ? "ingested" : "failed_closed", reason: r.skipped || (r.validation && !r.validation.ok ? r.validation.errors[0] : undefined) }))
     .concat(reg.records.map((r) => ({ document_id: r.document_id, entity_type: "region", profile: r.profile, stable_id: r.stable_id, status: stat(r), identity_source: r.identity_source, approval_record: r.approval_record, reason: r.skipped || (r.errors && r.errors[0]) || undefined, errors: r.errors })))
-    .concat(disc.skipped.concat(reg.skipped || []).filter((x) => x.entity_type).map((x) => ({ path: x.path, entity_type: x.entity_type, status: "no_adapter", reason: x.reason })));
+    .concat(person.assets || [])
+    .concat(disc.skipped.concat(reg.skipped || []).filter((x) => x.entity_type && !(x.entity_type === "person" && personIds.has(path.basename(x.path || "", ".md")))).map((x) => ({ path: x.path, entity_type: x.entity_type, status: "no_adapter", reason: x.reason })));
    summary.preserved_last_known_good = summary.preserved_last_known_good.concat(reg.preserved);
-  const hasRegions = Object.keys(reg.regions).length > 0, projection = { meta: Object.assign({ schema: "JUDEBIBLE_CONTEXT_PROJECTION_v0.2", generated_by: "tools/pipeline/run.js v0.2", gate: "BEERSHEBA_PRE_IMPLEMENTATION_GATE_v0.1", records: metaRecords }, hasRegions ? { regions: reg.regionMeta } : {}), places };
+  const hasRegions = Object.keys(reg.regions).length > 0, hasEvents = Object.keys(events).length > 0, hasPeople = Object.keys(people).length > 0, projection = { meta: Object.assign({ schema: "JUDEBIBLE_CONTEXT_PROJECTION_v0.2", generated_by: "tools/pipeline/run.js v0.2", gate: "BEERSHEBA_PRE_IMPLEMENTATION_GATE_v0.1", records: metaRecords, event_adapter: { status:"ACTIVE_FROM_APPROVED_PARENT_ASSET", scope:"ASSET_LOCAL_ONLY", projected:Object.keys(events).length } }, hasRegions ? { regions: reg.regionMeta } : {}), places };
   if (hasRegions) projection.regions = reg.regions;
-  const index = sidx.combine(parts.concat(reg.parts), krv); index.meta.krv_sha256 = krvHash;
+  if (hasEvents) projection.events = events;
+  const index = sidx.combine(parts.concat(reg.parts, person.parts || []), krv); index.meta.krv_sha256 = krvHash;
   summary.projection = projection; summary.index = index; summary.results = results;
-  if (!opts.dryRun && (ok.length || hasRegions)) {
+  if (!opts.dryRun && (ok.length || hasRegions || hasEvents || hasPeople)) {
     const hdr = metaRecords.concat(hasRegions ? reg.regionMeta : []).map((m) => "//   " + m.stable_id + "  ←  " + m.source.path + "  sha256: " + m.source.sha256).join("\n");
     const pair = stagePair(); try {
     pair.stage(projFile, "// GENERATED by tools/pipeline/run.js from the approved research notes — do not edit by hand.\n" + hdr + "\n// App-side reader fields come from data/projection.overlay.*.json (see meta.records[].overlay_fields).\nwindow.BVC_PROJECTION = " + JSON.stringify(projection, null, 2) + ";\n");
@@ -207,7 +256,7 @@ function ingest(opts) {
     let prevSync = {}; try { prevSync = JSON.parse(fs.readFileSync(syncFile, "utf8")).records || {}; } catch (e) {}
     for (const r of ok) prevSync[r.doc.stable_id] = r.sync.now;
     write(syncFile, JSON.stringify({ schema: "JBC_MEDIA_SYNC_v0.2", records: prevSync }, null, 2) + "\n");
-    summary.wrote = true; if (realWrite) summary.reference_bindings = refreshReferenceBindings(); if (realWrite) recordLineage(results.concat(reg.regionMeta.map((m) => ({ doc: { stable_id: m.stable_id }, meta: { source: m.source } }))), disc, srcChanges);
+    summary.wrote = true; if (realWrite) summary.reference_bindings = refreshReferenceBindings(); if (realWrite) summary.contextual_projection = refreshContextualResearch(); if (realWrite) recordLineage(results.concat(reg.regionMeta.map((m) => ({ doc: { stable_id: m.stable_id }, meta: { source: m.source } }))), disc, srcChanges);
   }
   if (!opts.dryRun && opts.writeArtifacts !== false) {
     const strip = (p) => ({ source: p.source, frontmatter: p.frontmatter, order: p.order, sections: Object.fromEntries(p.order.map((k) => [k, { heading: p.sections[k].heading, level: p.sections[k].level, textLines: p.sections[k].text.length, quotes: p.sections[k].quotes, fields: p.sections[k].fields, tables: p.sections[k].tables.map((t) => ({ header: t.header, rows: t.rows.length })), yamlBlocks: p.sections[k].yaml.length }])) });
@@ -226,7 +275,7 @@ function ingest(opts) {
 async function refresh(opts) {
   opts = opts || {}; const cfg = opts.config || loadConfig(opts.configFile), krv = opts.krv || loadKrv(), disc = discover(cfg, opts), out = [];
   for (const d of disc.found) {
-    const rc = (cfg.records || {})[d.document_id] || {}; if (!rc.expected_identity) continue;
+    const rc = (cfg.records || {})[d.document_id] || {}; if (!rc.expected_identity || rc.projection_mode === "DETAIL_ONLY") continue;
     const overlayFile = rc.overlay ? path.join(opts.rootDir || ROOT, rc.overlay) : path.join(__dirname, "empty-overlay.json"), parsed = parseNote(d.abs), norm = normalize(parsed, JSON.parse(fs.readFileSync(overlayFile, "utf8")), { relPath: path.relative(ROOT, d.abs), approval: rc.approval });
     if (norm.record) out.push({ record: d.stable_id, media: await resolver.refreshCache(norm.record, { fetcher: opts.fetcher, cacheDir: opts.cacheDir }) });
   }
@@ -236,7 +285,7 @@ async function refresh(opts) {
 if (require.main === module) (async () => {
   if (process.argv.includes("--resolve-media")) console.log(JSON.stringify({ resolver_refresh: await refresh() }, null, 1));
   let s; try { s = ingest({ dryRun: process.argv.includes("--dry"), allowMirror: process.argv.includes("--allow-mirror"), acceptSourceChange: process.argv.includes("--accept-source-change") }); } catch (e) { console.error(e.message); process.exit(e.message.indexOf("STALE_SOURCE_GUARD") === 0 ? 3 : 1); }
-  console.log(JSON.stringify({ discovery: { found: s.discovery.found.map((f) => f.vrel), skipped: s.discovery.skipped, scanned: s.discovery.scanned }, assets: s.assets, records: s.records, region_records: s.region_records, relation_binding: s.relation_binding.counts, relation_holds: s.relation_binding.hold, preserved_last_known_good: s.preserved_last_known_good, source_changes: s.source_changes, wrote: s.wrote }, null, 1));
-  process.exit(s.records.length && s.records.every((r) => r.ok) && (s.region_records || []).every((r) => r.ok || r.skipped) && !s.relation_binding.hold.length && !(s.relation_binding.contract_failures || []).length ? 0 : 1);
+  console.log(JSON.stringify({ discovery: { found: s.discovery.found.map((f) => f.vrel), skipped: s.discovery.skipped, scanned: s.discovery.scanned }, assets: s.assets, records: s.records, region_records: s.region_records, event_records: s.event_records, person_projection: s.person_projection || null, relation_binding: s.relation_binding.counts, relation_holds: s.relation_binding.hold, contextual_projection: s.contextual_projection || null, preserved_last_known_good: s.preserved_last_known_good, source_changes: s.source_changes, wrote: s.wrote }, null, 1));
+  process.exit(s.records.length && s.records.every((r) => r.ok) && (s.region_records || []).every((r) => r.ok || r.skipped) && (s.event_records || []).every((r) => r.ok) && (!s.person_projection || s.person_projection.ok) && !s.relation_binding.hold.length && !(s.relation_binding.contract_failures || []).length && (!s.contextual_projection || s.contextual_projection.ok) ? 0 : 1);
 })();
 module.exports = { stagePair, run, ingest, refresh, discover, loadConfig, loadKrv, SOURCE, GERAR, OVERLAY, CONFIG, ROOT };

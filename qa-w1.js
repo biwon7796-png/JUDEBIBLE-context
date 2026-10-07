@@ -10,7 +10,7 @@
     return new Promise(function (res) {
       var f = document.createElement("iframe"); f.style.cssText = "width:" + (width || 1200) + "px;height:" + (height || 420) + "px;border:0";
       f.onload = function () { var w = f.contentWindow; w.__errs = []; w.addEventListener("error", function (e) { w.__errs.push(e.message); }); setTimeout(function () { res({ f: f, w: w, d: w.document, B: w.BVC }); }, 80); };
-      f.src = "index.html" + (hash || ""); host.appendChild(f);
+      f.src = "index.html?qa=fixture" + (hash || ""); host.appendChild(f);
     });
   }
   function clean(x) { if (x && x.f) x.f.remove(); }

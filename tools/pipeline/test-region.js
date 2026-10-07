@@ -1,7 +1,7 @@
 "use strict";
 // node tools/pipeline/test-region.js — isolated dry-run tests for the generic region adapter (no live writes).
 const fs = require("fs"), path = require("path"), os = require("os"), crypto = require("crypto");
-const iso = require("./isolated-ingest"), { discover, loadConfig, loadKrv, ROOT } = require("./run"), { discoverRegions } = require("./region-adapter");
+const iso = require("./isolated-ingest"), { discover, loadConfig, loadKrv, ROOT } = require("./run"), { discoverRegions, buildRegion } = require("./region-adapter"), { parseNote } = require("./parse");
 const VAULT = process.env.JBC_VAULT || iso.DEFAULT_VAULT, CFG = path.join(__dirname, "staging", "isolated", "ingest.config.json"), KRV = loadKrv();
 const results = [], T = (id, name, fn) => { try { const ev = fn(); results.push({ id, name, pass: true, ev }); } catch (e) { results.push({ id, name, pass: false, err: e.message }); } };
 const ok = (c, m) => { if (!c) throw new Error(m || "assertion failed"); };
@@ -86,6 +86,16 @@ T("RG12", "durable approval record: referenced by id, carries id/date/scope; rem
   ok(bad(tamper("scope", (o) => { o.approval_scope = "FULL_PROJECTION"; })), "scope widened → fail closed"); ok(bad(tamper("geom", (o) => { o.scope_limits.geometry_authorization = true; })), "geometry authorization → fail closed"); ok(bad(tamper("asset", (o) => { o.approved_asset = "JBC_OTHER_20261001_01"; })), "asset mismatch → fail closed");
   ok(bad(tamper("ident", (o) => { o.approved_stable_identity = "JBC-CR-PLACE-OTHER-001"; })), "identity mismatch → fail closed"); ok(bad(tamper("auth", (o) => { o.approval_authority = "ASSISTANT"; })), "non-Captain authority → fail closed"); ok(bad(tamper("date", (o) => { delete o.approval_date; })), "missing date → fail closed");
   ok(bad(tamper("reapp", (o) => { o.evidence.re_approval_requested = true; })), "re-approval request flag → fail closed"); return ["id=" + rec.approval_record_id, "recorded_at=" + rec.recorded_at];
+});
+T("RG13", "explicit Region navigation metadata is preserved as multi-path derived-index input without changing Region identity", () => {
+  const f = path.join(VAULT, "02_연구물", "아말렉", "JBC_AMALEK_CONNECTED_WORBS_20261001_01.md"), p0 = parseNote(f), k = "NAVIGATION_TEST";
+  p0.order.push(k); p0.sections[k] = { heading: k, yaml: [{ data: { navigation_paths: [
+    { domain: "구약 역사", period: "검증 시대 A", story: "지역 이야기 A", scene: "지역 장면 A", passage_refs: ["Exodus 17:8"], places: [A_ID] },
+    { domain: "기초 지리", period: "검증 시대 B", story: "지역 이야기 B", scene: "지역 장면 B", passage_refs: ["Numbers 24:20"], places: [A_ID] }
+  ] } }], text: [], tables: [] };
+  const br = buildRegion(p0, { profile: "app_ready_metadata", relPath: "fixture/amalek.md", activationState: "ISOLATED_DRY_RUN_ONLY" }).record;
+  ok(br && br.stable_id === A_ID && Array.isArray(br.navigation) && br.navigation.length === 2 && br.navigation.every((n) => n.places[0] === A_ID), JSON.stringify(br && br.navigation));
+  return ["paths=2", "stable_id="+br.stable_id];
 });
 const p = results.filter((r) => r.pass).length; console.log((p === results.length ? "PASS " : "FAIL ") + p + "/" + results.length);
 results.forEach((r) => console.log((r.pass ? "PASS " : "FAIL ") + r.id + " " + r.name + (r.pass ? (r.ev && r.ev.length ? "  · " + r.ev.join(" ") : "") : "  ✗ " + r.err)));

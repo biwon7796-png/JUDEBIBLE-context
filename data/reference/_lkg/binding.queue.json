@@ -1,0 +1,13 @@
+{
+  "conflicts": [],
+  "rule": "VERIFY = ambiguous (name-only) match, CONFLICT = disagreeing / competing external or crosswalk claims. Both sides stay as they are; nothing is auto-resolved and no internal research record is touched.",
+  "schema": "JBC_REFERENCE_BINDING_QUEUE_v0.1",
+  "verify": [
+    {
+      "entity": "JBC-CR-PLACE-BEERSHEBA-001",
+      "matched_name": "beer sheva",
+      "nearest_internal_point_km": 1.15,
+      "reference_feature": "NE-PP-1159130717"
+    }
+  ]
+}
