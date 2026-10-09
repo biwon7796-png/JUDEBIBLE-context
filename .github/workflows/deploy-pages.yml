@@ -6,6 +6,9 @@ on:
     paths:
       - "index.html"
       - "*.js"
+      - "favicon*"
+      - "apple-touch-icon.png"
+      - "judebible-link-preview.png"
       - "styles.css"
       - "data/**"
       - "vendor/**"
@@ -36,6 +39,10 @@ jobs:
           done
       - name: Static entrypoint exists
         run: test -f index.html
+      - name: Build production Pages artifact
+        run: node tools/release/build-pages-dist.js
+      - name: Verify production bundle syntax
+        run: node --check dist/assets/app.bundle.js
 
   deploy:
     needs: validate
@@ -48,9 +55,11 @@ jobs:
       - uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: Build production Pages artifact
+        run: node tools/release/build-pages-dist.js
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: dist
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
@@ -61,7 +70,7 @@ jobs:
           url="${{ steps.deployment.outputs.page_url }}"
           test -n "$url"
           for i in {1..12}; do
-            if curl -fsSL --max-time 20 "$url" | grep -qi "<html"; then
+            if curl -fsSL --max-time 20 "$url" -o /tmp/judebible-index.html && grep -qi "<html" /tmp/judebible-index.html; then
               echo "Smoke PASS: $url"
               exit 0
             fi
