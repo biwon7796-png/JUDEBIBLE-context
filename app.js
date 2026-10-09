@@ -20,6 +20,232 @@
   var REFSRC = window.JBC_REFERENCE_SOURCES || null;
   function refGate(g) { return !REFSRC || !REFSRC.gates || REFSRC.gates[g] !== false; }   // 레지스트리가 없으면 기존 동작 유지
   // ---- 외부 참고 자동 결속(data/reference.bindings.js): 같은 대상으로 안전하게 식별된 외부 자료를 내부 항목에 CROSS_REFERENCE 로 연결한다(합치지 않음). 연구 권위·좌표·범위·사진으로 승격하지 않는다. ----
+  var EASTON_CAND = null, eastonLoadState="IDLE", eastonLoading=null;
+  function ensureEastonCandidate() {
+    if (EASTON_CAND) return Promise.resolve(true);
+    if (eastonLoadState==="FAILED") return Promise.resolve(false);
+    if (eastonLoading) return eastonLoading;
+    eastonLoadState="LOADING";
+    eastonLoading=new Promise(function(resolve) {
+      var tag=document.createElement("script");
+      tag.src="tools/reference/easton_full_candidate/existing_views_candidate/easton.candidate.js";
+      tag.onload=function() {
+        EASTON_CAND=window.JBC_EASTON_CANDIDATE||null;
+        eastonLoadState=EASTON_CAND?"READY":"FAILED";
+        if (EASTON_CAND) { if (state.view==="explore") renderSearch(); if (state.entity) renderPanel(); }
+        resolve(!!EASTON_CAND);
+      };
+      tag.onerror=function(){eastonLoadState="FAILED";resolve(false);};
+      document.head.appendChild(tag);
+    });
+    return eastonLoading;
+  }
+
+  function eastonByStable(sid) {
+    var id = EASTON_CAND && EASTON_CAND.crosswalk && EASTON_CAND.crosswalk[sid];
+    return id && EASTON_CAND.entries && EASTON_CAND.entries[id] || null;
+  }
+  function eastonDetailHtml(sid) {
+    var x = eastonByStable(sid); if (!x) return "";
+    return '<section class="d-sec easton-ref" data-part="external-dictionary" data-authority="REFERENCE_ONLY"><h4 class="d-h">외부 성경사전 · Easton (1897)</h4><p class="meta">Public Domain · 참고자료, WORBS 승인 연구 아님 · '+esc(x.key)+'</p><details><summary>사전 원문 펼쳐 읽기</summary><p class="d-body" style="white-space:pre-wrap">'+esc(x.text)+'</p></details></section>';
+  }
+  function eastonHits(q) {
+    var v=String(q||"").trim().toLowerCase(), m=EASTON_CAND && EASTON_CAND.entries; if(!v||!m)return [];
+    return Object.keys(m).filter(function(k){var e=m[k];return e.key.toLowerCase().indexOf(v)>=0 || (e.aliases||[]).some(function(a){return a.toLowerCase().indexOf(v)>=0;});}).slice(0,20).map(function(k){return m[k];});
+  }
+  function eastonSearchHtml(q) {
+    return eastonHits(q).map(function(x){return '<details class="d-sec easton-ref" data-external-entry="'+esc(x.id)+'"><summary>'+esc(x.key)+' <span class="meta">Easton · 외부 사전</span></summary><p class="meta">REFERENCE_ONLY · Public Domain · WORBS 비대체</p><p class="d-body" style="white-space:pre-wrap">'+esc(x.text)+'</p></details>';}).join("");
+  }
+  // Level A bilingual public-domain dictionary. No approval, identity or geometry effects.
+  var ATLAS90_REF = window.JBC_ATLAS90_KOREAN_REFERENCE || [];
+  var atlas90Selection = null, atlasBcSelection = null, atlasExpansionSelection = null;
+  function atlasSourceReferenceLinks(x) {
+    var titles = {'Gen':'Genesis','Ex':'Exodus','Exod':'Exodus','Lev':'Leviticus','Num':'Numbers','Deut':'Deuteronomy','Josh':'Joshua','Judg':'Judges','Sam':'Samuel','Kings':'Kings','Chr':'Chronicles','Ezra':'Ezra','Neh':'Nehemiah','Ps':'Psalms','Isa':'Isaiah','Jer':'Jeremiah','Ezek':'Ezekiel','Dan':'Daniel','Hos':'Hosea','Amos':'Amos','Mic':'Micah','Matt':'Matthew','Mark':'Mark','Luke':'Luke','John':'John','Acts':'Acts','Rom':'Romans','Rev':'Revelation'};
+    var refs = x.source_evidence && x.source_evidence.scripture_citations_as_printed || [];
+    var linked = refs.map(function(ref) {
+      var m = /^(?:(1|2)\s*)?([A-Za-z]+)\.?\s*(\d+):(\d+)/.exec(ref);
+      if (!m || !titles[m[2]]) return null;
+      var book = (m[1] ? m[1]+' ' : '') + titles[m[2]];
+      if (['Sam','Kings','Chr'].indexOf(m[2])>=0 && !m[1]) return null;
+      var parsed = parseReference(book + ' ' + m[3] + ':' + m[4]);
+      return parsed && !parsed.error && parsed.passage && parsed.verse ? '<button type="button" class="pill" data-source-bible-ref="' + esc(parsed.passage + ':' + parsed.verse) + '" title="사전 인용 성경 본문 보기">' + esc(ref) + ' ↗</button>' : null;
+    }).filter(Boolean);
+    return linked.length ? '<div class="d-sec" data-source-ref-links="1"><h4 class="d-h">사전 인용 성경본문 연결</h4><p class="meta">JudeBible 본문에 장·절이 존재하는 경우만 연결합니다. 인용 구절이 이 지명을 가리키는지는 별도 검증이 필요합니다.</p>' + linked.join(' ') + '</div>' : '';
+  }
+  function atlasExpansionHtml(name) {
+    var x = (window.JBC_ATLAS_BC_EXPANSION || []).filter(function(a){return a.name_en===name;})[0];
+    if (!x) return '';
+    return '<article class="detail d-flat" data-part="atlas-expansion-standalone" data-expansion-name="' + esc(name) + '"><button type="button" class="pill" data-expansion-close="1">참고자료 닫기</button><h3 class="detail-name">' + esc(name) + '</h3><p class="meta">Level B/C 미분류 · 지명 동일성 미검증 · Easton 1897 외부사전 참고자료</p>' + (x.source_evidence && x.source_evidence.scripture_citations_as_printed.length ? '<p class="meta" data-evidence="easton-citation">사전 수록 성경구절 (본문 대조 전): ' + esc(x.source_evidence.scripture_citations_as_printed.join(', ')) + '</p>' : '') + (x.source_evidence && x.source_evidence.geographic_types.length ? '<p class="meta">사전 지리표현 단서: ' + esc(x.source_evidence.geographic_types.join(', ')) + '</p>' : '') + atlasSourceReferenceLinks(x) + (x.ko ? '<h4 class="d-h">한국어 자동 번역 · 미감수</h4><p class="d-body" style="white-space:pre-wrap">' + esc(x.ko) + '</p>' : '<p class="meta">지명 여부 검토 전으로 번역 보류</p>') + '<details><summary>영문 사전 원문</summary><p class="d-body" style="white-space:pre-wrap">' + esc(x.source_text) + '</p></details></article>';
+  }
+  function bcTierLabel(x) { return x.display_tier === 'B' ? 'Level B · 중요지역' : x.display_tier_status === 'HOLD_MULTIPLE_SENSES' ? '등급 보류 · 다의성 검토' : 'Level C · 참고지역 후보'; }
+  function atlasBcReferenceHtml(id) {
+    var x = (window.JBC_ATLAS_BC_CANDIDATES || []).filter(function(a) { return a.candidate_id === id; })[0];
+    if (!x) return '';
+    return '<article class="detail d-flat" data-part="atlas-bc-standalone" data-bc-candidate-id="' + esc(id) + '"><button type="button" class="pill" data-bc-close="1">외부사전 닫기</button><h3 class="detail-name">' + esc(x.name_en) + '</h3><p class="meta">' + esc(bcTierLabel(x)) + ' · 편집 중요도 분류 · 대상 동일성/좌표 미승인 · Easton 1897 참고자료</p>' + (x.ko ? '<h4 class="d-h">한국어 자동 번역 · 미감수</h4><p class="d-body" style="white-space:pre-wrap">' + esc(x.ko) + '</p>' : '<p class="meta">원문 의미·대상 다의성 확인이 필요하여 번역 보류</p>') + '<details><summary>영문 사전 원문</summary><p class="d-body" style="white-space:pre-wrap">' + esc(x.source_text) + '</p></details></article>';
+  }
+  // Presentation tiers only. B/C remain unassigned until their place sets are reviewed.
+  function atlasTier(a) { return a && /^BAT01-PLACE-/.test(a.place_id || '') && ATLAS90_REF.some(function(x) {return x.place_id === a.place_id;}) ? 'A' : null; }
+  function atlasTierBadge(a) { var t = atlasTier(a); return t ? '<span class="atlas-tier atlas-tier-' + t.toLowerCase() + '" data-atlas-tier="' + t + '">Level ' + t + ' · 핵심지역</span>' : ''; }
+  // Explicit reader-only dictionary lookups. NOT an entity identity crosswalk.
+  var ATLAS90_PLACE_LOOKUP = { shechem: 'BAT01-PLACE-1116', bethel: 'BAT01-PLACE-0241', egypt: 'BAT01-PLACE-0382', hebron: 'BAT01-PLACE-0597', gilead: 'BAT01-PLACE-0509' };
+  function atlas90PlaceLookupButton(p) {
+    var id = p && ATLAS90_PLACE_LOOKUP[p.key];
+    return id && ATLAS90_REF.some(function(x) {return x.place_id === id && !!x.ko;}) ? '<button type="button" class="pill" data-atlas90-open="' + esc(id) + '" data-atlas90-lookup="term-only">외부사전 참고</button>' : '';
+  }
+  // Level A reader projections share the existing PlaceCard and Place Basic Detail renderers.
+  // They are NOT canonical entities, and never invent location, media, or registry bindings.
+  function atlas90ReferencePassages(a) {
+    var e = (window.JBC_ATLAS90_SCRIPTURE_EVIDENCE || {})[a.place_id];
+    if (!e || !e.source_citation_candidates || !e.source_citation_candidates.length) return '';
+    var selected = e.source_citation_candidates.filter(function(c){return c.exact_korean_token;}).slice(0, 5);
+    if (!selected.length) selected = e.source_citation_candidates.slice(0, 3);
+    return '<section class="d-sec" data-part="atlas90-easton-scripture-links"><h4 class="d-h">사전 인용 성경본문</h4><p class="meta" style="font-size:.75rem;opacity:.75">사전 인용 · 연구검토중</p>' +
+      selected.map(function(c){return '<button type="button" class="pill" data-atlas90-citation="' + esc(c.ref) + '">' + esc(c.source_citation) + (c.exact_korean_token ? ' · 지명표기 일치' : ' · 본문 확인') + '</button>';}).join('') + '</section>';
+  }
+  function atlas90EvidenceLabels(a) {
+    var rec = (window.JBC_ATLAS90_SCRIPTURE_EVIDENCE || {})[a.place_id];
+    return rec && rec.source_citation_candidates ? rec.source_citation_candidates.slice(0, 3).map(function(c){return c.source_citation || c.ref;}) : [];
+  }
+  var AB_GEO_MEDIA = window.JBC_AB_READER_GEO_MEDIA || {};
+  var readerGeoFocus = null; // ephemeral, noncanonical map overlay
+  function abReaderGeoSection(id) {
+    var r=AB_GEO_MEDIA[id];if(!r)return '';
+    var source='<p class="meta" style="font-size:.72rem;opacity:.7">지리 출처: <a href="'+esc(r.source_url||'https://openbible.info/geo/')+'" target="_blank" rel="noopener noreferrer">'+esc(r.source||'OpenBible.info')+'</a> · 전문 동일성 연구검토중</p>';
+    if(r.geo){
+      var typ=r.geo.geometry==='point'?'참고 위치':'개략 대표 위치';
+      return '<section class="d-sec" data-part="ab-reader-geo"><h4 class="d-h">성경 지리 참고지도</h4>'+
+        '<button type="button" class="pill" data-ab-reader-geo="'+esc(id)+'">지도에서 '+esc(typ)+' 보기</button>'+
+        '<p class="meta">'+esc(r.geo.modern_name||'')+' · 지리 대응 검토자료</p>'+source+'</section>';
+    }
+    var candidates=(r.candidates||[]).slice(0,4);
+    if(candidates.length) return '<section class="d-sec" data-part="ab-reader-geo-candidates">'+
+      '<details><summary>지리 후보 위치 비교 · 연구검토중 ('+candidates.length+')</summary><p class="meta">여러 지리 후보가 있어 위치를 확정하지 않았습니다.</p>'+
+      candidates.map(function(c,i){var im=c.photo;return '<div class="reader-geo-candidate" data-reader-geo-candidate="'+i+'"><button type="button" class="pill" data-ab-reader-geo="'+esc(id)+'|'+i+'">후보 '+(i+1)+' · '+esc(c.modern_name||c.ancient_name||'위치')+'</button>'+(im?'<figure class="reader-geo-candidate-photo"><img src="'+esc(im.url)+'" alt="'+esc(im.alt)+'" loading="lazy" style="width:100%;max-height:210px;object-fit:cover;border-radius:8px"/><figcaption class="meta">후보 위치 참고사진 · '+esc(im.creator)+' · '+esc(im.license)+' · <a href="'+esc(im.source_url)+'" target="_blank" rel="noopener noreferrer">Commons 출처</a></figcaption></figure>':'')+'</div>';}).join('')+
+      source+'</details></section>';
+    return '<p class="meta" data-part="ab-reader-geo-pending" style="font-size:.72rem;opacity:.65">지도 위치 연구검토중</p>';
+  }
+  function atlas90PlaceProjection(a) {
+    var binding = (window.JBC_ATLAS90_READER_CROSSWALK || {})[a.place_id];
+    var linked = binding && placeIndex().byKey[binding.place_key], geo=AB_GEO_MEDIA[a.place_id]||{};
+    return { key: 'atlas90:' + a.place_id, stableId: '', canonical: false,
+      hasProfile: false, label: a.name_ko || a.name_en, en: a.name_en,
+      type: a.kind === 'region' ? '지역' : '지명', region: '',
+      summary: 'Level A · 핵심지역',
+      certainty: linked ? linked.certainty : '', primaryPassage: null, passages: linked ? linked.passages.slice() : atlas90EvidenceLabels(a), passageIds: linked ? linked.passageIds.slice() : [],
+      people: linked ? linked.people.slice() : [], eras: linked ? linked.eras.slice() : [], journeys: linked ? linked.journeys.slice() : [],
+      scenes: linked ? linked.scenes.slice() : [], media: linked&&linked.media ? linked.media : ((window.JBC_ATLAS90_READER_MEDIA || {})[a.place_id] || geo.media || null), lat: linked&&linked.lat!=null ? linked.lat : geo.geo ? geo.geo.lat : null, lon: linked&&linked.lon!=null ? linked.lon : geo.geo ? geo.geo.lon : null };
+  }
+  var LEVEL_B_87 = window.JBC_LEVEL_B_87 || [];
+  var levelBSelection = null;
+  function levelBRefs(a) { return (a.citation_candidates || []).filter(function(c){return c.status==='KRV_VERIFIED' && c.ref;}); }
+  function levelBExistingPlace(a) {
+    var normalize=function(v){return String(v||'').toLowerCase().replace(/[^a-z0-9]/g,'');};
+    var name=normalize(a.name_en), list=placeIndex().list;
+    var hits=list.filter(function(p){return normalize(p.key)===name || (!!p.en && normalize(p.en)===name);});
+    return hits.length===1 ? hits[0] : null;
+  }
+  function nativePlaceReferenceHtml(p) {
+    if(!p)return '';
+    var norm=function(v){return String(v||'').toLocaleLowerCase().replace(/[^a-z0-9가-힣]/g,'');};
+    var keys=[p.key,p.en,p.label].map(norm).filter(Boolean);
+    var parts=[];
+    (window.JBC_ATLAS90_KOREAN_REFERENCE||[]).forEach(function(a){
+      var link=(window.JBC_ATLAS90_READER_CROSSWALK||{})[a.place_id];
+      if((link&&link.place_key===p.key)||keys.indexOf(norm(a.name_en))>=0||keys.indexOf(norm(a.name_ko))>=0){
+        parts.push('<section class="d-sec" data-part="native-level-a-reference"><h4 class="d-h">Level A · 핵심지역 참고</h4>'+
+          atlas90ReferencePassages(a)+abReaderGeoSection(a.place_id)+'<p class="d-body" style="white-space:pre-wrap">'+esc(a.ko||'')+'</p>'+
+          '<p class="meta" style="font-size:.72rem;opacity:.65">Easton 참고 · 연구검토중</p></section>');
+      }
+    });
+    LEVEL_B_87.forEach(function(a){
+      var match=levelBExistingPlace(a);
+      if((match&&match.key===p.key)||keys.indexOf(norm(a.name_en))>=0||keys.indexOf(norm(a.name_ko))>=0){
+        var refs=levelBRefs(a).slice(0,8);
+        parts.push('<section class="d-sec" data-part="native-level-b-reference"><h4 class="d-h">Level B · 중요지역 참고</h4>'+
+          '<div class="pill-group">'+refs.map(function(c){return '<button type="button" class="pill" data-levelb-ref="'+esc(c.ref)+'">'+esc(c.source)+'</button>';}).join('')+'</div>'+
+          abReaderGeoSection(a.candidate_id)+'<p class="d-body" style="white-space:pre-wrap">'+esc(a.ko||'')+'</p>'+
+          '<p class="meta" style="font-size:.72rem;opacity:.65">Easton 참고 · 연구검토중</p></section>');
+      }
+    });
+    return parts.length?'<div data-part="native-place-reference-merge">'+parts.join('')+'</div>':'';
+  }
+  function levelBProjection(a) {
+    var r=levelBRefs(a), labels=r.slice(0,3).map(function(c){return c.source;}), linked=levelBExistingPlace(a), geo=AB_GEO_MEDIA[a.candidate_id]||{};
+    return {key:'levelb:'+a.candidate_id,stableId:'',canonical:false,hasProfile:false,label:a.name_ko||a.name_en,en:a.name_en,
+      type:'지명',region:'',summary:'Level B · 중요지역',certainty:'',primaryPassage:null,passages:labels,passageIds:[],
+      people:linked?linked.people.slice():[],eras:linked?linked.eras.slice():[],journeys:linked?linked.journeys.slice():[],scenes:linked?linked.scenes.slice():[],media:linked&&linked.media||geo.media||null,lat:linked&&linked.lat!=null?linked.lat:geo.geo?geo.geo.lat:null,lon:linked&&linked.lon!=null?linked.lon:geo.geo?geo.geo.lon:null};
+  }
+  function levelBCard(a,q) {
+    return placeCardHtml(levelBProjection(a),'search',{q:q})
+      .replace(/data-place-open="/g,'data-levelb-open="').replace(/data-search="1"/g,'data-levelb-search="1"')
+      .replace(/data-levelb-open="levelb:[^"]+"/g,'data-levelb-open="'+esc(a.candidate_id)+'"');
+  }
+  function levelBDetail(a) {
+    var refs=levelBRefs(a).slice(0,8), linked=levelBExistingPlace(a);
+    var body=abReaderGeoSection(a.candidate_id)+(linked?'<section class="d-sec" data-part="levelb-map-link"><h4 class="d-h">지도 · 장소 탐색</h4><button type="button" class="pill" data-map-focus-place="'+esc(linked.key)+'">기존 장소 지도에서 보기</button><p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · 독자용 탐색 연결</p></section>':'<p class="meta" data-part="levelb-map-pending" style="font-size:.72rem;opacity:.65">지도 위치 연구검토중</p>')+'<section class="d-sec" data-part="levelb-scripture"><h4 class="d-h">관련 성경본문</h4>'+
+      (refs.length?refs.map(function(c){return '<button type="button" class="pill" data-levelb-ref="'+esc(c.ref)+'">'+esc(c.source)+'</button>';}).join(''):'<p class="meta">본문 자료 연구검토중</p>')+'</section>'+
+      '<section class="d-sec"><h4 class="d-h">지명 자료</h4><p class="d-body" style="white-space:pre-wrap">'+esc(a.ko||'')+'</p>'+
+      '<p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · Easton 사전 참고자료</p></section>';
+    return '<div data-part="levelb-shared-detail" data-levelb-id="'+esc(a.candidate_id)+'"><button type="button" class="pill" data-levelb-close="1">장소 상세 닫기</button>'+
+      placeBasicDetailHtml(null,levelBProjection(a)).replace('</article>',body+'</article>')+'</div>';
+  }
+  function atlas90SharedCard(a, q) {
+    var p = atlas90PlaceProjection(a);
+    var html = placeCardHtml(p, 'search', {q:q});
+    return html.replace(/data-place-open="/g, 'data-atlas90-open="').replace(/data-search="1"/g, 'data-atlas90-search="1"')
+      .replace(/data-origin="JOURNEY_DATA"/g, 'data-origin="REFERENCE_ONLY"')
+      .replace(/data-atlas90-open="atlas90:[^"]+"/g, 'data-atlas90-open="' + esc(a.place_id) + '"')
+      .replace('</button></article>', '<span class="ee-tag">Level A · 핵심지역</span></button></article>');
+  }
+  function atlas90ReferenceHtml(placeId, englishTerm) {
+    var matches = ATLAS90_REF.filter(function(x) {
+      return placeId ? x.place_id === placeId : !!englishTerm && x.name_en.toLowerCase() === String(englishTerm).toLowerCase();
+    });
+    if (matches.length !== 1) return "";
+    var a = matches[0], ok = !!a.ko && a.status.indexOf("AUTO_TRANSLATED_") === 0;
+    return '<section class="d-sec atlas90-detail" data-part="atlas90-translation" data-authority="REFERENCE_ONLY" data-atlas-place-id="' + esc(a.place_id) + '"><h4 class="d-h">성경아틀라스 · 외부사전 한국어 번역</h4>' + atlasTierBadge(a)
+      + '<p class="meta">' + esc(a.name_en) + ' · ' + esc(a.source_key || '미연결') + ' · ' + esc(a.source || '외부 사전') + ' · 자동 번역 참고자료 (WORBS 승인 연구 아님)</p>' + (a.qa_status === 'SOURCE_EXTRACTION_REVIEW_REQUIRED' ? '<p class="meta" data-atlas90-qa="HOLD">원문 추출에 누락 글자 의심 · 해당 한국어 번역은 재검증 전 참고용</p>' : '') + (a.identity_note ? '<p class="meta" data-identity-note="1">표제어·대상 동일성 검토 필요: 사전 설명을 기존 장소 ID의 전문 연구로 확정하지 않았습니다.</p>' : '')
+      + (ok ? '<p class="d-body" style="white-space:pre-wrap">' + esc(a.ko) + '</p><details><summary>영문 사전 원문</summary><p class="d-body" style="white-space:pre-wrap">' + esc(a.en) + '</p></details>' : '<p class="meta">일치하는 사전 원문 확인 전입니다.</p>')
+      + '</section>';
+  }
+  document.addEventListener("click", function(ev) {
+    var lbref = ev.target && ev.target.closest && ev.target.closest('[data-levelb-ref]');
+    if (lbref) { ev.preventDefault(); var m=/^([a-z0-9]+-\d+):(\d+)$/.exec(lbref.dataset.levelbRef||'');if(m&&D.passages[m[1]]&&hasVerse(m[1],+m[2])){levelBSelection=null;return openRelatedPassage(m[1],+m[2]);}return; }
+    var lbopen = ev.target && ev.target.closest && ev.target.closest('[data-levelb-open]');
+    if (lbopen) { ev.preventDefault(); levelBSelection=lbopen.dataset.levelbOpen;atlas90Selection=null;atlasBcSelection=null;atlasExpansionSelection=null; if(state.view==='explore')ensureContextVisible();renderPanel();return; }
+    var lbclose = ev.target && ev.target.closest && ev.target.closest('[data-levelb-close]');
+    if (lbclose) { ev.preventDefault(); levelBSelection=null;renderPanel();return; }
+    var atlasCitation = ev.target && ev.target.closest && ev.target.closest('[data-atlas90-citation]');
+    if (atlasCitation) {
+      ev.preventDefault();
+      var key = /^([a-z0-9]+-\d+):(\d+)$/.exec(atlasCitation.dataset.atlas90Citation || '');
+      if (key && D.passages[key[1]] && hasVerse(key[1], +key[2])) return openRelatedPassage(key[1], +key[2]);
+      return;
+    }
+    var bibleLink = ev.target && ev.target.closest && ev.target.closest('[data-source-bible-ref]');
+    if (bibleLink) {
+      ev.preventDefault();
+      var br = /^([a-z0-9]+-\d+):(\d+)$/.exec(bibleLink.dataset.sourceBibleRef || '');
+      if (br && D.passages[br[1]]) { atlasExpansionSelection = null; return openRelatedPassage(br[1], +br[2]); }
+      return;
+    }
+    var exOpen = ev.target && ev.target.closest && ev.target.closest('[data-expansion-open]');
+    var exClose = ev.target && ev.target.closest && ev.target.closest('[data-expansion-close]');
+    if (exOpen) { ev.preventDefault(); ev.stopImmediatePropagation(); atlasExpansionSelection = exOpen.dataset.expansionOpen; atlasBcSelection = null; atlas90Selection = null; if (state.view === 'explore') closeSearch(true); else renderPanel(); return; }
+    if (exClose) { ev.preventDefault(); atlasExpansionSelection = null; renderPanel(); return; }
+    var bcOpen = ev.target && ev.target.closest && ev.target.closest("[data-bc-open]");
+    var bcClose = ev.target && ev.target.closest && ev.target.closest("[data-bc-close]");
+    if (bcOpen) { ev.preventDefault(); atlasBcSelection = bcOpen.dataset.bcOpen; atlas90Selection = null; if (state.view === 'explore') closeSearch(true); else renderPanel(); return; }
+    if (bcClose) { ev.preventDefault(); atlasBcSelection = null; renderPanel(); return; }
+    var open = ev.target && ev.target.closest && ev.target.closest("[data-atlas90-open]");
+    var close = ev.target && ev.target.closest && ev.target.closest("[data-atlas90-close]");
+    if (open) {
+      ev.preventDefault(); atlas90Selection = open.dataset.atlas90Open; levelBSelection=null;atlasBcSelection=null;atlasExpansionSelection=null;
+      // Single click is a side-panel preview: keep Explore and its scroll position.
+      if (state.view === "explore") { ensureContextVisible(); renderPanel(); }
+      else renderPanel();
+    } else if (close) { ev.preventDefault(); atlas90Selection = null; renderPanel(); }
+  });
   var REFBIND = window.JBC_REFERENCE_BINDINGS || null;
   function extBindings(sid) { var b = REFBIND && REFBIND.bindings && REFBIND.bindings[sid]; return b && (b.bound.length || b.verify.length || b.conflicts.length) ? b : null; }
   var PJ = window.BVC_PROJECTION || null, GF = window.JBC_GEOGRAPHY_FOUNDATION || { regions: {}, routes: {}, meta: null }, PERSON_PJ = window.BVC_PERSON_PROJECTION || null, FULL_PLACE = window.JBC_PLACE_FULL_PROFILES || {}, CTX = window.JBC_CONTEXTUAL_RESEARCH || { records: [], by_passage: {}, timeline_bindings: [] }, ALIAS_STABLE = {}, STABLE_ALIAS = {}, STABLE_KIND = {};
@@ -252,12 +478,32 @@
     var n = 0; contextualRecords(pid, verse).forEach(function (r) { n += (r.entity_candidates || []).filter(function (e) { return e.type === "place" && !e.canonical_entity_id; }).length; });
     return n ? '<p class="helper ctx-map-notice" data-context-map-hold="' + n + '">연결 연구의 장소 후보 ' + n + '건은 canonical 식별·검증 좌표가 없어 지도 점으로 표시하지 않습니다.</p>' : "";
   }
+  function foundationPassageRecords(pid, verse) {
+    var m=/^([a-z0-9]+)-(\d+)$/.exec(pid||""); if(!m||!GF)return [];
+    var book=m[1], ch=+m[2], out=[];
+    ["regions","routes"].forEach(function(group){ Object.keys(GF[group]||{}).forEach(function(sid){
+      var r=GF[group][sid], hit=(r.passage_links||[]).some(function(p){
+        if(p.book!==book || +p.chapter!==ch) return false;
+        if(verse==null || p.v1==null) return true;
+        return verse>=+p.v1 && verse<=+(p.v2==null?p.v1:p.v2);
+      });
+      if(hit) out.push({sid:sid,record:r});
+    });});
+    return out;
+  }
   function contextualGuideHtml(pid, verse) {
-    var recs = contextualRecords(pid, verse); if (!recs.length) return "";
-    return '<section class="g-context-research" data-part="contextual-research"><h3 class="sec-h">연결 연구</h3>' + recs.map(function (r) {
+    var recs = contextualRecords(pid, verse), foundation=foundationPassageRecords(pid,verse);
+    if (!recs.length && !foundation.length) return "";
+    var html='<section class="g-context-research" data-part="contextual-research"><h3 class="sec-h">연결 연구</h3>';
+    html += foundation.map(function(x){
+      var r=x.record, sum=r.reader&&r.reader.concise_summary||r.semantic_note||"";
+      return '<div class="g-topic foundation-link" data-foundation-record="'+esc(x.sid)+'"><p class="g-theme">'+esc(r.display_label||x.sid)+'</p><p class="meta">'+esc(sum)+'</p><button type="button" class="g-link" data-related-entity="'+esc(x.sid)+'">지리 연구 열기 ›</button></div>';
+    }).join("");
+    html += recs.map(function (r) {
       return '<div class="g-topic" data-context-record="' + esc(r.record_id) + '"><p class="g-theme">' + esc(r.title) + '</p><p class="meta">' + esc(r.summary || "") + '</p>' +
         '<div class="pills">' + (r.passage_refs || []).map(function (p) { return '<button type="button" class="g-link" data-context-ref="' + esc(p.book + "-" + p.chapter + ":" + p.v1) + '">' + esc(contextPassageLabel(p)) + '</button>'; }).join("") + '</div></div>';
-    }).join("") + '</section>';
+    }).join("");
+    return html+'</section>';
   }
   function contextualSearch(q) {
     var nq = norm(q); if (!nq) return [];
@@ -386,7 +632,7 @@
       if (kv[1] === "panel") { if (kv[2] !== "open" && kv[2] !== "collapsed") return null; r.panel = kv[2]; }
       else if (kv[1] === "view") { if (["study", "map", "timeline", "explore"].indexOf(kv[2]) < 0) return null; r.view = kv[2] === "map" ? "study" : kv[2]; }   // 별도 지도 관점은 본문연구 Workspace 로 통합됨(옛 view=map 링크는 본문연구로 연결)
       else if (kv[1] === "sheet") { if (["peek", "half", "full"].indexOf(kv[2]) < 0) return null; r.sheet = kv[2]; }
-      else if (kv[1] === "tab") r.tab = kv[2]; else { var e = kv[2].split("."); if (e.length !== 2) return null; r.entity = { kind: e[0], id: resolveKey(e[1]) }; }
+      else if (kv[1] === "tab") r.tab = kv[2]; else { var em = /^([^.]+)\.(.+)$/.exec(kv[2]); if (!em) return null; r.entity = { kind: em[1], id: resolveKey(em[2]) }; }
     }
     if (r.tab === "map") r.tab = "context";   // 지도 탭은 제거됨(옛 링크 호환)
     if (!D.passages[r.passage] || (r.verse != null && !hasVerse(r.passage, r.verse)) || !tabValid(r.tab) || (r.entity && !entityValid(r.entity))) return null;
@@ -412,7 +658,7 @@
     showRefError("");
     ui.vsel = []; ui.vanchor = null; ui.vmulti = false;
     if (!keepContext && !ui.navApplying && ui.nav && ui.nav.topic) navEnd(true);   // 주제 밖으로 이동하면(상단 검색·장 이동 등) 주제 탐색 상태와 지도 프리셋을 해제한다
-    if (!keepEntity) { ui.placeBasic = null; ui.rsPlace = null; ui.rsStep = false; if (ui.rmode === "PLACE") ui.rmode = "TEXT"; }   // 다른 본문으로 가면 연구 맥락은 그 본문이 된다(모드는 지명→본문만 정리)
+    if (!keepEntity) { atlas90Selection = null; levelBSelection = null; atlasBcSelection = null; atlasExpansionSelection = null; ui.placeBasic = null; ui.rsPlace = null; ui.rsStep = false; if (ui.rmode === "PLACE") ui.rmode = "TEXT"; }   // 다른 본문으로 가면 연구 맥락은 그 본문이 된다(모드는 지명→본문만 정리)
     state.passage = passage; state.verse = verse; state.entity = keepEntity ? state.entity : null; state.preview = null; state.prevTab = null; state.view = keepView && (state.view === "study" || state.view === "timeline") ? state.view : "study";   // 빠른 찾기는 현재 관점(본문연구/연표)을 유지한다
     if (!keepContext) { ui.cam = { x: 50, y: 50, k: 1 }; ui.guideStep = null; ui.navExplore = false; ui.gcam = null; ui.layers = { route: true, place: true }; }   // 관련 본문 이동(keepContext)은 지도 카메라·레이어·네비게이션 상태를 그대로 둔다
     pendingScroll = { mode: verse != null ? "verse" : "top", fresh: verse == null };   // 이전/다음 장·참조 이동은 새 장의 처음부터(옛 읽던 위치 복원 금지)
@@ -425,7 +671,7 @@
     ui.refTarget = null; ui.rpPerson = null; ui.mapOpen = false; ui.tiles = false; ui.navExplore = false; ui.ovOpen = {}; ui.cam = { x: 50, y: 50, k: 1 }; ui.gcam = null; ui.layers = { route: true, place: true }; ui.guideStep = null; navEnd(true); ui.nav.board = false;
     if (typeof swState !== "undefined" && swState) { swState.q = ""; swState.kind = "all"; swState.type = "all"; swState.testament = "all"; swState.period = "all"; swState.region = "all"; swState.sort = "label"; swState.limit = 30; swState.prevFocus = null; closeSearch(true); }
     if ($("sw-query")) $("sw-query").value = "";
-    var sp = $("settings-pop"); if (sp) sp.hidden = true; if ($("rail-settings")) $("rail-settings").setAttribute("aria-expanded", "false");
+
     showRefError(""); pendingScroll = { mode: "top" }; replaceNext = true; render(); window.scrollTo(0, 0); return true;
   }
   // 참조 입력창/검색 결과가 쓰는 단일 진입점: 실패하면 현재 본문·절·스크롤을 그대로 둔다.
@@ -442,6 +688,9 @@
   var DETAIL_MODEL = { ENTITY: ["Person", "Place", "Event", "Route"], PASSAGE: ["Verse", "Passage", "Pericope"] };
   function detailContext() {
     var en = state.entity;
+    if (levelBSelection) return { kind: "ENTITY", subject: "Place", id: levelBSelection, open: state.panel };
+    if (atlas90Selection) return { kind: "ENTITY", subject: "Place", id: atlas90Selection, open: state.panel === "open" || isMobile() && state.sheet !== "peek" };
+    if (ui.placeBasic) return { kind: "ENTITY", subject: "Place", id: ui.placeBasic, open: state.panel === "open" || isMobile() && state.sheet !== "peek" };
     if (en) return { kind: "ENTITY", subject: en.kind === "p" ? "Person" : en.kind === "rgn" ? "Region" : "Place", id: en.id, open: state.panel === "open" || isMobile() && state.sheet !== "peek" };
     return { kind: "PASSAGE", subject: state.verse != null ? "Verse" : "Passage", passage: state.passage, verse: state.verse, open: state.panel === "open" || isMobile() && state.sheet !== "peek" };
   }
@@ -456,6 +705,10 @@
     if (isMobile() && state.sheet === "full") { state.sheet = "half"; sheetChanged = true; }   // Detail 은 열어 둔 채 본문이 보이도록 줄인다
     if (pid !== state.passage) { if (!go(pid, null, true, true)) return false; }
     else { var viewChanged = state.view !== "study"; state.view = "study"; if (viewChanged || sheetChanged) render(); }
+    // Keep the selected geography's reading viewport when following its scripture links.
+    if (state.entity && (state.entity.kind === "rgn" || state.entity.kind === "rt")) {
+      if (focusRegionReading(state.entity.kind, state.entity.id)) renderGeoOnly();
+    }
     ui.refTarget = { passage: pid, verse: n, verse_end: n2 };   // 범위 전체를 강조·스크롤하되 절 선택 상태나 URL 은 바꾸지 않는다
     updateTextState(); activateScripture(pid, n);
     return true;
@@ -519,7 +772,54 @@
     showRefError("현재 인물카드를 연결할 수 없습니다.");
     return false;
   }
+  // UI-only broad reading viewpoints; never authoritative region geometry or map markers.
+  // Presentation-only broad viewports for known HBA01 foundation identities.
+  // These are NOT verified centroids, geographic facts, route shapes or markers.
+  var REGION_READING_CAMERAS = {
+    "geo.ane": { lon: 35.0, lat: 32.0, width: 38 },
+    "geo.fertile_crescent": { lon: 39.0, lat: 34.0, width: 29 },
+    "geo.mesopotamia": { lon: 43.0, lat: 34.5, width: 16 },
+    "geo.mesopotamia.north": { lon: 41.0, lat: 36.5, width: 11 },
+    "geo.mesopotamia.south": { lon: 45.0, lat: 32.5, width: 10 },
+    "geo.assyria": { lon: 43.0, lat: 36.0, width: 11 },
+    "geo.babylonia": { lon: 44.5, lat: 32.5, width: 10 },
+    "hydro.tigris": { lon: 44.0, lat: 35.0, width: 16 },
+    "hydro.euphrates": { lon: 41.0, lat: 35.0, width: 20 },
+    "geo.egypt": { lon: 30.0, lat: 27.5, width: 18 },
+    "geo.egypt.upper": { lon: 32.0, lat: 25.5, width: 11 },
+    "geo.egypt.lower": { lon: 31.0, lat: 30.7, width: 8 },
+    "hydro.nile": { lon: 31.5, lat: 27.0, width: 22 },
+    "landform.nile_delta": { lon: 31.0, lat: 31.0, width: 7 },
+    "hydro.nile_cataracts": { lon: 32.5, lat: 23.5, width: 14 },
+    "geo.levant": { lon: 35.7, lat: 33.4, width: 13 },
+    "geo.syria": { lon: 37.0, lat: 35.0, width: 11 },
+    "geo.lebanon": { lon: 35.9, lat: 33.9, width: 7 },
+    "geo.canaan_macro": { lon: 35.2, lat: 31.8, width: 9 },
+    "relation.levant_land_bridge": { lon: 35.0, lat: 32.7, width: 18 },
+    "route.network.ane": { lon: 37.0, lat: 32.8, width: 34 },
+    "route.international_coastal": { lon: 34.8, lat: 32.5, width: 15 },
+    "route.kings_highway": { lon: 35.7, lat: 31.5, width: 14 }
+  };
+  function regionReadingCamera(kind, id) {
+    if (kind !== "rgn" && kind !== "rt") return null;
+    var record = dictOf(kind)[id], sid = record && record.stable_id;
+    var raw = record && record.research;
+    if (!sid || !raw || !readerVisible(sid)) return null;
+    if (kind === "rgn" && !regionRecordOk(sid, raw)) return null;
+    if (kind === "rt" && (raw.type !== "Route" || raw.stable_id !== sid)) return null;
+    if (raw.geometry && raw.geometry.approved === true) return null;
+    var preset = REGION_READING_CAMERAS[sid];
+    return preset && isFinite(preset.lon) && isFinite(preset.lat) && isFinite(preset.width) ?
+      clampGeoCam({ x: preset.lon, y: GEO.yOf(preset.lat), w: preset.width }) : null;
+  }
+  function focusRegionReading(kind, id) {
+    var target = regionReadingCamera(kind, id);
+    if (!target) return false;
+    ui.gcam = target; // Camera only; no geometry, route polyline, or spatial identity.
+    return true;
+  }
   function selectEntity(kind, id) {
+    if (kind==="l" && id==="beersheba") ensureEastonCandidate();
     ui.placeBasic = null; ui.rpPerson = null; ui.researchReturnEntity = null; ui.entityOcc = ui.nextOcc || null; ui.nextOcc = null;
     id = resolveKey(id);
     var same = state.entity && state.entity.kind === kind && state.entity.id === id;
@@ -530,6 +830,7 @@
     state.entity = { kind: kind, id: id };
     state.tab = kind === "p" ? "people" : kind === "l" || kind === "rgn" ? "places" : "context";
     if (kind === "l") focusPlace(id);
+    if (kind === "rgn" || kind === "rt") focusRegionReading(kind, id);
     if (kind === "l" && isMobile()) ui.mapOpen = true;
     ensureContextVisible();
     render(); panelScrollTop();
@@ -537,12 +838,15 @@
   function selectEntityStable(sid) {
     var e = STORE.get(sid), id = e && e.compatibility_key; if (!e || !id) return false;
     var same = state.entity && state.entity.kind === e.kind && state.entity.id === id;
-    if (!same) selectEntity(e.kind, id); else { ensureContextVisible(); render(); }
+    if (!same) selectEntity(e.kind, id); else {
+      if (e.kind === "rgn" || e.kind === "rt") focusRegionReading(e.kind, id);
+      ensureContextVisible(); render();
+    }
     return true;
   }
   // ---- Research Panel Controller: 선택 맥락(selectedContext)과 연구 모드(researchMode: PLACE | TEXT)를 분리한다 ----
   // 맥락: 여정 장면(ui.rsStep) ↳ 지명(ui.rsPlace) ↳ 본문(state.passage/verse). 모드는 맥락을 바꾸지 않고 패널 본문만 바꾼다. 자료가 없어도 다른 모드로 대신하지 않는다.
-  function rsShellOn() { return state.view === "study" && !ui.rpPerson && !(state.entity && state.entity.kind !== "l"); }
+  function rsShellOn() { return !localPersonOpen && state.view === "study" && !levelBSelection && !atlas90Selection && !atlasBcSelection && !atlasExpansionSelection && !ui.rpPerson && !(state.entity && state.entity.kind !== "l"); }
   function rsPersonLabel(id) { var d = dictOf("p"), r = d && d[id]; return (r && (r.name || r.label)) || ui.rsPersonLabel || "인물"; }
   function rsPersonInScene(id) {   // 이 장면의 본문 범위(또는 현재 범위)에 그 인물이 직접 나오는가
     var st = rsStepNow(), r = st && st.s.range, pid = r ? r.pid : state.passage, P = D.passages[pid]; if (!P || !id) return false;
@@ -579,7 +883,7 @@
     else { title = rsPassageLabel(); sub = key ? "관련 지명 · " + rsPlaceLabel(key) : ""; }
     var pOk = rsPlaceRelation(), tOk = rsTextRelation();
     var btn = function (m, label, ok, why) { return '<button type="button" class="rs-seg' + (mode === m ? " is-on" : "") + '" data-rs-mode="' + m + '" aria-pressed="' + (mode === m) + '"' + (ok ? "" : ' disabled aria-disabled="true" title="' + why + '"') + ">" + label + "</button>"; };
-    return '<div class="rs-top"><span class="rs-eyebrow" data-part="rs-eyebrow">' + esc(eyebrow) + '</span><button type="button" class="btn ghost rs-collapse" data-rs-collapse aria-controls="panel">접기</button></div>' +
+    return '<div class="rs-top"><span class="rs-eyebrow" data-part="rs-eyebrow">' + esc(eyebrow) + '</span><button type="button" class="btn ghost rs-memo-open" data-open-memo="1">메모장</button><button type="button" class="btn ghost rs-collapse" data-rs-collapse aria-controls="panel">접기</button></div>' +
       '<h3 class="rs-title" data-part="rs-title">' + esc(title) + "</h3>" + (sub ? '<p class="rs-passage" data-part="rs-passage">' + esc(sub) + "</p>" : "") +
       '<div class="rs-switch" role="group" aria-label="연구 종류" data-part="rs-switch" data-mode="' + mode + '">' + btn("PLACE", "지명연구", pOk, "이 본문에 연결된 지명이 없습니다") + btn("TEXT", "본문연구", tOk, "이 지명에 연결된 본문이 없습니다") + "</div>";
   }
@@ -650,7 +954,7 @@
   document.addEventListener("transitionend", function (e) { if (e.propertyName === "--jb-current-research-width") jbPaneEndTransition(); });
   function updateContextChrome() {
     var b = document.body, mob = isMobile();
-    b.dataset.panel = state.panel; b.dataset.sheet = state.sheet; b.dataset.detailContext = state.entity ? "entity" : "passage";
+    b.dataset.panel = state.panel; b.dataset.sheet = state.sheet; b.dataset.detailContext = (state.entity || atlas90Selection || atlasBcSelection || atlasExpansionSelection || ui.placeBasic) ? "entity" : "passage";
     var tg = $("panel-toggle"), op = $("panel-open");
     if (tg) {
       var personContext = !!(state.entity && state.entity.kind === "p");
@@ -673,7 +977,8 @@
     var ea = entryAnchors[entryKey(location.hash)] || (history.state && history.state.bvcAnchor) || null;
     if (r.passage !== state.passage || r.verse !== state.verse || ea) pendingScroll = { mode: r.verse != null ? "verse" : "top", anchor: ea && ea.passage === r.passage ? ea : null };
     state.passage = r.passage; state.verse = r.verse; state.tab = r.tab; state.entity = r.entity; state.preview = null; state.prevTab = null;
-    var ecam = entryCams[entryKey(location.hash)]; if (ecam !== undefined) ui.gcam = ecam ? Object.assign({}, ecam) : null;   // 검색 점프로 옮긴 지도는 뒤로 가기에서 이전 카메라로 돌아온다
+    var ecam = entryCams[entryKey(location.hash)]; if (ecam !== undefined) ui.gcam = ecam ? Object.assign({}, ecam) : null;
+    else if (r.entity && (r.entity.kind === "rgn" || r.entity.kind === "rt")) focusRegionReading(r.entity.kind, r.entity.id);   // 검색 점프로 옮긴 지도는 뒤로 가기에서 이전 카메라로 돌아온다
     // 패널·시트·관점은 사용자의 화면 상태다: 다른 작업 상태로 history 이동할 때는 덮어쓰지 않고(사용자가 닫아 둔 Detail 을 되살리지 않는다), URL 이 화면 상태만 바꾼 경우에만 반영한다.
     if (chromeOnly) { if (r.panel) state.panel = r.panel; if (r.sheet) state.sheet = r.sheet; if (r.view) state.view = r.view; }
     replaceNext = true;     // history 에서 온 상태 복원은 새 entry 를 만들지 않는다
@@ -695,6 +1000,36 @@
     if (!nm) return html;
     return html.split(/(<span[\s\S]*?<\/span>)/).map(function (part) { return part.charAt(0) === "<" ? part : part.split(esc(nm)).join('<span class="tag p rp-name" tabindex="0" role="button" data-rp-ref="' + ref + '">' + esc(nm) + "</span>"); }).join("");
   }
+  // Word-to-place reader links require an explicitly checked verse and exact KRV token.
+  // These are external reference navigation only; they never bind or approve a canonical place ID.
+  var ATLAS_VERIFIED_WORD_LINKS = window.JBC_ATLAS_PLACE_WORD_LINKS || {};
+  function atlasPlaceWordLinks(text, html, ref) {
+    var links = ATLAS_VERIFIED_WORD_LINKS[ref] || [];
+    links.forEach(function(x) {
+      if (text.split(x.token).length !== 2 || html.split(esc(x.token)).length !== 2 || html.indexOf('>' + esc(x.token) + '</span>') >= 0) return;
+      html = html.replace(esc(x.token), '<span class="tag atlas-place-word" role="button" tabindex="0" data-expansion-open="' + esc(x.name) + '" data-authority="REFERENCE_ONLY">' + esc(x.token) + '</span>');
+    });
+    return html;
+  }
+  function atlas90WordLinks(text, html, ref) {
+    var links = (window.JBC_ATLAS90_WORD_LINKS || {})[ref] || [];
+    links.forEach(function(x){
+      var token = esc(x.token);
+      if (text.split(x.token).length !== 2 || html.split(token).length !== 2 || html.indexOf('>' + token + '</span>') >= 0) return;
+      html = html.replace(token, '<span class="tag atlas90-place-word" role="button" tabindex="0" data-atlas90-open="' + esc(x.id) + '">' + token + '</span>');
+    });
+    return html;
+  }
+  // Level B: evidence-scoped KRV exact-token navigation, display-only.
+  function levelBWordLinks(text, html, ref) {
+    var rows=(window.JBC_LEVEL_B_WORD_LINKS||{})[ref]||[];
+    rows.forEach(function(x){
+      var token=esc(x.token);
+      if(text.split(x.token).length!==2 || html.split(token).length!==2 || html.indexOf('>'+token+'</span>')>=0)return;
+      html=html.replace(token,'<span class="tag levelb-place-word" role="button" tabindex="0" data-levelb-open="'+esc(x.candidate_id)+'" data-authority="REFERENCE_ONLY">'+token+'</span>');
+    });
+    return html;
+  }
   function verseMarkup(P, v, ann) {
     var text = typeof v.text === "string" ? v.text : "", html;
     if (ann && LEX_RE) {
@@ -714,6 +1049,9 @@
         html = o2 + esc(text.slice(l2));
       } else html = esc(text);
     }
+    html = atlasPlaceWordLinks(text, html, state.passage + ':' + v.n);
+    html = atlas90WordLinks(text, html, state.passage + ':' + v.n);
+    html = levelBWordLinks(text, html, state.passage + ':' + v.n);
     html = wrapResearchName(html, state.passage + ":" + v.n);
     var vr = variantFor(state.passage, v.n);   // 미해결 저우선 이형은 표시 차단 없이 속성으로만 남긴다
     return '<span class="verse" data-verse="' + v.n + '"' + (vr ? ' data-krv-variant="' + esc(vr) + '"' : "") + '><button class="vnum" data-vbtn="' + v.n + '" aria-pressed="false" aria-label="' + v.n + '절 선택">' + v.n + "</button>" + html + "</span>";
@@ -967,9 +1305,10 @@
     return sites[0];
   }
   function geoMarkers() {
-    var keys = placeIdsFor(state.passage).slice(); if (state.entity && state.entity.kind === "l" && keys.indexOf(state.entity.id) < 0) keys.push(state.entity.id);
+    // 연구 위치가 있는 모든 canonical 장소는 본문/탐색 장면과 무관하게 점을 유지한다.
+    // 지명 라벨의 축척별 위계와 충돌 생략은 visibleGeoMarkers()가 기존대로 담당한다.
+    var keys = Object.keys(D.places || {});
     var out = [], fx = ui.navFx;
-    if (fx) keys = fx.focus.concat(fx.related); if (state.entity && state.entity.kind === "l" && keys.indexOf(state.entity.id) < 0) keys.push(state.entity.id);   // overlay 장면은 그 장면의 Focus/Related canonical 장소(기존 승인 id)만 올린다. 같은 장의 다른 장소는 다른 장면의 몫이다.
     keys.forEach(function (k) {
       var p = D.places && D.places[k], R = p && p.research, S = spatialOf(k); if (!S) return;
       if (R && !readerVisible(R.stable_id)) return;   // visibility gate: a hidden entity never renders a map marker
@@ -1001,7 +1340,9 @@
     add(r && r.spatial && r.spatial.routes); add(r && r.connected && r.connected.routes); add(r && r.routes);
     return out;
   }
-  function presentationRouteSource(label) {
+  function presentationRouteSource(label, spec) {
+    var fid = spec && spec.entity_id, fr = fid && GF && GF.routes && GF.routes[fid];
+    if (fr && fr.foundation_type !== "ROUTE_NETWORK") return { parent_asset_id: fid, parent_type: "Route", record: fr, row: fr, source_kind: "GEOGRAPHY_FOUNDATION" };
     var groups = [{ kind: "Place", records: PJ && PJ.places || {} }, { kind: "Region", records: PJ && PJ.regions || {} }];
     for (var g = 0; g < groups.length; g++) {
       var ids = Object.keys(groups[g].records);
@@ -1038,14 +1379,37 @@
     }
     return null;
   }
-  function presentationAnchor(name) { return researchPresentationAnchor(name) || referencePresentationAnchor(name); }
+  function referencePresentationAnchorById(refId, label) {
+    var pool = [];
+    if (REF_LABELS && REF_LABELS.labels) pool = pool.concat(REF_LABELS.labels);
+    if (REF_BULK && REF_BULK.length) pool = pool.concat(REF_BULK);
+    for (var i = 0; i < pool.length; i++) {
+      var r = pool[i];
+      if (r.id === refId && GEO.valid(+r.lat, +r.lon)) return { name: label || r.name || r.name_ko || r.name_en || refId, lat: +r.lat, lon: +r.lon, role: "reference_anchor", anchor_label: label || r.name || r.name_ko || r.name_en || refId, reference_id: refId };
+    }
+    return null;
+  }
+  function presentationAnchor(spec) {
+    if (typeof spec === "string") return researchPresentationAnchor(spec) || referencePresentationAnchor(spec);
+    if (!spec || !spec.reference_id) return null;
+    var a = referencePresentationAnchorById(spec.reference_id, spec.label);
+    if (a) { a.key = spec.key || spec.reference_id; a.source_basis = spec.source_basis || null; }
+    return a;
+  }
   function presentationRouteStates() {
     return Object.keys(PRESENTATION_ROUTE_SPECS).map(function (label) {
-      var spec = PRESENTATION_ROUTE_SPECS[label], src = presentationRouteSource(label);
+      var spec = PRESENTATION_ROUTE_SPECS[label], src = presentationRouteSource(label, spec);
       if (!src || spec.passages.indexOf(state.passage) < 0) return null;
       if (ui.navRouteIds && ui.navRouteIds.indexOf(label) < 0) return null;   // 주제 Step 이 활성이면 그 Step 의 승인 경로만(없으면 그리지 않는다)
-      var anchors = spec.anchors.map(function (n) { return presentationAnchor(n); }), resolved = anchors.filter(Boolean);
-      return { label: label, source: src, requested_anchors: spec.anchors.slice(), anchors: anchors, resolved: resolved, drawable: resolved.length >= 2 && resolved.length === spec.anchors.length, mode: "PRESENTATION_ONLY_INFERRED_ROUTE", reader_label: "추정 이동 경로", research_geometry: null };
+      var anchorSpecs = spec.anchors || [], anchors = anchorSpecs.map(function (n) { return presentationAnchor(n); }), resolved = anchors.filter(Boolean), byKey = {};
+      anchorSpecs.forEach(function (a, i) { var key = typeof a === "string" ? a : a.key || a.reference_id; if (anchors[i]) byKey[key] = anchors[i]; });
+      var segments = [];
+      if (spec.segments) spec.segments.forEach(function (s) {
+        var from = byKey[s.from], to = byKey[s.to];
+        if (from && to) segments.push({ id: s.id, anchors: [from, to], status: s.status || "ESTIMATED", discontinuous: !!s.discontinuous, source_basis: s.source_basis || null });
+      });
+      else if (resolved.length >= 2 && resolved.length === anchorSpecs.length) segments.push({ id: label, anchors: resolved, status: "ESTIMATED", discontinuous: false, source_basis: null });
+      return { label: label, display_label: src.record && src.record.display_label || label.replace(/_/g, " "), entity_id: spec.entity_id || null, source: src, requested_anchors: anchorSpecs.slice(), anchors: anchors, resolved: resolved, segments: segments, drawable: segments.length > 0, presentation_status: spec.presentation_status || (segments.length ? "PRESENTATION_ONLY_ESTIMATED" : "GEOMETRY_HOLD_INSUFFICIENT_DRAWABLE_ANCHORS"), hold_reason: spec.hold_reason || null, mode: spec.kind === "CORRIDOR_ROUTE" ? "PRESENTATION_ONLY_CORRIDOR_ROUTE" : "PRESENTATION_ONLY_INFERRED_ROUTE", reader_label: spec.reader_label || "추정 이동 경로", research_geometry: null };
     }).filter(Boolean);
   }
   // ---- overlay 개략 경로/지명(PRESENTATION_APPROXIMATE). research route_geometry·canonical 좌표가 아니다. data-place 가 없어 선택·연구 진입 대상이 아니다. ----
@@ -1148,9 +1512,11 @@
     var rows = presentationRouteStates().filter(function (r) { return r.drawable; });
     if (!rows.length) return "";
     return '<g class="gm-route-layer" data-role="presentation-only-inferred-routes">' + rows.map(function (r) {
-      var pts = r.resolved.map(function (a) { var p = GEO.project(a.lat, a.lon); return p.x + "," + p.y; }).join(" ");
-      var ttl = "추정 이동 경로 · " + r.label.replace(/_/g, " ") + " · 실제 이동 경로 미확정";
-      return '<polyline class="gm-route-inferred" points="' + pts + '" fill="none" data-route-label="' + esc(r.label) + '" data-route-mode="PRESENTATION_ONLY_INFERRED_ROUTE" data-parent-asset="' + esc(r.source.parent_asset_id) + '" aria-label="' + esc(ttl) + '"><title>' + esc(ttl) + '</title></polyline>';
+      return r.segments.map(function (s) {
+        var pts = s.anchors.map(function (a) { var p = GEO.project(a.lat, a.lon); return p.x + "," + p.y; }).join(" ");
+        var ttl = r.reader_label + " · " + r.display_label + " · 실제 이동로 미확정";
+        return '<polyline class="gm-route-inferred' + (r.mode === "PRESENTATION_ONLY_CORRIDOR_ROUTE" ? ' gm-route-corridor' : '') + '" points="' + pts + '" fill="none" data-route-label="' + esc(r.label) + '" data-route-entity="' + esc(r.entity_id || "") + '" data-route-segment="' + esc(s.id || "") + '" data-route-mode="' + esc(r.mode) + '" data-segment-status="' + esc(s.status) + '" data-discontinuous="' + s.discontinuous + '" data-parent-asset="' + esc(r.source.parent_asset_id) + '" aria-label="' + esc(ttl) + '"><title>' + esc(ttl) + '</title></polyline>';
+      }).join("");
     }).join("") + "</g>";
   }
   function presentationRouteNoticeHtml() {
@@ -1158,8 +1524,8 @@
     var rows = presentationRouteStates();
     if (!rows.length) return "";
     var draw = rows.filter(function (r) { return r.drawable; }).length;
-    if (draw) return '<p class="map-note route-note" data-route-note="inferred"><span class="lg-line" aria-hidden="true"></span>추정 이동 경로 · 실제 이동 경로 미확정</p>';
-    return '<p class="map-note route-note muted" data-route-note="insufficient-anchors">추정 이동 경로 · 현재 지도 기준점이 부족해 선은 표시하지 않습니다.</p>';
+    if (draw) return '<p class="map-note route-note" data-route-note="inferred"><span class="lg-line" aria-hidden="true"></span>' + (rows.some(function (r) { return r.mode === "PRESENTATION_ONLY_CORRIDOR_ROUTE" && r.drawable; }) ? "연구 기반 개략 경로 · 실제 이동로 미확정" : "추정 이동 경로 · 실제 이동 경로 미확정") + '</p>';
+    return '<p class="map-note route-note muted" data-route-note="insufficient-anchors">추정 이동 경로 · 연구가 지지하는 연결 기준점이 부족해 선은 표시하지 않습니다.</p>';
   }
   function markerTier(m) {
     if (!m) return 4;
@@ -1526,6 +1892,15 @@
       out += '<g class="gm gm-' + m.style + (wpx ? " gm-wp " + (wpAct ? "gm-wp-active" : wpx.n < ui.navFx.active ? "gm-wp-done" : "gm-wp-next") + (wpx.n === ui.navFx.active - 1 ? " gm-wp-from" : "") : "") + (m.uncertain ? " gm-uncertain" : "") + (m.active ? " active" : "") + (m.dim ? " gm-dim" : "") + (m.nav_state ? " gm-" + m.nav_state : "") + '"' + (m.nav_state ? ' data-nav-state="' + m.nav_state + '"' : "") + (wpx ? ' data-nav-wp="' + wpx.n + '" data-waypoint-id="' + esc(wpx.id) + '"' : "") + ' data-marker="' + esc(m.id) + '" data-place="' + esc(m.place) + '" data-stable-id="' + esc(stableOf("l", m.place)) + '" data-lat="' + m.lat + '" data-lon="' + m.lon + '" data-location-certainty="' + (m.uncertain ? "inferred" : "source") + '" transform="translate(' + p.x + " " + p.y + ')" role="button" tabindex="0" aria-label="' + esc(m.aria_label || m.label) + '">' + shape + text + "</g>";
     });
     out += navOverlayPlacesSvg(mk, upx, r, L, T, w);
+    if(readerGeoFocus && GEO.valid(readerGeoFocus.lat,readerGeoFocus.lon)){
+      // The existing map label contract owns marker color, typography, shape and '?'.
+      var rp=GEO.project(readerGeoFocus.lat,readerGeoFocus.lon), rr=MARKER_R_PX*upx,
+          fs=LABEL_LEVELS.L2.px*upx, uncertain=!!readerGeoFocus.uncertain;
+      var question=uncertain?'<tspan class="gm-qmark" dx="'+fs*.18+'" dy="'+(-fs*.16)+'">?</tspan>':'';
+      out+='<g class="gm gm-inferred'+(uncertain?' gm-uncertain':'')+' reader-reference-geopoint" data-ab-reader-map-pin="'+esc(readerGeoFocus.id)+'" data-authority="REFERENCE_ONLY" data-location-certainty="'+(uncertain?'inferred':'source')+'" transform="translate('+rp.x+' '+rp.y+')" role="img" aria-label="'+esc(readerGeoFocus.label)+(uncertain?' 위치 불확정':'')+'">'+
+        '<circle class="gm-shape" r="'+rr+'"/>'+
+        (ui.mapDisplay.labels?'<text class="gm-place-label" x="'+rr*2.8+'" y="'+fs*.34+'" font-size="'+fs+'" stroke-width="'+fs*.25+'" data-semantic-tier="L2" data-label-level="L2">'+esc(readerGeoFocus.label)+question+'</text>':'')+'</g>';
+    }
     var kmu = GEO.km(GEO.latOf(gc.y)), target = kmu * w * 0.22, niceKm = [0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000].reduce(function (a, v) { return v <= target ? v : a; }, 0.1), len = niceKm / kmu, bx = L + w * 0.04, by = B - w * 0.05;
     out += '<g class="gm-scale"><line x1="' + bx + '" y1="' + by + '" x2="' + (bx + len) + '" y2="' + by + '"/><text x="' + bx + '" y="' + (by - scaleFs * 0.45) + '" font-size="' + scaleFs + '">' + (niceKm >= 1 ? niceKm : niceKm * 1000 + " m").toString().replace(/^(\d+)$/, "$1") + (niceKm >= 1 ? " km" : "") + "</text></g>";
     return '<svg class="gmap" viewBox="' + L + " " + T + " " + w + " " + w + '" preserveAspectRatio="xMidYMid slice" role="img" aria-label="지리 지도" data-projection="web-mercator" data-modern-zoom="' + (w >= 12 ? "low" : w >= 5 ? "mid" : "high") + '" data-modern-opacity="' + esc(ui.mapDisplay.modernOpacity || "normal") + '" data-route-style="' + esc(ui.mapDisplay.routeStyle || "standard") + '" data-basemap-mode="' + basemapMode + '" data-tiles="' + (ui.tiles ? "on" : "off") + '">' + out + "</svg>";
@@ -1651,7 +2026,7 @@
   function mlPrintSheet(src) { var s = $("ml-print-sheet"); if (!s) { s = document.createElement("div"); s.id = "ml-print-sheet"; document.body.appendChild(s); } s.innerHTML = '<img alt="성경 지도" src="' + src + '">'; document.body.dataset.mlPrint = "1"; }
   function mlPrintDone() { var s = $("ml-print-sheet"); if (s) s.remove(); delete document.body.dataset.mlPrint; }
   try { var mlThemeObs = new MutationObserver(function () { if (mlActive() && ML.map) { mlApplyLook(); ML.dirty = true; mlOnRender(); } }); mlThemeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-map-theme", "class"] }); } catch (e) {}
-  function renderGeoOnly() { if (mlActive()) mlSyncFromGcam(); var sv = document.querySelector("#map-body svg.gmap"); if (sv) sv.outerHTML = geoSvg(); }
+  function renderGeoOnly() { if (mlActive()) { mlSyncFromGcam(); ML.dirty = true; mlOnRender(); return; } var sv = document.querySelector("#map-body svg.gmap"); if (sv) sv.outerHTML = geoSvg(); }
   // ---- 장면 이동 카메라(차분한 easeTo): 현재 시점에서 목표 시점으로 한 방향으로만 부드럽게 움직인다(줌아웃 호·되돌아 들어가기 없음).
   //  · 이동 중에는 지도를 다시 짓지 않고 viewBox 만 바꾼다. 출발·도착 영역을 모두 덮는 지형 타일을 미리 불러 배경으로 깔아 파란 빈 타일이 비치지 않게 하고,
   //    도착 지형 타일도 먼저 불러 둔 뒤 한 번만 다시 그린다.
@@ -1874,7 +2249,11 @@
     return ok ? "image" : "attribution_only";
   }
   var mediaLightboxReturn = null;
-  function findMedia(id) { var out = null; placeIndex().list.some(function (p) { if (p.media && p.media.id === id) { out = { asset: p.media, place: { display_label: p.label, hero_caption: p.media.reader_caption } }; return true; } return false; }); if (out) return out; Object.keys((PJ && PJ.places) || {}).some(function (k) { var a = (PJ.places[k].media || []).filter(function (m) { return m.id === id; })[0]; if (a) { out = { asset: a, place: PJ.places[k] }; return true; } return false; }); return out; }
+  function findMedia(id) {
+    var external = window.JBC_ATLAS90_READER_MEDIA || {};
+    var aid = Object.keys(external).filter(function(k){return external[k] && external[k].id === id;})[0];
+    if (aid) { var aa = ATLAS90_REF.filter(function(a){return a.place_id === aid;})[0]; return { asset: external[aid], place: {display_label: aa ? aa.name_ko : '성경 지명 참고사진', hero_caption: external[aid].reader_caption} }; }
+    var out = null; placeIndex().list.some(function (p) { if (p.media && p.media.id === id) { out = { asset: p.media, place: { display_label: p.label, hero_caption: p.media.reader_caption } }; return true; } return false; }); if (out) return out; Object.keys((PJ && PJ.places) || {}).some(function (k) { var a = (PJ.places[k].media || []).filter(function (m) { return m.id === id; })[0]; if (a) { out = { asset: a, place: PJ.places[k] }; return true; } return false; }); return out; }
   function openMediaLightbox(id, trigger) {
     var found = findMedia(id), box = $("media-lightbox"), body = $("media-lightbox-body"); if (!found || mediaGate(found.asset) !== "image" || !box || !body) return;
     var m = found.asset, caption = m.reader_caption || found.place.hero_caption || found.place.display_label;
@@ -1895,6 +2274,22 @@
           var b = row && row.binding; if (!b || b.state !== "AUTO_BIND" || row.resolved !== true || !b.target_id || b.target_id === owner) return;
           var rel = String(row.relation || "").replace(/_/g, " "); put(owner, b.target_id, "out", rel); put(b.target_id, owner, "inn", rel);
         });
+      });
+    });
+    // Holman Chapter 1 foundation hierarchy is already normalized to exact stable IDs by the
+    // approved handoff. Reuse only those declared parent/child IDs for presentation navigation;
+    // this does not upgrade `relations[].resolved`, create a Registry binding, or infer by name.
+    var foundation = Object.assign({}, GF && GF.regions || {}, GF && GF.routes || {});
+    var structural = function (owner, target) {
+      if (!foundation[owner] || !foundation[target] || !STORE.get(owner) || !STORE.get(target) || owner === target) return;
+      put(owner, target, "out", "승인된 상하위 구조"); put(target, owner, "inn", "승인된 상하위 구조");
+    };
+    Object.keys(foundation).forEach(function (owner) {
+      var r = foundation[owner];
+      (r.child_ids || []).forEach(function (target) { structural(owner, target); });
+      (r.parent_ids || []).forEach(function (parent) {
+        // Prefer the parent's matching child declaration when both sides state the same edge.
+        if ((foundation[parent] && foundation[parent].child_ids || []).indexOf(owner) < 0) structural(owner, parent);
       });
     });
     return REL_ADJ;
@@ -2011,17 +2406,19 @@
     return '<article class="detail d-flat full-place-profile" data-detail="l" data-id="' + esc(en.id) + '" data-stable-id="' + esc(e.stable_id) + '" data-full-profile="1">' +
       '<div class="entity-sticky-head place-sticky-head"><button type="button" class="d-back" data-clear-entity>‹ 본문 개요</button><header class="d-identity" data-part="identity"><div class="entity-title-line place-title-line"><h3 class="detail-name">' + esc(F.identity.ko) + '</h3><span class="d-en">' + esc(F.identity.en) + '</span></div><p class="entity-meta-line place-meta-line"><span class="d-original">' + esc(F.identity.hebrew) + " · " + esc(F.identity.pronunciation) + '</span><span class="entity-meta-sep place-meta-sep"> · </span><span class="d-kind">' + esc(detailedType) + '</span></p>' + deepStudyActionHtml(e.stable_id) + "</header></div>" +
       '<p class="d-hook" data-part="hook">' + esc(F.headline) + "</p>" +
-      '<section class="d-sec" data-part="facts"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">' + facts + "</dl></section>" +
+      '<section class="d-sec" data-part="facts" data-reader-tier="glance"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">' + facts + "</dl></section>" +
       hero + (gallery ? '<div class="d-gallery" data-part="gallery">' + gallery + "</div>" : "") +
-      '<section class="d-sec" data-part="story"><h4 class="d-h">성경 속 ' + esc(F.identity.ko) + "</h4>" + fullBlocksHtml(F.story) + "</section>" +
-      '<section class="d-sec" data-part="significance"><h4 class="d-h">왜 ' + esc(F.identity.ko) + esc(iga(F.identity.ko)) + " 중요한가</h4>" + fullBlocksHtml(F.significance, "d-significance-block") + "</section>" +
+      '<section class="d-sec" data-part="story" data-reader-tier="commentary"><h4 class="d-h">풍성한 기본 주석 · 성경 속 ' + esc(F.identity.ko) + "</h4>" + fullBlocksHtml(F.story) + "</section>" +
+      '<section class="d-sec" data-part="significance" data-reader-tier="commentary"><h4 class="d-h">왜 ' + esc(F.identity.ko) + esc(iga(F.identity.ko)) + " 중요한가</h4>" + fullBlocksHtml(F.significance, "d-significance-block") + "</section>" +
       '<section class="d-sec" data-part="relations"><h4 class="d-h">관련 인물과 사건</h4>' + (ppl ? '<h5 class="d-sub">관련 인물</h5><ul class="rs-list reader-list">' + ppl + "</ul>" : "") + (evs ? '<h5 class="d-sub">관련 사건</h5><ul class="rs-list reader-list">' + evs + "</ul>" : "") + "</section>" +
       '<section class="d-sec" data-part="location"><h4 class="d-h">위치는 어디인가?</h4>' + fullBlocksHtml(locIntro, "d-location-block") + '<button type="button" class="d-map-action" data-map-focus-place="' + esc(en.id) + '">지도에서 보기</button>' + (locMore.length ? '<details class="reader-more"><summary>위치 가설 자세히</summary>' + fullBlocksHtml(locMore, "d-location-block") + "</details>" : "") + "</section>" +
-      '<section class="d-sec" data-part="geography"><h4 class="d-h">지리와 공간</h4>' + geo + "</section>" +
-      '<section class="d-sec" data-part="archaeology"><h4 class="d-h">고고학과 역사</h4>' + arch + (caution ? '<p class="d-caution">' + esc(caution) + "</p>" : "") + "</section>" +
+      '<section class="d-sec" data-part="geography" data-reader-tier="commentary"><h4 class="d-h">지리와 공간</h4>' + geo + "</section>" +
+      '<section class="d-sec" data-part="archaeology" data-reader-tier="commentary"><h4 class="d-h">고고학과 역사</h4>' + arch + (caution ? '<p class="d-caution">' + esc(caution) + "</p>" : "") + "</section>" +
       '<section class="d-sec" data-part="scripture"><h4 class="d-h">관련 본문</h4><p class="d-body">설명 안의 성경구절을 누르면 해당 본문으로 이동하며, 연속 구간은 하나의 선택 범위로 표시됩니다.</p><details class="reader-more"><summary>성경 전체 관련 본문 보기 (' + esc(F.related_passages.length) + '개 구간)</summary><div class="pills full-ref-list">' + allRefs + "</div></details></section>" +
+      eastonDetailHtml(e.stable_id) +
+      externalRefSection(e.stable_id) +
       relatedEntitiesHtml(e.stable_id) +
-      '<footer class="d-secondary"><div class="d-rule"></div><details class="research" data-part="research"><summary>연구 상세</summary><div class="rs-body"><p class="meta">현재 전문 대표본 · ' + esc(F.source.research_id) + '<br>SHA-256 · ' + esc(F.source.sha256) + '<br>Project01 승인 증거 · ' + esc(evidenceSha) + '<br>성경 직접 언급 · ' + esc(F.correction_delta.direct_mentions) + '회</p><h5>증거 계층</h5><p class="meta">' + esc(F.research_meta.evidence_layers.join(" · ")) + '</p><h5>주장과 근거</h5><ul class="rs-list">' + claims + '</ul><h5>남은 확인 사항</h5><ul class="rs-list">' + vh + '</ul>' + internalResearchRelationsHtml(e.stable_id) + '<p class="meta">이전 승인본은 계보·fallback 근거로만 보존됩니다. 외부 공개는 승인되지 않았습니다.</p></div></details></footer>' +
+      '<footer class="d-secondary"><div class="d-rule"></div><details class="research" data-part="research" data-reader-tier="deep-research"><summary>더 깊은 연구</summary><div class="rs-body"><p class="meta">현재 전문 대표본 · ' + esc(F.source.research_id) + '<br>SHA-256 · ' + esc(F.source.sha256) + '<br>Project01 승인 증거 · ' + esc(evidenceSha) + '<br>성경 직접 언급 · ' + esc(F.correction_delta.direct_mentions) + '회</p><h5>증거 계층</h5><p class="meta">' + esc(F.research_meta.evidence_layers.join(" · ")) + '</p><h5>주장과 근거</h5><ul class="rs-list">' + claims + '</ul><h5>남은 확인 사항</h5><ul class="rs-list">' + vh + '</ul>' + internalResearchRelationsHtml(e.stable_id) + '<p class="meta">이전 승인본은 계보·fallback 근거로만 보존됩니다. 외부 공개는 승인되지 않았습니다.</p></div></details></footer>' +
       '<p class="d-hint">Esc 또는 같은 항목을 다시 눌러 닫기</p></article>';
   }
   // 왼쪽 Detail(연구 투영 Place): 카드 없이 타이포그래피·여백·정렬로 위계를 만든다.
@@ -2049,15 +2446,15 @@
     return '<button type="button" class="d-back" data-clear-entity>‹ 본문 개요</button><article class="detail d-flat" data-detail="l" data-id="' + esc(en.id) + '" data-stable-id="' + esc(e.stable_id) + '" data-research="1">' +
       '<header class="d-identity" data-part="identity"><h3 class="detail-name">' + esc(e.name) + '</h3><p class="d-en">' + esc(R.label_en) + '</p><p class="d-kind">' + esc(R.reader_type || "성경 지명") + (stat ? " · " + esc(stat) : "") + "</p>" + deepStudyActionHtml(e.stable_id) + "</header>" +
       '<p class="d-hook" data-part="hook">' + esc(R.reader.headline) + "</p>" +
-      '<section class="d-sec" data-part="summary"><h4 class="d-h">이 장소는 왜 중요한가</h4><p class="d-body">' + esc(sig) + "</p></section>" +
-      '<section class="d-sec" data-part="facts"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">' + (R.reader.glance || []).map(function (kv) { return '<div class="qf"><dt>' + esc(kv[0]) + "</dt><dd>" + esc(kv[1]) + "</dd></div>"; }).join("") + "</dl></section>" +
+      '<section class="d-sec" data-part="summary" data-reader-tier="commentary"><h4 class="d-h">풍성한 기본 주석 · 이 장소는 왜 중요한가</h4><p class="d-body">' + esc(sig) + "</p></section>" +
+      '<section class="d-sec" data-part="facts" data-reader-tier="glance"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">' + (R.reader.glance || []).map(function (kv) { return '<div class="qf"><dt>' + esc(kv[0]) + "</dt><dd>" + esc(kv[1]) + "</dd></div>"; }).join("") + "</dl></section>" +
       (direct || related ? '<section class="d-sec" data-part="scripture"><h4 class="d-h">관련 본문</h4>' + (direct ? '<div class="pills">' + direct + "</div>" : "") + (related ? '<p class="d-sub">함께 읽으면 좋은 본문</p><div class="pills">' + related + "</div>" : "") + "</section>" : "") +
       '<section class="d-sec" data-part="location"><h4 class="d-h">지도와 위치</h4>' + (R.location.lead ? '<p class="d-body"><strong>' + esc(R.location.lead) + "</strong></p>" : "") + R.location.sentences.map(function (t) { return '<p class="d-body">' + esc(t) + "</p>"; }).join("") + "</section>" +
       relatedEntitiesHtml(e.stable_id) +
       externalRefSection(e.stable_id) +
       hero +
       '<footer class="d-secondary"><div class="d-rule"></div><section class="d-credits" data-part="credits"><h4 class="d-h2">사진 출처</h4>' + (credits || '<span class="prov">사진을 누르면 출처와 라이선스를 확인할 수 있습니다.</span>') + "</section>" +
-      '<details class="research" data-part="research"><summary>연구 상세</summary><div class="rs-body"><p class="meta">출처 · ' + esc(R.source_refs[0].id) + " (" + esc(R.source_refs[0].version) + ") · " + esc(R.authority.project) + "<br>판정 · 식별 " + esc(R.certainty) + " / 좌표 " + esc(R.coordinate_certainty) + " / " + esc(R.status) + "</p>" +
+      '<details class="research" data-part="research" data-reader-tier="deep-research"><summary>더 깊은 연구</summary><div class="rs-body"><p class="meta">출처 · ' + esc(R.source_refs[0].id) + " (" + esc(R.source_refs[0].version) + ") · " + esc(R.authority.project) + "<br>판정 · 식별 " + esc(R.certainty) + " / 좌표 " + esc(R.coordinate_certainty) + " / " + esc(R.status) + "</p>" +
       "<h5>이름 정보</h5><p class=\"meta\">" + esc(R.ancient_name.hebrew) + " · " + esc(R.ancient_name.transliteration) + " · " + esc((R.aliases || []).join(", ")) + "</p>" +
       "<h5>주장과 근거</h5><ul class=\"rs-list\">" + claims + "</ul><h5>경쟁 견해</h5><ul class=\"rs-list\">" + (R.competing_views || []).map(function (v) { return "<li>" + esc(v) + "</li>"; }).join("") + "</ul><h5>후보 위치</h5><ul class=\"rs-list\">" + cands + "</ul><h5>남은 확인 사항</h5><ul class=\"rs-list\">" + vh + "</ul></div></details></footer>" +
       '<p class="d-hint">Esc 또는 같은 항목을 다시 눌러 닫기</p></article>';
@@ -2080,7 +2477,7 @@
       if (b.state === "HOLD") return " · 결속 보류";
       return " · 연결 상태 미확인";
     };
-    var directLinks = (R.passage_links || []).filter(function (l) { return l.group === "direct"; });
+    var directLinks = (R.passage_links || []).slice();
     var chapters = directLinks.filter(function (l) { return l.v1 == null; }).map(function (l) { var pid = l.book + "-" + l.chapter, P = D.passages[pid]; return P ? { pid: pid, label: P.ref.replace(/[장편]$/, "") + "장 전체" } : null; }).filter(Boolean);
     var verifyItems = (R.verify || []).length ? R.verify : (S.verify_hold && S.verify_hold.verify || []).map(function (id) { return { id: id, issue: null, effect: null }; });
     var holdItems = (R.hold || []).length ? R.hold : (S.verify_hold && typeof S.verify_hold.hold === "number" && S.verify_hold.hold > 0 ? [{ id: "HOLD_COUNT_" + S.verify_hold.hold, label: null }] : []);
@@ -2089,34 +2486,35 @@
     holdItems = holdItems.filter(function (v) { var k = v && (v.id || v); return !REGION_INTERNAL_HOLD[k] && !(boundaryCovered && REGION_BOUNDARY_DUP_HOLD[k]); });
     var linked = function (x) { return { text: regionReaderName(x.name) + " · " + regionReaderRelation(x.relation) + bindingLabel(x) }; };
     return {
-      id: en.id, stableId: e.stable_id, name: e.name, nameEn: R.label_en || "", kindLabel: "지역 · 연구 검토용(비공개)",
+      id: en.id, stableId: e.stable_id, name: e.name, nameEn: R.label_en || "", kindLabel: au.approval === "CAPTAIN_APPROVED" && au.downstream === "APPROVED_DOWNSTREAM_PROJECTION" ? "지역 · Project01 전문 연구 · 앱 내부 사용 승인" : "지역 · 연구 검토용",
       published: !!(R.reader && R.reader.published === true), geometryStatus: geo.status || "none",
       summary: R.reader && R.reader.concise_summary || R.semantic_note || "",
-      facts: Object.keys(REGION_FACT_LABEL).filter(function (k) { return cert[k]; }).map(function (k) { return { label: REGION_FACT_LABEL[k], value: REGION_LEVEL[cert[k]] || String(cert[k]) }; }),
+      facts: (R.reader && R.reader.quick_facts || []).map(function (f) { return { label: Array.isArray(f) ? f[0] : f.label, value: Array.isArray(f) ? f[1] : f.value }; }).concat(Object.keys(REGION_FACT_LABEL).filter(function (k) { return cert[k]; }).map(function (k) { return { label: REGION_FACT_LABEL[k], value: REGION_LEVEL[cert[k]] || String(cert[k]) }; })),
       passage: { ranges: mergeContiguousPassageRanges(directLinks.filter(function (l) { return l.v1 != null; })), chapters: chapters },
       map: { note: geo.approved === true ? "승인된 지리 정보가 있습니다." : "승인된 좌표나 경계가 없어 지도에 표시하지 않습니다. 이 지역의 정체성과 관련 본문은 위치 표시 없이 확인할 수 있습니다.", broad: (S.broad_region_labels || []).length ? regionReaderBroad(S.broad_region_labels) : "" },
       relations: (R.relations || []).map(linked), people: (R.related_people || []).map(linked),
       events: (R.related_events || []).map(function (x) { return { text: regionReaderEvent(x.event) + bindingLabel(x, "event") }; }),
       verify: verifyItems.map(function (v) { return { id: v.id, text: regionReaderVerify(v) }; }), hold: holdItems.map(function (v) { return { id: v.id, text: regionReaderHold(v) }; }),
-      research: { source: src.id || "", sha: src.sha256 ? String(src.sha256).slice(0, 12) : "", status: R.status || "", approval: au.approval || "", approvalRecord: au.approval_record_id || "", approvalScope: au.approval_scope || "" }
+      research: { source: src.id || "", sha: src.sha256 ? String(src.sha256).slice(0, 12) : "", status: R.status || "", approval: au.approval || "", approvalRecord: au.approval_record_id || "", approvalScope: au.approval_scope || "", sections: R.reader && R.reader.sections || [] }
     };
   }
   function projectedRegionFlow(en, e) {
     var R = e.research, V = regionReaderViewModel(en, e);
     var list = function (a, attr) { return a.length ? '<ul class="rs-list">' + a.map(function (x) { return "<li" + (attr ? " " + attr + '="' + esc(x.id) + '"' : "") + ">" + esc(x.text) + "</li>"; }).join("") + "</ul>" : ""; };
-    var sec = function (part, title, body) { return body ? '<section class="d-sec" data-part="' + part + '"><h4 class="d-h">' + title + "</h4>" + body + "</section>" : ""; };
+    var sec = function (part, title, body) { var tier = part === "facts" ? "glance" : (part === "summary" || part === "research-content" ? "commentary" : ""); return body ? '<section class="d-sec" data-part="' + part + '"' + (tier ? ' data-reader-tier="' + tier + '"' : "") + '><h4 class="d-h">' + title + "</h4>" + body + "</section>" : ""; };
     var pills = V.passage.ranges.map(passageRangePill).join("") + V.passage.chapters.map(function (c) { return '<button type="button" class="pill" data-open-ref="' + c.pid + ':">' + esc(c.label) + "</button>"; }).join("");
     var facts = V.facts.map(function (f) { return '<div class="qf"><dt>' + esc(f.label) + "</dt><dd>" + esc(f.value) + "</dd></div>"; }).join("");
     var vhVerify = list(V.verify, "data-verify"), vhHold = list(V.hold, "data-hold");
     // VERIFY(추가 확인이 필요한 점)와 HOLD(확정하지 않고 보류한 항목)는 성격이 달라 나누어 보인다.
     var vh = (vhVerify ? '<h5 class="d-sub" data-vh-group="verify">추가 확인이 필요한 점</h5>' + vhVerify : "") + (vhHold ? '<h5 class="d-sub" data-vh-group="hold">확정하지 않고 보류한 항목</h5>' + vhHold : "");
-    var rs = V.research, rsLines = [rs.source ? "출처 · " + esc(rs.source) + (rs.sha ? " · " + esc(rs.sha) : "") : "", rs.status ? "상태 · " + esc(rs.status) : "", rs.approval ? "승인 · " + esc(rs.approval) + (rs.approvalRecord ? " (" + esc(rs.approvalRecord) + (rs.approvalScope ? " · " + esc(rs.approvalScope) : "") + ")" : "") : "", "독자 공개 · " + (V.published ? "예" : "아님")].filter(Boolean).join("<br>");
+    var rs = V.research, rsLines = [rs.source ? "출처 · " + esc(rs.source) + (rs.sha ? " · " + esc(rs.sha) : "") : "", rs.status ? "상태 · " + esc(rs.status) : "", rs.approval ? "내부 사용 승인 · " + esc(rs.approval) + (rs.approvalRecord ? " (" + esc(rs.approvalRecord) + (rs.approvalScope ? " · " + esc(rs.approvalScope) : "") + ")" : "") : "", "외부 공개 · " + (V.published ? "승인됨" : "미승인")].filter(Boolean).join("<br>"); var researchBody=(rs.sections||[]).map(function(s){return '<div class="rs-block"><h5 class="d-sub">' + esc(s.title||"연구") + '</h5><p class="d-body">' + esc(s.body||"") + "</p></div>";}).join("");
     return '<button type="button" class="d-back" data-clear-entity>‹ 본문 개요</button><article class="detail d-flat" data-detail="rgn" data-id="' + esc(V.id) + '" data-stable-id="' + esc(V.stableId) + '" data-research="1" data-published="' + V.published + '" data-geometry="' + esc(V.geometryStatus) + '">' +
       '<header class="d-identity" data-part="identity"><h3 class="detail-name">' + esc(V.name) + '</h3>' + (V.nameEn ? '<p class="d-en">' + esc(V.nameEn) + "</p>" : "") + '<p class="d-kind">' + esc(V.kindLabel) + "</p>" + deepStudyActionHtml(V.stableId) + "</header>" +
-      sec("summary", "이 지역은 무엇인가", V.summary ? '<p class="d-body">' + esc(V.summary) + "</p>" : "") +
+      sec("summary", "풍성한 기본 주석 · 이 지역은 무엇인가", V.summary ? '<p class="d-body">' + esc(V.summary) + "</p>" : "") +
+      sec("research-content", "연구 내용", researchBody) +
       sec("facts", "한눈에 보기", facts ? '<dl class="qf-list">' + facts + "</dl>" : "") +
       sec("scripture", "관련 본문", pills ? '<div class="pills">' + pills + "</div>" : "") +
-      sec("map", "지도에서는", '<p class="d-body" data-map-note="none">' + esc(V.map.note) + "</p>" + (V.map.broad ? '<p class="d-sub">광역 맥락 · ' + esc(V.map.broad) + "</p>" : "")) +
+      sec("map", "지도에서는", '<p class="d-body" data-map-note="none">' + esc(V.map.note) + "</p>" + (regionReadingCamera("rgn", en.id) ? '<p class="d-body" data-map-navigation="approximate">연구용 대략적 지도 보기 · 지도는 해당 광역 권역을 살펴보기 위한 시점으로 이동하며, 정확한 중심점·경계·위치 확정을 뜻하지 않습니다.</p>' : "") + (V.map.broad ? '<p class="d-sub">광역 맥락 · ' + esc(V.map.broad) + "</p>" : "")) +
       relatedEntitiesHtml(V.stableId) +
       sec("relations", "관련 장소", list(V.relations)) +
       sec("people", "관련 인물", list(V.people)) +
@@ -2124,7 +2522,7 @@
       regionMediaHtml(R) +
       externalRefSection(V.stableId) +
       '<section class="d-sec" data-part="verify-hold"><h4 class="d-h">남은 확인 사항</h4>' + vh + "</section>" +
-      '<details class="research" data-part="research"><summary>연구 상세</summary><div class="rs-body"><p class="meta">' + rsLines + "</p></div></details>" +
+      '<details class="research" data-part="research" data-reader-tier="deep-research"><summary>더 깊은 연구</summary><div class="rs-body"><p class="meta">' + rsLines + "</p></div></details>" +
       '<p class="d-hint">Esc 또는 같은 항목을 다시 눌러 닫기</p></article>';
   }
   function projectedPersonFlow(en, e) {
@@ -2168,14 +2566,14 @@
           var refs = (u.passages || []).map(compactRef).join("");
           return '<div class="person-story-unit"><p>' + esc(u.text || "") + "</p>" + (refs ? '<div class="person-story-refs">' + refs + "</div>" : "") + "</div>";
         }).join("");
-        return '<section class="person-narrative-section" data-person-narrative="' + (i + 1) + '"><div class="person-narrative-kicker">' + String(i + 1).padStart(2,"0") + '</div><h4>' + esc(sec.title || "") + "</h4>" + units + "</section>";
+        return '<details class="person-narrative-section" data-person-narrative="' + (i + 1) + '"' + (i === 0 ? ' open' : '') + '><summary class="person-narrative-summary"><span class="person-narrative-kicker">' + String(i + 1).padStart(2,"0") + '</span><span class="person-narrative-heading">' + esc(sec.title || "") + '</span><span class="person-accordion-arrow" aria-hidden="true"></span></summary><div class="person-narrative-content">' + units + "</div></details>";
       }).join("");
       var theologyHtml = (rr.theological_summary || []).map(function (p) { return '<p>' + esc(p) + "</p>"; }).join("");
       var relGroups = [["DM_NAME","직접 이름 등장"],["DM_PRONOUN_CONTINUATION","서사가 이어지는 본문"],["STRONGLY_RELATED","깊이 관련된 본문"]];
       var relTotal = 0, relatedHtml = relGroups.map(function (g) {
         var ls = (R.passage_links || []).filter(function (p) { return p.classification === g[0]; });
         ls.forEach(function (p) { relTotal += Math.max(1, (+p.v2 || +p.v1) - (+p.v1 || 0) + 1); });
-        return ls.length ? '<div class="person-related-group"><h5>' + esc(g[1]) + '</h5><div class="pills">' + ls.map(passageRangePill).join("") + "</div></div>" : "";
+        return ls.length ? '<details class="person-related-group"' + (g[0] === "DM_NAME" ? ' open' : '') + '><summary>' + esc(g[1]) + '<span class="person-accordion-arrow" aria-hidden="true"></span></summary><div class="pills">' + ls.map(passageRangePill).join("") + "</div></details>" : "";
       }).join("");
       var rb = rr.research_basis || {}, researchLanguage = [ident.original_name, ident.transliteration, ident.greek_name].filter(Boolean).join(" · ");
       var researchRefHtml = function (txt) {
@@ -2198,15 +2596,15 @@
       };
       var researchName = String(rb.name_and_language || "").replace(/~~~[\s\S]*?~~~/g,"").split(/\n\s*\n/)[0].replace(/\*\*/g,"").trim();
       var researchHtml = researchName
-        ? '<details class="person-research" data-person-research><summary>본문연구</summary><div class="person-research-body"><section><h5>이름과 원어</h5><p>' + researchRefHtml(researchName) + "</p></section></div></details>"
+        ? '<details class="person-research" data-person-research data-reader-tier="deep-research"><summary>더 깊은 연구</summary><div class="person-research-body"><section><h5>이름과 원어</h5><p>' + researchRefHtml(researchName) + "</p></section></div></details>"
         : "";
       var relatedPlacesRow = (rr.related_places || []).map(function (p) { var x = p && p.stable_id && STORE.get(p.stable_id); return x ? '<button type="button" class="person-inline-link" data-related-entity="' + esc(p.stable_id) + '">' + esc(p.label || x.display_label) + "</button>" : ""; }).filter(Boolean).join(" · ");
       if (relatedPlacesRow) quickRows += '<div class="person-fact-row"><dt>관련 장소</dt><dd>' + relatedPlacesRow + "</dd></div>";
       out += '<div class="person-reader-flat" data-person-reader="canonical">' +
         (rr.intro && rr.intro.concise_intro ? '<p class="person-reader-intro">' + esc(rr.intro.concise_intro) + "</p>" : "") +
-        (quickRows ? '<section class="person-overview"><h4 class="person-section-title">한눈에 보기</h4><dl class="person-facts-compact">' + quickRows + "</dl></section>" : "") +
-        (narrativeHtml ? '<section class="person-narrative"><h4 class="person-section-title">본문을 따라 읽기</h4>' + narrativeHtml + "</section>" : "") +
-        (theologyHtml ? '<section class="person-theology"><h4 class="person-section-title">' + esc(e.name) + '을 어떻게 이해할 것인가</h4>' + theologyHtml + "</section>" : "") +
+        (quickRows ? '<section class="person-overview" data-reader-tier="glance"><h4 class="person-section-title">한눈에 보기</h4><dl class="person-facts-compact">' + quickRows + "</dl></section>" : "") +
+        (narrativeHtml ? '<section class="person-narrative" data-reader-tier="commentary"><h4 class="person-section-title">풍성한 기본 주석 · 본문을 깊이 읽기</h4>' + narrativeHtml + "</section>" : "") +
+        (theologyHtml ? '<section class="person-theology" data-reader-tier="commentary"><h4 class="person-section-title">' + esc(e.name) + '을 어떻게 이해할 것인가</h4>' + theologyHtml + "</section>" : "") +
         (relatedHtml ? '<details class="person-related-scripture"><summary>관련 본문 ' + relTotal + '곳 <span>전체 보기</span></summary>' + relatedHtml + "</details>" : "") +
         researchHtml +
         "</div>";
@@ -2217,6 +2615,7 @@
     if (!approvedReader && refHtml) out += '<section class="d-sec person-related-section" data-part="scripture"><h4 class="d-h">관련 본문</h4><div class="pills">' + refHtml + "</div></section>";
     if (!approvedReader && evHtml) out += '<section class="d-sec person-related-section" data-part="events"><h4 class="d-h">연결된 사건</h4><ul class="rs-list">' + evHtml + "</ul></section>";
     if (!approvedReader) out += '<details class="research" data-part="research"><summary>연구 상세</summary><div class="rs-body"><p class="meta">' + (src ? "출처 · " + esc(src.id || src.path || "") + "<br>" : "") + "판정 · " + esc(R.certainty || "") + " / " + esc(R.status || "") + '</p></div></details><p class="d-hint">Esc 또는 같은 항목을 다시 눌러 닫기</p>';
+    out += eastonDetailHtml(e.stable_id);
     out += "</article>";
     return out;
   }
@@ -2230,15 +2629,19 @@
     return '<button type="button" class="d-back" data-clear-entity>‹ 본문 개요</button><article class="detail d-flat" data-detail="evt" data-stable-id="'+esc(e.stable_id)+'" data-research="1" data-public="false">'+
       '<header class="d-identity"><h3 class="detail-name">'+esc(String(e.name||R.display_label||e.stable_id).replace(/_/g," "))+'</h3><p class="d-kind">사건 · 내부 연구 객체 · 비공개</p>'+deepStudyActionHtml(e.stable_id)+"</header>"+
       (refHtml?'<section class="d-sec" data-part="scripture"><h4 class="d-h">관련 본문</h4><div class="pills">'+refHtml+"</div></section>":"")+
-      (facts?'<section class="d-sec" data-part="facts"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">'+facts+"</dl></section>":"")+
+      (facts?'<section class="d-sec" data-part="facts" data-reader-tier="glance"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">'+facts+"</dl></section>":"")+
       (parent?'<section class="d-sec" data-part="parent"><h4 class="d-h">부모 연구자산</h4><button type="button" class="pill" data-related-entity="'+esc(parent.stable_id)+'">'+esc(parent.display_label)+'</button></section>':"")+
       geo+
-      '<details class="research" data-part="research" open><summary>연구 상세</summary><div class="rs-body"><p class="meta">stable ID · '+esc(e.stable_id)+"<br>projection role · "+esc(R.projection_role||"")+"<br>공개 · 아니오</p>"+hold+(src?'<p class="meta">출처 · '+esc(src.id||src.path||"")+"<br>SHA-256 · "+esc(src.sha256||"")+"</p>":"")+'</div></details><p class="d-hint">이 사건은 승인된 부모 연구자산 안의 asset-local 연구 객체이며 독립 정경 사건으로 승격되지 않았습니다.</p></article>';
+      '<details class="research" data-part="research" data-reader-tier="deep-research" open><summary>더 깊은 연구</summary><div class="rs-body"><p class="meta">stable ID · '+esc(e.stable_id)+"<br>projection role · "+esc(R.projection_role||"")+"<br>공개 · 아니오</p>"+hold+(src?'<p class="meta">출처 · '+esc(src.id||src.path||"")+"<br>SHA-256 · "+esc(src.sha256||"")+"</p>":"")+'</div></details><p class="d-hint">이 사건은 승인된 부모 연구자산 안의 asset-local 연구 객체이며 독립 정경 사건으로 승격되지 않았습니다.</p></article>';
   }
   function projectedRouteFlow(en,e) {
     var R=e.research||{},refs=recordPassages(R,e.stable_id),src=R.source_refs&&R.source_refs[0];
     var refHtml=refs.map(function(r){var pid=r.book+"-"+r.chapter,P=D.passages[pid];if(!P)return"";var spec=pid+":"+(r.verse||"")+(r.verse_end&&r.verse_end!==r.verse?"-"+r.verse_end:"");return '<button type="button" class="pill" data-open-ref="'+esc(spec)+'">'+esc(P.ref+(r.verse?" "+r.verse+(r.verse_end&&r.verse_end!==r.verse?"–"+r.verse_end:"")+"절":""))+"</button>";}).join("");
-    return '<button type="button" class="d-back" data-clear-entity>‹ 본문 개요</button><article class="detail d-flat" data-detail="rt" data-stable-id="'+esc(e.stable_id)+'" data-research="1"><header class="d-identity"><h3 class="detail-name">'+esc(e.name)+'</h3><p class="d-kind">경로 · 연구 객체</p></header>'+(refHtml?'<section class="d-sec"><h4 class="d-h">관련 본문</h4><div class="pills">'+refHtml+"</div></section>":"")+'<section class="d-sec"><h4 class="d-h">지도 geometry</h4><p class="d-body">'+(R.geometry&&R.geometry.approved===true?"승인된 geometry가 있습니다.":"승인된 canonical geometry가 없습니다.")+'</p></section><details class="research"><summary>연구 상세</summary><div class="rs-body"><p class="meta">'+(src?"출처 · "+esc(src.id||src.path||""):"")+'</p></div></details></article>';
+    var pr=PRESENTATION_ROUTE_SPECS[e.stable_id], prState=pr&&pr.presentation_status, mapText=R.geometry&&R.geometry.approved===true?"승인된 geometry가 있습니다.":"승인된 canonical geometry가 없습니다.";
+    if (regionReadingCamera("rt", en.id)) mapText += " 연구용 대략적 지도 보기: 경로가 놓인 광역 지역을 살펴보는 시점으로만 이동하며 실제 도로 선형이나 경유지를 확정하지 않습니다.";
+    if(prState==="PRESENTATION_ONLY_ESTIMATED") mapText += " 관련 본문 지도에서는 canonical record와 분리된 표시 전용 레이어에 ‘연구 기반 개략 경로’로 표시하며 실제 이동로는 미확정입니다.";
+    else if(prState==="GEOMETRY_HOLD_INSUFFICIENT_DRAWABLE_ANCHORS") mapText += " 표시 전용 corridor도 선을 구성할 연구 기반 지도 기준점이 부족해 만들지 않습니다."+(pr&&pr.hold_reason?" "+pr.hold_reason:"");
+    return '<button type="button" class="d-back" data-clear-entity>‹ 본문 개요</button><article class="detail d-flat" data-detail="rt" data-stable-id="'+esc(e.stable_id)+'" data-research="1" data-presentation-route-status="'+esc(prState||"NONE")+'"><header class="d-identity"><h3 class="detail-name">'+esc(e.name)+'</h3><p class="d-kind">경로 · 연구 객체</p></header>'+(refHtml?'<section class="d-sec"><h4 class="d-h">관련 본문</h4><div class="pills">'+refHtml+"</div></section>":"")+'<section class="d-sec"><h4 class="d-h">지도 geometry</h4><p class="d-body">'+esc(mapText)+'</p></section><details class="research"><summary>연구 상세</summary><div class="rs-body"><p class="meta">'+(src?"출처 · "+esc(src.id||src.path||""):"")+'</p></div></details></article>';
   }
   function entityFlow() {
     var en = state.entity, kind = en.kind, dict = dictOf(kind), e = dict && dict[en.id];
@@ -2286,7 +2689,7 @@
     var fold = function (t) {   // 접힘 허용 섹션
       var h; try { h = PANELS[t](); } catch (e) { return '<section class="ov-sec" data-ov="' + t + '"><h3 class="sec-h ov-h">' + esc(LABEL[t]) + "</h3>" + degraded(t) + "</section>"; }
       if (t === "resources" && isEmpty(t, h)) return "";
-      if (t === "notes" && state.tab !== "notes" && !chapterNotes(state.passage).length) return "";   // 저장된 메모가 없으면 섹션 자체를 숨긴다(메모 탭을 연 경우만 작성 폼 유지)
+      // The memo editor must remain available even before the first note exists.   // 저장된 메모가 없으면 섹션 자체를 숨긴다(메모 탭을 연 경우만 작성 폼 유지)
       var n = t === "resources" ? " (" + (h.match(/class="item res"/g) || []).length + ")" : "", open = ui.ovOpen[t] !== undefined ? ui.ovOpen[t] : t === state.tab;
       return '<details class="ov" data-ov="' + t + '"' + (open ? " open" : "") + "><summary>" + esc(LABEL[t]) + n + '</summary><div class="ov-body">' + h + "</div></details>";
     };
@@ -2391,9 +2794,12 @@
     if (vr && vr.render) [].forEach.call(root.querySelectorAll(".verse-worbs-slot[data-verse-worbs-ref]"), function (box) { vr.render(box, box.dataset.verseWorbsRef); });
   }
   function renderPanel() {
+    if (localPersonOpen && state.entity) localPersonOpen = null;
+    if (localPersonOpen && state.view !== "explore" && $("panel") && $("panel").dataset.renderedPassage && state.passage !== $("panel").dataset.renderedPassage) localPersonOpen = null; // Search card Detail is bound to explicit click, not to stale passage-panel render
     var html;
     try {
-      if (ui.rmode === "PERSON" && !state.entity && !ui.rpPerson && !ui.placeBasic) {
+      if (localPersonOpen && localPersonReader(localPersonOpen)) html = localPersonDetailHtml(localPersonReader(localPersonOpen));
+      else if (ui.rmode === "PERSON" && !state.entity && !ui.rpPerson && !ui.placeBasic) {
         html = '<div class="place-basic-wrap">' + rsStatusHtml("research-status-person", rsPersonLabel(ui.rsPerson) + " 인물연구", "이 맥락에는 연결된 인물연구 자료가 없습니다") + "</div>";   // 모드 유지 + 상태 화면(silent fallback 없음)
       } else if (ui.placeBasic && !(state.entity && entityValid(state.entity))) {
         html = '<div class="place-basic-wrap">' + placeBasicDetailHtml(ui.placeBasic) + "</div>";   // Full Place Profile 가 없는 장소: 같은 색인으로 만든 기본 상세
@@ -2403,20 +2809,70 @@
       else if (rsShellOn() && rsMode() === "PLACE") html = rsPlaceStatusHtml();   // PLACE 모드에서 지명이 없거나 연구 전이어도 본문연구로 대신하지 않는다
       else html = (verseResearchHtml() || (rsShellOn() ? rsTextStatusHtml() : "")) + overviewFlow();
     } catch (e) { html = '<div class="degraded" role="status">상세를 표시할 수 없습니다. 본문은 계속 사용할 수 있습니다.</div>'; }
+    // Dictionary reference is independent of the approved WORBS/profile projection.
+    if (state.entity && entityValid(state.entity)) {
+      var refSid = stableOf(state.entity.kind, state.entity.id);
+      var refHtml = atlas90ReferenceHtml(refSid, null);
+      if (refHtml) html += refHtml;
+    } else if (ui.placeBasic && placeIndex().byKey[ui.placeBasic]) {
+      var refPlace = placeIndex().byKey[ui.placeBasic];
+      var refKey = refPlace.stableId && /^BAT01-PLACE-/.test(refPlace.stableId) ? refPlace.stableId : null;
+      var placeReference = atlas90ReferenceHtml(refKey, refKey ? null : refPlace.en);
+      if (placeReference) html += placeReference;
+    }
+    // Full canonical place profiles retain their approved layout and append reader references only.
+    if(state.entity && entityValid(state.entity) && state.entity.kind==='l'){
+      var nativeP=placeIndex().list.filter(function(x){return x.stableId===stableOf(state.entity.kind,state.entity.id);})[0];
+      if(nativeP)html+=nativePlaceReferenceHtml(nativeP);
+    }
+    if (atlasExpansionSelection) html = atlasExpansionHtml(atlasExpansionSelection);
+    if (atlasBcSelection) html = atlasBcReferenceHtml(atlasBcSelection);
+    if (levelBSelection) { var currentB=LEVEL_B_87.filter(function(x){return x.candidate_id===levelBSelection;})[0];if(currentB)html=levelBDetail(currentB); }
+    if (atlas90Selection) {
+      var atlasCurrent = ATLAS90_REF.filter(function(a){return a.place_id===atlas90Selection;})[0];
+      if (atlasCurrent) {
+        var atlasSharedP = atlas90PlaceProjection(atlasCurrent);
+        html = '<div data-part="atlas90-shared-detail" data-atlas-place-id="' + esc(atlas90Selection) + '"><button type="button" class="pill" data-atlas90-close="1">장소 상세 닫기</button>' +
+          placeBasicDetailHtml(null, atlasSharedP).replace('</article>', (function(){var binding=(window.JBC_ATLAS90_READER_CROSSWALK||{})[atlasCurrent.place_id], key=binding&&binding.place_key, place=key&&placeIndex().byKey[key];return place ? '<section class="d-sec" data-part="atlas90-map-link"><h4 class="d-h">지도 · 장소 탐색</h4><button type="button" class="pill" data-map-focus-place="'+esc(key)+'">기존 장소 지도에서 보기</button><p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · 독자용 탐색 연결</p></section>' : '<p class="meta" data-part="atlas90-map-pending" style="font-size:.72rem;opacity:.65">지도 위치 연구검토중</p>';})() + atlas90ReferencePassages(atlasCurrent) + abReaderGeoSection(atlasCurrent.place_id) + '<section class="d-sec" data-part="reference-translation"><h4 class="d-h">지명 자료</h4><p class="d-body" style="white-space:pre-wrap">' + esc(atlasCurrent.ko || '') + '</p><details><summary>영문 원문과 출처</summary><p class="meta">' + esc(atlasCurrent.source || '') + '</p><p class="d-body" style="white-space:pre-wrap">' + esc(atlasCurrent.en || '') + '</p></details></section></article>') + '</div>';
+      }
+    }
+    // Entity research replaces overviewFlow; keep the chapter memo editor accessible.
+    if (state.view === "study" && html.indexOf('data-ov="notes"') < 0) {
+      html += '<details class="ov study-memo-section" data-ov="notes"' + (ui.ovOpen.notes ? ' open' : '') +
+        '><summary>내 메모</summary><div class="ov-body">' + PANELS.notes() + '</div></details>';
+    }
+    if (state.entity && state.entity.kind === "p" && entityValid(state.entity)) {
+      var selectedPerson = D.people && D.people[state.entity.id];
+      var personResearch = selectedPerson && localPersonReader(selectedPerson.name);
+      if (personResearch && personResearch.name === "에녹" && !entityRefs("p", state.entity.id).some(function(ref){return /^gen-5$/.test(ref.pid);})) personResearch = null;
+      if (personResearch && html.indexOf("</article>") >= 0) html = html.replace("</article>",localPersonResearchHtml(personResearch)+"</article>");
+    }
     var panel = $("panel"), fixed = $("place-fixed-head");
+    var previousPassage = panel.dataset.renderedPassage || "";
+    var nextPassage = (state.passage && state.passage.ref) || (typeof state.passage === "string" ? state.passage : "") || "";
     panel.innerHTML = html; hydrateResearchSlots(panel);
+    if (nextPassage && previousPassage && nextPassage !== previousPassage) panel.scrollTop = 0;
+    panel.dataset.renderedPassage = nextPassage;
     rsRenderShell();
+    // Detail-only redraws must update the shared chrome context as well.
+    document.body.dataset.detailContext = detailContext().kind === 'ENTITY' ? 'entity' : 'passage';
     if (fixed) {
       var sidePane = $("side-pane"), paneTitle = sidePane && sidePane.querySelector(".pane-title"), paneBar = sidePane && sidePane.querySelector(".pane-bar"), panelToggle = $("panel-toggle");
       if (sidePane) sidePane.classList.remove("has-entity-fixed-head");
-      if (paneBar) [].slice.call(paneBar.querySelectorAll(".entity-top-action-button,.research-return-button")).forEach(function (x) { x.remove(); });
-      if (paneTitle) { paneTitle.hidden = false; paneTitle.textContent = state.view === "study" && !state.entity ? (ui.rpPerson ? "인물" : "본문연구") : "상세"; paneTitle.removeAttribute("data-entity-topbar"); }
+      if (paneBar) [].slice.call(paneBar.querySelectorAll(".entity-top-action-button,.research-return-button,.study-memo-open")).forEach(function (x) { x.remove(); });
+      if (paneBar && panelToggle && state.view === "study") {
+        var memoButton = document.createElement("button");
+        memoButton.type = "button"; memoButton.className = "btn ghost study-memo-open";
+        memoButton.textContent = "메모장"; memoButton.setAttribute("data-open-memo", "1");
+        paneBar.insertBefore(memoButton, panelToggle);
+      }
+      if (paneTitle) { paneTitle.hidden = false; paneTitle.textContent = localPersonOpen ? "인물 · 연구" : ((atlas90Selection || levelBSelection) ? "장소" : (state.view === "study" && !state.entity ? (ui.rpPerson ? "인물" : "본문연구") : "상세")); paneTitle.removeAttribute("data-entity-topbar"); }
       fixed.innerHTML = "";
       fixed.hidden = true;
       var ph = panel.querySelector(".entity-sticky-head");
-      if (!ph && state.entity && (state.entity.kind === "p" || state.entity.kind === "l")) {
-        var article = panel.querySelector("article.detail[data-detail=\"" + state.entity.kind + "\"]");
-        var back = panel.querySelector(".d-back[data-clear-entity]");
+      if (!ph && (localPersonOpen || (state.entity && (state.entity.kind === "p" || state.entity.kind === "l" || state.entity.kind === "rgn" || state.entity.kind === "evt" || state.entity.kind === "rt")))) {
+        var article = panel.querySelector("article.detail[data-detail=\"" + (localPersonOpen ? "p" : state.entity.kind) + "\"]");
+        var back = panel.querySelector(localPersonOpen ? ".d-back[data-close-local-person-research]" : ".d-back[data-clear-entity]");
         var ident = article && article.querySelector(":scope > .d-identity");
         if (article && back && ident) {
           ph = document.createElement("div");
@@ -2464,7 +2920,7 @@
           if (personDetail) { topAction.textContent = "본문연구"; topAction.setAttribute("data-person-research-toggle", "1"); }
           else if (state.view === "explore") { topAction.textContent = "본문보기"; if (activeSid) topAction.setAttribute("data-deep-study", activeSid); else if (ui.placeBasic) topAction.setAttribute("data-deep-place", ui.placeBasic); }
           else topAction = null;   // 지명연구 ↔ 본문연구 전환은 공통 Research Panel Shell 의 segmented switch 가 맡는다
-          if (topAction) paneBar.insertBefore(topAction, panelToggle);
+          if (topAction) paneBar.insertBefore(topAction, paneBar.querySelector(".study-memo-open") || panelToggle);
         }
         fixed.appendChild(ph);
         fixed.hidden = false;
@@ -2623,7 +3079,7 @@
       sub_steps: (raw.sub_steps || []).filter(function (x) { return x && x.title; }), range: navParseRange(raw.range), related_refs: (raw.related_refs || []).map(navParseRange).filter(Boolean),
       display: navDisplayPlaces(raw.display_places, ov, raw.ov_routes), ov_routes: (raw.ov_routes || []).map(function (r) { return { label: r.label, via: (r.via || []).slice(), certainty: r.certainty || "low" }; }),
       regions: (raw.region_ids || []).filter(function (id) { return D.regions && D.regions[id] && readerVisible(id); }),
-      routes: (raw.route_ids || []).filter(function (l) { var sp = PRESENTATION_ROUTE_SPECS[l]; return sp && (!pid || sp.passages.indexOf(pid) >= 0) && presentationRouteSource(l); })
+      routes: (raw.route_ids || []).filter(function (l) { var sp = PRESENTATION_ROUTE_SPECS[l]; return sp && (!pid || sp.passages.indexOf(pid) >= 0) && presentationRouteSource(l, sp); })
     };
   }
   // overlay 의 표시 전용 지명. canonical identity 가 아니다: stable id·클릭 연구 진입 없음. 참고 레이어에 anchor(현대 지명)가 있을 때만 지도에 흐린 표시를 둔다.
@@ -2868,6 +3324,9 @@
       var cur = Math.min(nv.step, tp.steps.length - 1), s = tp.steps[cur], vis = navTrackIdx(tp, s.track), N = vis.length, pos = vis.indexOf(cur), key = tp.refs.length ? tp.refs : s.refs;
       html = navJourneyHtml(tp, s, cur, vis);   // 모든 여정·주제는 하나의 canonical 내비게이션(헤더·세로 타임라인·활성 카드·이전/다음·다른 주제)
     }
+    // Keep the approved research-to-Scripture projection when the simplified
+    // navigator replaces the legacy guide renderer.
+    html += contextualGuideHtml(state.passage, state.verse);
     g.innerHTML = html;
     if (tp) { var cs = g.querySelector(".jn-step.is-current"); if (cs && cs.scrollIntoView) try { cs.scrollIntoView({ block: "nearest" }); } catch (e) {} }   // 선택된 장면이 항상 보이게
     renderBoard();
@@ -2875,7 +3334,7 @@
   renderGuide = renderGuideSimple;
   // ---------- 관점(본문연구 · 지도 · 연표) ----------
   var VIEWS = ["study", "timeline", "explore"];   // 검색은 독립 Explore 관점. 지도는 본문연구 Workspace 안에서 동작한다.
-  function setView(v) { if (v === "map") v = "study"; if (VIEWS.indexOf(v) < 0) return false; if (state.view === "explore" && v !== "explore") rememberExploreScroll(); state.view = v; replaceNext = true; render(); if (v === "explore") restoreExploreScroll(); return true; }
+  function setView(v) { if (v === "map") v = "study"; if (VIEWS.indexOf(v) < 0) return false; if (state.view === "explore" && v !== "explore") rememberExploreScroll(); if (ui.nav && ui.nav.board) navBoardOpen(false); state.view = v; replaceNext = true; render(); if (v === "explore") restoreExploreScroll(); return true; }
   // 연결된 구절 열기: 같은 본문이면 이동, 다른 본문이면 본문을 바꾸되 선택 대상은 유지(history 에 되돌릴 수 있는 새 entry).
   function openScripture(pid, n) { n = n || null; if (pid === state.passage) return n ? viewVerse(n) : undefined; return go(pid, n, true); }
   function viewVerse(n) { if (state.view !== "study") { state.view = "study"; replaceNext = true; render(); } scrollVerse(n, "center"); }
@@ -2908,7 +3367,7 @@
   function timelineResearchHtml(){
     var bindings=(CTX.timeline_bindings||[]).filter(timelineBindingMatches),events=timelineEventRows(),h="";
     if(events.length)h+='<details class="tl-research"><summary>현재 본문에 연결된 연구 '+events.length+'건</summary><ol class="tl-list">'+events.map(function(x){var r=x.r;return '<li><button type="button" class="pill" data-related-entity="'+esc(x.sid)+'">'+esc(String(r.display_label||x.sid).replace(/_/g," "))+'</button></li>';}).join("")+'</ol></details>';
-    if(bindings.length)h+='<details class="tl-research"><summary>문맥 연구 연결 '+bindings.length+'건</summary>'+bindings.map(function(b){var rec=contextRecord(b.record_id);return '<article class="tl-binding"><strong>'+esc(rec&&rec.title||b.record_id)+'</strong></article>';}).join("")+'</details>';
+    if(bindings.length)h+='<details class="tl-research"><summary>문맥 연구 연결 '+bindings.length+'건</summary>'+bindings.map(function(b){var rec=contextRecord(b.record_id);return '<article class="tl-binding" data-context-record="'+esc(b.record_id)+'"><strong>'+esc(rec&&rec.title||b.record_id)+'</strong>'+(rec&&rec.summary?'<p>'+esc(rec.summary)+'</p>':"")+'<button type="button" class="btn ghost" data-tl-context-research="'+esc(b.record_id)+'">연구 열기</button></article>';}).join("")+'</details>';
     return h;
   }
   function renderTimeline(){
@@ -2937,7 +3396,7 @@
       var detail="";
       if(sel){var m=timelineStepMedia(tp,sel),p=timelineStepPlace(tp,sel),ix=steps.indexOf(sel),near=steps.filter(function(s,j){return j!==ix&&Math.abs(j-ix)<=2;});detail='<aside class="tl-detail"><span class="tl-detail-badge">'+esc(tp.title)+(tr?" · "+esc(tr.title):"")+'</span><h2>'+esc(sel.title)+'</h2><p class="tl-detail-ref">'+esc(timelineStepRef(sel))+'</p>'+(m?'<img class="tl-detail-img" src="'+esc(m.preview_url)+'" alt="" referrerpolicy="no-referrer">':'<div class="tl-detail-img tl-detail-ph"></div>')+'<p class="tl-detail-lead">'+esc(sel.core||sel.short_description||"")+'</p><dl class="tl-detail-facts">'+(tr?'<div><dt>주요 인물</dt><dd>'+esc(tr.title)+'</dd></div>':"")+(p?'<div><dt>장소</dt><dd>'+esc(p.label)+(p.region?" · "+esc(p.region):"")+'</dd></div>':"")+'<div><dt>상태</dt><dd>'+esc(sel.uncertainty||"연결됨")+'</dd></div></dl><div class="tl-detail-actions"><button class="btn primary" data-tl-study="'+esc(sel.id)+'">본문연구</button><button class="btn ghost" data-tl-map="'+esc(sel.id)+'">지도 보기</button></div>'+(near.length?'<section class="tl-related"><h3>관련 사건</h3>'+near.map(function(s){return '<button data-tl-step="'+esc(s.id)+'"><span>'+esc(s.title)+'</span><small>'+esc(timelineStepRef(s))+'</small></button>';}).join("")+'</section>':"")+'</aside>';}
 
-      el.innerHTML='<div class="tl-page"><div class="tl-left"><header class="tl-page-head"><div class="tl-head-title"><h1>성경 연표</h1><p>구원 역사를 한눈에 보는 흐름</p></div><div class="tl-head-context"><strong>'+esc(tp.title)+'</strong><span>'+esc(tr&&tr.title||"")+'</span><small>'+esc((tr&&tr.range_label)||eraRange(tp)||"")+'</small></div></header><div class="tl-era-strip">'+erasHtml+'</div><main class="tl-main"><section class="tl-era-summary"><div class="tl-sum-text"><h2>'+esc(tp.title)+'</h2><p class="tl-sum">'+esc(tp.summary||"")+'</p><p class="tl-range">'+esc((tr&&tr.range_label)||"")+'</p></div>'+(tracks.length?'<label class="tl-track">인물 <select data-tl-track>'+trackHtml+'</select></label>':"")+'</section>'+(steps.length?'<section class="tl-event-sec"><div class="tl-event-head"><h3>'+esc((tr&&tr.title||tp.title)+" 주요 사건")+' <small>('+steps.length+'개)</small></h3>'+pagerHtml+'<div><button data-tl-sort="story" class="'+(ui.tlSort!=="scripture"?"is-on":"")+'">사건 순</button><button data-tl-sort="scripture" class="'+(ui.tlSort==="scripture"?"is-on":"")+'">본문 순</button></div></div><div class="tl-event-rail">'+cards+'</div></section>':'<div class="tl-empty"><strong>'+esc(tp.title)+'</strong><p>현재 승인된 상세 연표 데이터가 아직 연결되지 않았습니다.</p></div>')+chronoHtml+'</main></div>'+detail+'</div>';
+      el.innerHTML='<div class="tl-page"><div class="tl-left"><header class="tl-page-head"><div class="tl-head-title"><h1>성경 연표</h1><p>구원 역사를 한눈에 보는 흐름</p></div><div class="tl-head-context"><strong>'+esc(tp.title)+'</strong><span>'+esc(tr&&tr.title||"")+'</span><small>'+esc((tr&&tr.range_label)||eraRange(tp)||"")+'</small></div></header><div class="tl-era-strip">'+erasHtml+'</div><main class="tl-main"><section class="tl-era-summary"><div class="tl-sum-text"><h2>'+esc(tp.title)+'</h2><p class="tl-sum">'+esc(tp.summary||"")+'</p><p class="tl-range">'+esc((tr&&tr.range_label)||"")+'</p></div>'+(tracks.length?'<label class="tl-track">인물 <select data-tl-track>'+trackHtml+'</select></label>':"")+'</section>'+(steps.length?'<section class="tl-event-sec"><div class="tl-event-head"><h3>'+esc((tr&&tr.title||tp.title)+" 주요 사건")+' <small>('+steps.length+'개)</small></h3>'+pagerHtml+'<div><button data-tl-sort="story" class="'+(ui.tlSort!=="scripture"?"is-on":"")+'">사건 순</button><button data-tl-sort="scripture" class="'+(ui.tlSort==="scripture"?"is-on":"")+'">본문 순</button></div></div><div class="tl-event-rail">'+cards+'</div></section>':'<div class="tl-empty"><strong>'+esc(tp.title)+'</strong><p>현재 승인된 상세 연표 데이터가 아직 연결되지 않았습니다.</p></div>')+chronoHtml+timelineResearchHtml()+'</main></div>'+detail+'</div>';
     }catch(e){el.innerHTML='<div class="degraded" role="status">연표를 표시할 수 없습니다.</div>';}
   }
   var mapMoved = false;
@@ -3157,10 +3616,10 @@
   var swState = { open: false, kind: "all", mode: "all", type: "all", testament: "all", period: "all", region: "all", sort: "label", view: "card", limit: 30, q: "", placeType: "all", role: "all", story: "all", journey: "all", location: "all", photo: false, archaeology: false, detailTab: "overview", prevFocus: null, prevPanel: null, scrollTop: 0, cache: { all: null, verse: null, place: null, person: null, event: null, route: null, research: null } };
   function swSnapshot() { var box = $("search-results"); return { period: swState.period, region: swState.region, view: swState.view, placeType: swState.placeType, role: swState.role, story: swState.story, journey: swState.journey, location: swState.location, photo: swState.photo, archaeology: swState.archaeology, selected: state.entity ? stableOf(state.entity.kind, state.entity.id) : null, scroll: box ? box.scrollTop : 0 }; }
   function swRestore(v) { if (!v) return; ["period","region","view","placeType","role","story","journey","location","photo","archaeology"].forEach(function (k) { if (v[k] !== undefined) swState[k] = v[k]; }); }
-  function swModeAccepts(e, mode) { if (mode === "all") return true; if (mode === "verse" || mode === "research") return false; return mode === "person" ? e.entity_type === "Person" : mode === "event" ? e.entity_type === "Event" : mode === "route" ? e.entity_type === "Route" : e.entity_type === "Place" || e.entity_type === "Region"; }
+  function swModeAccepts(e, mode) { if (mode === "all") return true; if (mode === "verse" || mode === "research") return false; return mode === "person" ? e.entity_type === "Person" : mode === "event" ? e.entity_type === "Event" : mode === "route" ? e.entity_type === "Route" : mode === "region" ? e.entity_type === "Region" : e.entity_type === "Place"; }
   function swOptions() { return { kind: swState.mode === "verse" ? "verse" : swState.mode === "all" ? "all" : "entity", type: swState.mode, testament: swState.testament, period: swState.period, region: swState.region, placeType: swState.placeType, role: swState.role, story: swState.story, journey: swState.journey, location: swState.location, photo: swState.photo, archaeology: swState.archaeology, sort: swState.sort, limit: swState.limit }; }
   function switchExploreMode(mode) {
-    if (["all","verse","place","person","event","route","research"].indexOf(mode)<0 || mode === swState.mode) return;
+    if (["all","verse","place","region","person","event","route","research"].indexOf(mode)<0 || mode === swState.mode) return;
     swState.cache[swState.mode] = swSnapshot(); swState.mode = mode; swState.type = mode; swState.detailTab = "overview";
     var c = swState.cache[mode];
     if (c) swRestore(c);
@@ -3179,7 +3638,7 @@
   }
   function entitySet(q, o) {
     o = o || {}; var nq = norm(q), out = STORE.list(), ref = nq ? parseReference(q) : null;
-    var mode = ["all","place","person","event","route"].indexOf(o.type)>=0 ? o.type : "all"; if (mode !== "all") out = out.filter(function (e) { return swModeAccepts(e, mode); });
+    var mode = ["all","place","region","person","event","route"].indexOf(o.type)>=0 ? o.type : "all"; if (mode !== "all") out = out.filter(function (e) { return swModeAccepts(e, mode); });
     if (nq) {
       if (ref && ref.passage) out = out.filter(function (e) { return e.passage_refs.some(function (r) { return r.book + "-" + r.chapter === ref.passage && (ref.verse == null || r.verse === ref.verse); }); });
       else out = out.filter(function (e) { return norm([e.display_label, (e.aliases || []).join(" "), e.role, e.reader_type, e.region, e.period, e.story, (e.journeys || []).join(" "), e.short_summary].filter(Boolean).join(" ")).indexOf(nq) >= 0; });
@@ -3200,7 +3659,7 @@
   }
   // ---------- 공통 검색 서비스: 상단 빠른검색과 검색 탭이 같은 함수를 쓴다(표시 방식만 다름) ----------
   // 본문은 KRV 전체 텍스트에서 독립적으로 찾고, 인물·장소·사건·경로·연구는 등록된 데이터가 있을 때만 덧붙는다.
-  var SEARCH_GROUPS = ["person", "place", "event", "route", "research", "verse"];
+  var SEARCH_GROUPS = ["person", "place", "region", "event", "route", "research", "verse"];
   function unifiedSearch(q, o) {
     o = o || {};
     var nq = norm(q), mode = o.mode || "all", lim = o.limit || {}, res = { q: q, nq: nq, groups: {}, counts: {} };
@@ -3218,7 +3677,7 @@
       }
       res.groups.verse = hits; res.counts.verse = total;
     }
-    ["person", "place", "event", "route"].forEach(function (g) { if (want(g)) put(g, entitySet(q, extend(o.entity || {}, { type: g }))); });
+    ["person", "place", "region", "event", "route"].forEach(function (g) { if (want(g)) put(g, entitySet(q, extend(o.entity || {}, { type: g }))); });
     if (want("research")) put("research", contextualSearch(q));
     return res;
   }
@@ -3417,7 +3876,7 @@
       return '<div class="pc pc-map" data-place-key="' + key + '" data-stable-id="' + esc(p.stableId || "") + '" role="dialog" aria-label="' + esc(p.label) + ' 장소 카드">' + mapMedia + '<div class="pc-head"><strong class="pc-name">' + esc(p.label) + "</strong>" + (p.en ? '<span class="pc-en">' + esc(p.en) + "</span>" : "") + "</div>" +
         (meta ? '<div class="pc-meta">' + esc(meta) + "</div>" : "") + (p.summary ? '<p class="pc-sum">' + esc(p.summary) + "</p>" : "") + (pas ? '<div class="pc-row"><span>본문</span>' + esc(pas) + "</div>" : "") +
         (jl ? '<div class="pc-row"><span>여정</span>' + esc(jl) + "</div>" : "") + (p.certainty ? '<div class="pc-cert">' + esc(p.certainty) + "</div>" : "") +
-        (p.hasProfile ? '<button type="button" class="pc-open" data-place-open="' + key + '">장소연구 보기</button>' : "") + "</div>";
+        (p.hasProfile ? '<button type="button" class="pc-open" data-place-open="' + key + '">장소연구 보기</button>' : "") + atlas90PlaceLookupButton(p) + "</div>";
     }
     var m = p.media, listView = swState.view === "list", image = listView ? searchThumbHtml(m, true) : (ctx.card !== false ? searchThumbHtml(m, true) : "");
     var sel = (state.entity && p.stableId && stableOf(state.entity.kind, state.entity.id) === p.stableId) || (!!ui.placeBasic && ui.placeBasic === p.key), q = ctx.q, label = q ? markedHtml(p.label, markRanges(p.label, q), 0, p.label.length) : esc(p.label);
@@ -3439,10 +3898,10 @@
     if (m && mediaGate(m) === "image") return '<figure class="d-hero full-profile-hero" data-part="media" data-media-id="' + esc(m.id) + '" data-media-mode="image"><button type="button" class="hero-open" data-media-lightbox="' + esc(m.id) + '" aria-label="큰 이미지와 출처 보기"><img class="hero-img" src="' + esc(m.preview_url) + '" alt="' + esc(m.alt || m.reader_caption || p.label) + '" loading="lazy" decoding="async" referrerpolicy="no-referrer"></button><figcaption><span class="hero-cap">' + esc(m.reader_caption || "") + "</span></figcaption></figure>";
     return '<figure class="d-hero full-profile-hero place-hero-empty" data-part="media" data-media-mode="placeholder"><div class="hero-ph" role="img" aria-label="대표 이미지 없음"><span>대표 이미지 자료 연결 예정</span></div><figcaption><span class="hero-cap is-pending">이미지·위치 설명 자료 연결 예정</span></figcaption></figure>';
   }
-  function placeBasicDetailHtml(key) {
+  function placeBasicDetailHtml(key, externalP) {
     // Full Place Profile(그랄·브엘세바)와 같은 골격·클래스를 쓴다: 고정 헤더(.entity-sticky-head) → 핵심 정의(.d-hook) → 한눈에 보기(.qf-list) → 대표 이미지(.d-hero) → 상세 정보(.qf-list) → 연구 상태(작은 하단 블록).
     // 자료가 없는 칸은 지우지 않고 상태값("연구 전" 등)으로 같은 자리에 둔다. 연구가 연결되면 같은 슬롯에 값만 채워진다. 없는 정보를 만들어 채우지 않는다.
-    var p = placeIndex().byKey[key]; if (!p) return '<p class="empty helper">장소 정보를 찾을 수 없습니다.</p>';
+    var p = externalP || placeIndex().byKey[key]; if (!p) return '<p class="empty helper">장소 정보를 찾을 수 없습니다.</p>';
     var pend = function (t) { return '<span class="is-pending">' + esc(t) + "</span>"; }, val = function (v, t) { return v ? esc(v) : pend(t); };
     var scenes = p.scenes.filter(function (s, i, a) { return a.findIndex(function (x) { return x.topic === s.topic && x.step === s.step; }) === i; });
     var events = scenes.map(function (s) { return s.title; }).filter(function (t, i, a) { return a.indexOf(t) === i; });
@@ -3450,7 +3909,7 @@
     var people = p.people.join(" · "), evShort = events.slice(0, 3).join(" · ") + (events.length > 3 ? " 외 " + (events.length - 3) + "건" : "");
     var facts = row("유형", val(p.type, "확인 중")) + row("지역", val(p.region, "확인 중")) + row("이름의 뜻", pend("연구 전")) + row("위치", val(p.certainty, "위치 확인 중")) + row("주요 시대", val(p.eras.join(" · "), "연구 전")) + row("주요 인물·사건", val([people, evShort].filter(Boolean).join(" — "), "연구 전"));
     var detail = row("본문 범위", val(p.passages.join(", "), "자료 연결 예정")) + row("주요 인물", val(people, "연구 전")) + row("주요 사건", val(events.join(" · "), "연구 전")) +
-      row("여정에서 보기", scenes.length ? '<span class="pc-scenes-inline">' + scenes.map(function (s) { return '<button type="button" class="pill pc-scene" data-place-scene="' + esc(s.topic) + "|" + s.step + '">' + esc((s.track || s.topicTitle) + (s.n ? " " + s.n + "번째 경유지" : "") + " · " + s.title) + "</button>"; }).join("") + "</span>" : pend("해당 여정 없음"));
+      row("여정에서 보기", scenes.length ? '<span class="pc-scenes-inline">' + scenes.map(function (s) { return '<button type="button" class="pill pc-scene" data-place-scene="' + esc(s.topic) + "|" + s.step + '">' + esc((s.track || s.topicTitle) + (s.n ? " " + s.n + "번째 경유지" : "") + " · " + s.title) + "</button>"; }).join("") + "</span>" : pend(/^atlas90:|^levelb:/.test(p.key) ? "여정 연결 연구검토중" : "해당 여정 없음"));
     return '<article class="detail d-flat full-place-profile place-standard" data-detail="l" data-part="place-basic" data-place-key="' + esc(p.key) + '" data-profile-status="PENDING">' +
       '<div class="entity-sticky-head place-sticky-head"><header class="d-identity" data-part="identity"><div class="entity-title-line place-title-line"><h3 class="detail-name">' + esc(p.label) + "</h3>" + (p.en ? '<span class="d-en">' + esc(p.en) + "</span>" : '<span class="d-en is-pending">영문명 확인 중</span>') + "</div>" +
       '<p class="entity-meta-line place-meta-line"><span class="d-original is-pending">원어 표기·발음 자료 연결 예정</span></p></header></div>' +
@@ -3458,10 +3917,12 @@
       '<section class="d-sec" data-part="facts"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">' + facts + "</dl></section>" +
       placeHeroHtml(p) +
       '<section class="d-sec" data-part="detail-info"><h4 class="d-h">상세 정보</h4><dl class="qf-list">' + detail + "</dl></section>" +
+      (!externalP ? nativePlaceReferenceHtml(p) : '') +
+      (atlas90PlaceLookupButton(p) ? '<section class="d-sec" data-part="atlas90-place-term-lookup"><p class="meta">외부사전 표제어 참고 · 기존 장소와 전문 동일성 결속 아님</p>' + atlas90PlaceLookupButton(p) + '</section>' : '') +
       '<footer class="d-status research-status" data-part="research-status"><span class="rs-dot" aria-hidden="true"></span><span><strong>연구 상태</strong> 연구 전 · 상세 연구 자료가 연결되면 이 자리에 채워집니다.</span></footer></article>';
   }
   function openPlaceKey(key) {
-    var p = placeIndex().byKey[key]; if (!p) return false; hidePlaceCard();
+    var p = placeIndex().byKey[key]; if (!p) return false; localPersonOpen = null; atlas90Selection = null; levelBSelection = null; atlasBcSelection = null; atlasExpansionSelection = null; readerGeoFocus = null; hidePlaceCard();
     if (p.canonical && p.stableId && STORE.get(p.stableId)) { ui.placeBasic = null; return selectEntityStable(p.stableId); }
     ui.placeBasic = key; ui.rmode = "PLACE"; ui.rsPlace = key; ui.rsStep = false; state.entity = null; ensureContextVisible(); replaceNext = true; render(); return true;
   }
@@ -3498,10 +3959,93 @@
     if (mediaGate(m) === "image") return '<img class="ee-thumb" src="' + esc(m.preview_url) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">';
     return isPlace ? '<span class="ee-thumb ee-thumb-ph" role="img" aria-label="대표 이미지 없음"></span>' : "";
   }
+  function localPersonReader(name) {
+    if (!name) return null;
+    return (window.JBC_PERSON_RESEARCH_20261009 || []).find(function(r){return r.name === String(name).trim();}) || null;
+  }
+  function localPersonResearchHtml(r) {
+    if (!r) return "";
+    return '<section class="d-sec jbc-person-worbs" data-part="person-worbs-reader" data-professional-status="CANDIDATE_HOLD">' +
+      '<h4 class="d-h">인물연구</h4><h5 class="rp-subhead">훑어보기</h5><p class="d-body">'+esc(r.overview)+'</p>'+
+      '<h5 class="rp-subhead">살펴보기</h5>'+(r.commentary||[]).map(function(s,i){return '<div class="rp-unit"><strong class="rp-section-title">'+(i+1)+'. '+esc(s.heading)+'</strong><p class="d-body">'+esc(s.body)+'</p></div>';}).join("")+
+      '<h5 class="rp-subhead">깊게보기</h5>'+(r.deep||[]).map(function(s){return '<p class="d-body">'+esc(s)+'</p>';}).join("")+'</section>';
+  }
+  var localPersonOpen = null;
+  // Draft-only person cards retain their separate content/provenance, but follow
+  // the same Search gesture contract: click = right Detail, dblclick = Scripture research.
+  // Navigation refs are explicitly cited in their draft text; these are UX entry defaults,
+  // NOT approved primaryPassage, identity bindings, or professional promotion.
+  var LOCAL_PERSON_NAV_REF = { "노아": "gen-6:8", "에녹": "gen-5:22" };
+  function openLocalPersonPassageResearch(name) {
+    var research=localPersonReader(name), ref=research&&LOCAL_PERSON_NAV_REF[research.name], m=ref&&/^([a-z0-9]+-\d+):(\d+)$/.exec(ref);
+    if (!m || !D.passages[m[1]] || !hasVerse(m[1],+m[2])) return false;
+    localPersonOpen=null; ui.rsStep=false; ui.rsPlace=null; ui.rsPerson=null;
+    rsPrepare("TEXT"); ensureContextVisible();
+    if (state.view==="explore") closeSearch(true);
+    var moved=openRelatedPassage(m[1],+m[2]);
+    if (moved) { renderPanel(); panelScrollTop(); }
+    return moved;
+  }
+  document.addEventListener("click", function(ev) {
+    var open=ev.target.closest("[data-local-person-research]");
+    if (open) {
+      ev.preventDefault();
+      if (ev.detail>1) return; // second click is owned by the common dblclick transition
+      var research=localPersonReader(open.dataset.localPersonResearch);
+      if (!research) return;
+      localPersonOpen=research.name; state.entity=null;
+      ensureContextVisible(); renderPanel(); // Search remains open; right Person Detail updates
+      return;
+    }
+    if (localPersonOpen && ev.target.closest("[data-close-local-person-research]")) {
+      ev.preventDefault();localPersonOpen=null;renderPanel();
+    }
+  });
+  function localPersonCardsHtml(q) {
+    var entries=(window.JBC_PERSON_RESEARCH_20261009||[]).filter(function(x) {
+      return !q || norm(x.name+" "+x.overview).indexOf(norm(q))>=0;
+    });
+    var META={"노아":{passage:"창세기 5:28–9:29",tags:["홍수 시대"]},"에녹":{passage:"창세기 5:18–24",tags:["셋 계보"]}};   // 상세(localPersonDetailHtml)와 같은 대표 본문·구분
+    return entries.map(function(x) {
+      var m=META[x.name]||{passage:"",tags:[]}, tags=m.tags.concat(["연구 원고"]);
+      if (swState.view !== "card") return '<article class="ee-item ee-list-row" data-origin="research-draft" data-research-id="'+esc(x.name)+'"><button type="button" class="sr-row ee-primary no-media" data-local-person-research="'+esc(x.name)+'">' +
+        '<span class="ee-list-name ee-list-name-entity"><span class="ee-list-symbol" aria-hidden="true">♙</span><span class="ee-list-namecopy"><span class="sr-ref">'+esc(x.name)+'</span><span class="ee-list-class">인물</span></span></span>' +
+        '<span class="ee-list-desc">'+esc(snip(x.overview))+'</span>' +
+        '<span class="ee-list-passage">'+esc(m.passage)+'</span>' +
+        '<span class="ee-list-tags">'+tags.map(function(t){return '<span class="ee-tag">'+esc(t)+'</span>';}).join("")+'</span>' +
+        '<span class="ee-list-chevron" aria-hidden="true">›</span></button></article>';
+      return '<article class="ee-item ee-card" data-origin="research-draft" data-research-id="'+esc(x.name)+'">' +
+        '<button type="button" class="sr-row ee-primary no-media" data-local-person-research="'+esc(x.name)+'">' +
+        '<span class="ee-copy"><span class="sr-ref">'+esc(x.name)+'<span class="sr-kind">인물</span></span>' +
+        '<span class="ee-meta">WORBS 인물연구</span></span>' +
+        '<span class="ee-card-extra"><span class="sr-preview">'+esc(snip(x.overview))+'</span>'+(m.passage?'<span class="ee-count">'+esc(m.passage)+'</span>':'')+
+        '<span class="ee-tags">'+tags.map(function(t){return '<span class="ee-tag">'+esc(t)+'</span>';}).join("")+'</span></span></button></article>';
+    }).join("");
+  }
+  function localPersonDetailHtml(research) {
+    var noah=research.name==="노아";
+    var facts=noah?[["부모","라멕"],["자녀","셈 · 함 · 야벳"],["대표 본문","창세기 5:28–9:29"],["핵심 역할","은혜 · 동행 · 방주 · 언약"]]:
+      [["부모","야렛"],["자녀","므두셀라"],["대표 본문","창세기 5:18–24"],["구분","셋 계보의 에녹 · 창세기 4장 동명이인과 구별"]];
+    var quick=facts.map(function(f){return '<div class="person-fact-row"><dt>'+esc(f[0])+'</dt><dd>'+esc(f[1])+'</dd></div>';}).join("");
+    var narrative=(research.commentary||[]).map(function(s,i){return '<details class="person-narrative-section" data-person-narrative="'+(i+1)+'"'+(i===0?' open':'')+'><summary class="person-narrative-summary"><span class="person-narrative-kicker">'+String(i+1).padStart(2,"0")+'</span><span class="person-narrative-heading">'+esc(s.heading)+'</span><span class="person-accordion-arrow" aria-hidden="true"></span></summary><div class="person-narrative-content"><div class="person-story-unit"><p>'+esc(s.body)+'</p></div></div></details>';}).join("");
+    var deep=(research.deep||[]).map(function(s){return '<p>'+esc(s)+'</p>';}).join("");
+    return '<div class="sw-detail-body sw-detail-single" data-detail-mode="single-scroll">'+
+      '<button type="button" class="d-back" data-close-local-person-research>‹ 검색으로 돌아가기</button>'+
+      '<article class="detail d-flat" data-detail="p" data-person-research-only="1">'+
+      '<header class="d-identity person-reader-head" data-part="identity"><h3 class="detail-name">'+esc(research.name)+'</h3><span class="d-en">'+(noah?'Noah':'Enoch')+'</span><span class="d-original">'+(noah?'נֹחַ · 노아':'חֲנוֹךְ · 하노크')+'</span><p class="d-kind">인물 · '+(noah?'홍수 시대':'셋 계보')+'</p></header>'+
+      '<div class="person-reader-flat" data-person-reader="local-research">'+
+      '<p class="person-reader-intro">'+esc(research.overview)+'</p>'+
+      '<section class="person-overview" data-reader-tier="glance"><h4 class="person-section-title">한눈에 보기</h4><dl class="person-facts-compact">'+quick+'</dl></section>'+
+      '<section class="person-narrative" data-reader-tier="commentary"><h4 class="person-section-title">풍성한 기본 주석 · 본문을 깊이 읽기</h4>'+narrative+'</section>'+
+      '<details class="person-research" data-person-research data-reader-tier="deep-research"><summary>더 깊은 연구</summary><div class="person-research-body"><section>'+deep+'</section></div></details>'+
+      '</div></article></div>';
+  }
   function entityItemHtml(e, q) {
     var card = swState.view === "card", m = e.representative_media, image = card ? searchThumbHtml(m, e.kind === "l") : "";
     var selected = state.entity && stableOf(state.entity.kind, state.entity.id) === e.stable_id;
     var label = q ? markedHtml(e.display_label, markRanges(e.display_label, q), 0, e.display_label.length) : esc(e.display_label), meta = entityMeta(e), summary = discoverySummary(e), passage = discoveryPassage(e), tags = discoveryTags(e), typ = discoveryTypeLabel(e);
+    var localStudy = e.kind === "p" ? localPersonReader(e.display_label) : null;
+    if (localStudy && localStudy.name === "에녹" && !/5[:장]|창세기 5|Gen(?:esis)?\\s*5/i.test(passage || "")) localStudy = null;
     var tagHtml = tags.length ? '<span class="ee-tags">' + tags.map(function (t) { return '<span class="ee-tag">' + esc(t) + "</span>"; }).join("") + "</span>" : "";
     if (!card) return '<article class="ee-item ee-list-row' + (selected ? " is-selected" : "") + '" data-entity-id="' + esc(e.stable_id) + '" data-origin="' + esc(e.provenance.origin) + '"><button type="button" class="sr-row ee-primary no-media" data-search="1" data-kind="' + e.kind + '" data-id="' + esc(e.compatibility_key) + '" data-stable-id="' + esc(e.stable_id) + '"' + (selected ? ' aria-current="true"' : "") + '>' +
       '<span class="ee-list-name ee-list-name-entity"><span class="ee-list-symbol" aria-hidden="true">' + (e.kind === "p" ? "♙" : "•") + '</span><span class="ee-list-namecopy"><span class="sr-ref">' + label + '</span><span class="ee-list-class">' + esc(typ) + "</span></span></span>" +
@@ -3511,6 +4055,7 @@
       '<span class="ee-list-chevron" aria-hidden="true">›</span></button></article>';
     var head = '<span class="ee-copy"><span class="sr-ref">' + label + '<span class="sr-kind">' + esc(typ) + '</span></span>' + (meta ? '<span class="ee-meta">' + esc(meta) + '</span>' : "") + "</span>";
     var extra = (summary || passage || tagHtml) ? '<span class="ee-card-extra">' + (summary ? '<span class="sr-preview">' + esc(summary) + '</span>' : "") + (passage ? '<span class="ee-count">' + esc(passage) + "</span>" : "") + tagHtml + "</span>" : "";
+    if (localStudy) extra += '<span class="ee-card-extra"><span class="ee-tag">인물연구</span></span>';
     return '<article class="ee-item ee-card' + (selected ? " is-selected" : "") + '" data-entity-id="' + esc(e.stable_id) + '" data-origin="' + esc(e.provenance.origin) + '"><button type="button" class="sr-row ee-primary ' + (image ? "has-media" : "no-media") + '" data-search="1" data-kind="' + e.kind + '" data-id="' + esc(e.compatibility_key) + '" data-stable-id="' + esc(e.stable_id) + '"' + (selected ? ' aria-current="true"' : "") + '>' + image + head + extra + "</button></article>";
   }
   function exploreMapEntities(entities) {
@@ -3547,6 +4092,7 @@
     if ($("sw-sort")) $("sw-sort").value = swState.sort;
   }
   function renderSearch() {
+    if (swState.q && swState.q.trim() && eastonLoadState==="IDLE") ensureEastonCandidate();
     var el=$("search-results"), sum=$("sw-summary"), more=$("sw-more"), q=swState.q, mode=swState.mode, hasQ=!!norm(q), R, refErr=null, entList=[];
     if(!el) return; updateEntityFilterOptions(); syncSwFilters(); if (swState.view !== "card" && swState.view !== "list") swState.view = "card"; el.dataset.entityView=swState.view;
     try {
@@ -3554,27 +4100,85 @@
       var entOpts=swOptions(); entOpts.kind="entity";
       R=unifiedSearch(q,{mode:mode,testament:swState.testament,entity:entOpts,limit:{verse:swState.limit}});
       // 검색어가 없으면 기존 탐색(인물·장소 목록)을 그대로 보여 준다
-      if(!hasQ){ ["person","place","event","route"].forEach(function(g){ if(mode==="all"||mode===g){ R.groups[g]=entitySet("",extend(entOpts,{type:g})); R.counts[g]=R.groups[g].length; } }); }
+      if(!hasQ){ ["person","place","region","event","route"].forEach(function(g){ if(mode==="all"||mode===g){ R.groups[g]=entitySet("",extend(entOpts,{type:g})); R.counts[g]=R.groups[g].length; } }); }
       if(mode==="all"||mode==="place"){ var pl=placeIndexSet(q,entOpts); R.groups.place=pl; R.counts.place=pl.length; }   // 장소는 공통 PLACE_INDEX(지도에 있는 모든 장소 포함)에서
     } catch(e){ el.innerHTML='<p class="degraded">검색을 사용할 수 없습니다.</p>'; return; }
-    var SEC={person:"인물",place:"장소",event:"사건",route:"경로"}, html=refErr?'<p class="empty helper" data-ref-error="1">'+esc(refErr)+'</p>':"", total=0, parts=[];
+    // Level A joins the SAME Place search result grid, not a separate dictionary section.
+    if (mode === 'all' || mode === 'place') {
+      var aQuery = String(q || '').trim().toLocaleLowerCase();
+      // One visible card per place in search. Keep reference datasets untouched.
+      var normalizePlaceName=function(x){return String(x||'').trim().toLocaleLowerCase().replace(/[^a-z0-9가-힣]/g,'');};
+      // Existing place aliases must win even when search was typed in English.
+      // Only exact reference headword matches qualify; no substring identity inference.
+      if(aQuery && /^[a-z][a-z .'-]*$/.test(aQuery)){
+        var matchesExisting=placeIndex().list.filter(function(p){
+          var name=normalizePlaceName(aQuery), key=normalizePlaceName(p.key), en=normalizePlaceName(p.en);
+          if(name===key || (en&&name===en))return true;
+          var aLinked=(window.JBC_ATLAS90_KOREAN_REFERENCE||[]).some(function(a){
+            var cross=(window.JBC_ATLAS90_READER_CROSSWALK||{})[a.place_id];
+            return cross&&cross.place_key===p.key&&normalizePlaceName(a.name_en)===name;
+          });
+          return aLinked || LEVEL_B_87.some(function(a){return normalizePlaceName(a.name_en)===name && levelBExistingPlace(a)===p;});
+        });
+        matchesExisting.forEach(function(p){
+          if(!R.groups.place.some(function(x){return x.key===p.key;}))R.groups.place.push(p);
+        });
+      }
+      var seenPlaceNames={};
+      var addVisiblePlace=function(p){
+        [p.key,p.label,p.en].forEach(function(v){var n=normalizePlaceName(v);if(n)seenPlaceNames[n]=true;});
+      };
+      R.groups.place.forEach(addVisiblePlace);
+      var addedAtlas = (window.JBC_ATLAS90_KOREAN_REFERENCE || []).filter(function(a){
+        var cross=(window.JBC_ATLAS90_READER_CROSSWALK||{})[a.place_id];
+        var linked=cross&&cross.place_key;
+        return !(linked&&seenPlaceNames[normalizePlaceName(linked)]) &&
+          !seenPlaceNames[normalizePlaceName(a.name_ko)] &&
+          !seenPlaceNames[normalizePlaceName(a.name_en)] &&
+          (!aQuery || [a.name_ko || '', a.name_en || '', a.source_key || ''].some(function(v){
+            return String(v).toLocaleLowerCase().indexOf(aQuery) >= 0;
+          }));
+      }).map(atlas90PlaceProjection);
+      addedAtlas.forEach(addVisiblePlace);
+      var addedB=LEVEL_B_87.filter(function(a){
+        return !seenPlaceNames[normalizePlaceName(a.name_ko)] &&
+          !seenPlaceNames[normalizePlaceName(a.name_en)] &&
+          (!aQuery || [a.name_ko||'',a.name_en||''].some(function(v){return String(v).toLocaleLowerCase().indexOf(aQuery)>=0;}));
+      }).map(levelBProjection);
+      R.groups.place = R.groups.place.concat(addedAtlas,addedB);
+      R.counts.place = R.groups.place.length;
+    }
+    var SEC={person:"인물",place:"장소",region:"지역",event:"사건",route:"경로"}, html=refErr?'<p class="empty helper" data-ref-error="1">'+esc(refErr)+'</p>':"", total=0, parts=[];
     function listHead(g){ if(swState.view!=="list") return ""; var name=g==="place"?"이름 · 분류":"이름"; return '<div class="ee-list-head" data-kind="'+g+'"><span>'+name+'</span><span>설명</span><span>주요 성경 구절</span><span>관련 태그</span><span aria-hidden="true"></span></div>'; }
-    ["person","place","event","route"].forEach(function(g){
-      var list=R.groups[g]; entList=entList.concat(list); total+=list.length; if(mode==="all"&&list.length) parts.push(SEC[g]+" "+list.length);
-      if(list.length) html += '<section class="sw-sec" data-sw-sec="'+g+'">'+(mode==="all"?'<h3 class="sec-h">'+SEC[g]+' <span class="sw-sec-n">'+list.length+'</span></h3>':"")+listHead(g)+'<div class="ee-set" data-view="'+swState.view+'">'+list.map(function(e){return g==="place"?placeCardHtml(e,"search",{q:q}):entityItemHtml(e,q);}).join("")+'</div></section>';
+    ["person","place","region","event","route"].forEach(function(g){
+      var list=R.groups[g], draftHtml=g==="person"&&(mode==="all"||mode==="person")?localPersonCardsHtml(q):"";
+      var draftCount=(draftHtml.match(/data-local-person-research=/g)||[]).length;
+      entList=entList.concat(list); total+=list.length+draftCount; if(mode==="all"&&(list.length+draftCount)) parts.push(SEC[g]+" "+(list.length+draftCount));
+      if(list.length || draftCount) html += '<section class="sw-sec" data-sw-sec="'+g+'">' +(mode==="all"?'<h3 class="sec-h">'+SEC[g]+' <span class="sw-sec-n">'+(list.length+draftCount)+'</span></h3>':"")+listHead(g)+'<div class="ee-set" data-view="'+swState.view+'">'+list.map(function(e){return g==="place" && e.key.indexOf("levelb:")===0 ? levelBCard(LEVEL_B_87.filter(function(a){return "levelb:"+a.candidate_id===e.key;})[0],q) : g==="place" && e.key.indexOf("atlas90:")===0 ? atlas90SharedCard((window.JBC_ATLAS90_KOREAN_REFERENCE || []).filter(function(a){return "atlas90:" + a.place_id === e.key;})[0],q) : g==="place"?placeCardHtml(e,"search",{q:q}):entityItemHtml(e,q);}).join("")+draftHtml+'</div></section>';
     });
     if(R.groups.research.length){ total+=R.groups.research.length; parts.push("연구 "+R.groups.research.length); html += '<section class="ctx-search-results sw-sec" data-sw-sec="research" data-part="contextual-research-search"><h3 class="sec-h">연결 연구'+(mode==="all"?' <span class="sw-sec-n">'+R.groups.research.length+'</span>':"")+'</h3><div class="ee-set">'+contextualSearchHtml(q)+'</div></section>'; }
     if(R.groups.verse.length){ total+=R.counts.verse; parts.unshift("본문 "+R.counts.verse); html += '<section class="sw-sec" data-sw-sec="verse">'+(mode==="all"?'<h3 class="sec-h">본문 <span class="sw-sec-n">'+R.counts.verse+'</span></h3>':"")+'<div class="sw-verses">'+R.groups.verse.map(function(x){return rowHtml(x,q);}).join("")+'</div></section>'; }
+    if ((mode==="all" || mode==="research") && hasQ) {
+      var dh=eastonHits(q);
+      if(dh.length){total+=dh.length;parts.push("외부 사전 "+dh.length);html+='<section class="sw-sec" data-sw-sec="external-dictionary"><h3 class="sec-h">외부 성경사전 · Easton <span class="sw-sec-n">'+dh.length+'</span></h3>'+eastonSearchHtml(q)+'</section>';}
+    }
+    // B/C candidate data is retained as REFERENCE_ONLY. Do not show a second,
+    // noncanonical place card design beside the shared PlaceCard results.
+    // Only a verified place-index identity may enter the existing place flow.
+    // Expanded Easton discovery remains in data; standalone search UI disabled
+    // until resolved through the shared place index and card/detail pipeline.
     if(!total && !refErr){
-      var NOTE={event:"사건",route:"경로",research:"연구",verse:"본문",person:"인물",place:"장소"};
+      var NOTE={event:"사건",route:"경로",research:"연구",verse:"본문",person:"인물",place:"장소",region:"지역"};
       html += '<p class="empty helper" data-sw-empty="'+mode+'">'+(!hasQ&&mode==="verse"?'검색어를 입력하면 KRV 전체 본문에서 찾습니다.':(mode==="event"||mode==="route")&&!hasQ?'아직 등록된 '+NOTE[mode]+' 데이터가 없습니다. 데이터가 추가되면 이곳에 표시됩니다.':hasQ?(mode==="all"?'“'+esc(q.trim())+'”에 대한 검색 결과가 없습니다.':'“'+esc(q.trim())+'”에 대한 '+NOTE[mode]+' 결과가 없습니다.'):'검색어를 입력하세요.')+'</p>';
     }
     el.innerHTML=html;
-    if(sum) sum.textContent=(hasQ?'“'+q.trim()+'” · ':"")+(mode==="all"?(parts.length?parts.join(" · "):"결과 0건"):(R.counts[mode]!=null?R.counts[mode]:0)+"건");
+    if(sum) sum.textContent=(hasQ?'“'+q.trim()+'” · ':"")+(mode==="all"?(parts.length?parts.join(" · "):"결과 0건"):(mode==="person"?total:(R.counts[mode]!=null?R.counts[mode]:0))+"건");
     if(more){ more.hidden=!(R.groups.verse.length && R.counts.verse>R.groups.verse.length); }
   }
   function placeSearch() {}
   function openSearch(q) {
+    if (typeof q === "string" ? !!q.trim() : !!swState.q.trim()) ensureEastonCandidate();
+    if (ui.nav && ui.nav.board) navBoardOpen(false);
     if (typeof q === "string") swState.q = q;
     if (state.view !== "explore") { swState.prevPanel = state.panel; if (!isMobile()) state.panel = "open"; state.view = "explore"; replaceNext = true; render(); }
     swState.open = true;
@@ -3615,11 +4219,14 @@
   // 대상 선택 → Detail 갱신 + (승인된 표식이 있을 때만) 지도 이동. 본문·스크롤·레이어·필기는 건드리지 않는다.
   function jumpToEntity(sid) {
     var e = STORE.get(sid), id = e && e.compatibility_key; if (!e || !id) return false;
+    atlas90Selection = null; levelBSelection = null; atlasBcSelection = null; atlasExpansionSelection = null;
+    if (e.entity_type === "Region" && e.raw && e.raw.authority && e.raw.authority.approval === "CAPTAIN_APPROVED") showRefError("");
     entryCams[entryKey(location.hash)] = ui.gcam ? Object.assign({}, ui.gcam) : null;   // 뒤로 가기가 이전 지도 위치로 돌려놓는다
     var same = state.entity && state.entity.kind === e.kind && state.entity.id === id;
     if (!same) { swState.detailTab = "overview"; if (!state.entity) state.prevTab = state.tab; state.entity = { kind: e.kind, id: id }; state.tab = e.kind === "p" ? "people" : e.kind === "l" || e.kind === "rgn" ? "places" : "context"; }   // 같은 대상을 다시 골라도 닫지 않는다
     ensureContextVisible();
-    if (e.kind === "l") { var mk = geoMarkers().filter(function (m) { return m.place === id; }); if (mk.length) { ui.gcam = geoFit(mk); ui.mapOpen = true; } }   // 좌표가 없으면 지도는 그대로(가짜 위치 없음)
+    if (e.kind === "l") { var mk = geoMarkers().filter(function (m) { return m.place === id; }); if (mk.length) { ui.gcam = geoFit(mk); ui.mapOpen = true; } }
+    if (e.kind === "rgn" || e.kind === "rt") focusRegionReading(e.kind, id);   // 좌표가 없으면 지도는 그대로(가짜 위치 없음)
     render(); panelScrollTop(); renderRelated(sid);
     return true;
   }
@@ -3715,8 +4322,14 @@
   }
   function openCardPassageResearch(row) {
     var kind = row.dataset.kind, sid = row.dataset.stableId, e = sid && STORE.get(sid), key = e ? e.compatibility_key : row.dataset.id, t = cardPassage(row);
-    var entityResearch = (kind === "l" && !!(e || placeIndex().byKey[key])) || (kind === "p" && !!e);
+    var entityResearch = (kind === "l" && !!(e || placeIndex().byKey[key])) || ((kind === "p" || kind === "rgn") && !!e);
     if (!t && !entityResearch) return false;
+    if (kind === "rgn" && e) {
+      if (state.view === "explore") closeSearch(true);
+      if (t && !openRelatedPassage(t.pid, t.verse)) return false;
+      ui.rmode = null; ui.rsPlace = null; ui.rsStep = false;
+      return jumpToEntity(sid);
+    }
     if (state.view === "explore") closeSearch(true);
 
     ui.rsStep = false;
@@ -3755,9 +4368,47 @@
   // ---------- events ----------
   function fire(el) { el.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true })); }
   document.addEventListener("dblclick", function (e) {
+    var localRow=e.target && e.target.closest && e.target.closest('#search-results [data-local-person-research]');
+    if (localRow) { e.preventDefault(); e.stopPropagation(); return openLocalPersonPassageResearch(localRow.dataset.localPersonResearch); }
+    var lbRow=e.target && e.target.closest && e.target.closest('#search-results [data-levelb-search="1"]');
+    if(lbRow){e.preventDefault();e.stopPropagation();var b=LEVEL_B_87.filter(function(x){return x.candidate_id===lbRow.dataset.levelbOpen;})[0];if(!b)return;atlas90Selection=null;atlasBcSelection=null;atlasExpansionSelection=null;
+      var ref=levelBRefs(b).filter(function(c){var m=/^([a-z0-9]+-\d+):(\d+)$/.exec(c.ref||'');return m&&D.passages[m[1]]&&hasVerse(m[1],+m[2]);})[0];
+      if(ref){var m=/^([a-z0-9]+-\d+):(\d+)$/.exec(ref.ref);levelBSelection=null;if(state.view==='explore')closeSearch(true);openRelatedPassage(m[1],+m[2]);levelBSelection=b.candidate_id;renderPanel();}
+      else {if(state.view==='explore')closeSearch(true);levelBSelection=b.candidate_id;renderPanel();}return;
+    }
+    var atlasRow = e.target && e.target.closest && e.target.closest('#search-results [data-atlas90-search="1"]');
+    if (atlasRow) {
+      e.preventDefault(); e.stopPropagation();
+      var aid = atlasRow.dataset.atlas90Open;
+      var a = ATLAS90_REF.filter(function(v){return v.place_id===aid;})[0];
+      if (!a) return;
+      var bnd = (window.JBC_ATLAS90_READER_CROSSWALK || {})[aid];
+      if (bnd && placeIndex().byKey[bnd.place_key]) {
+        atlas90Selection = null;
+        return openPlacePassageStudy(bnd.place_key, placeIndex().byKey[bnd.place_key].stableId);
+      }
+      // For an unbound Level A place, navigate to its existing cited verse.
+      // Citation is a reader navigation default, not professional identity approval.
+      var evidence = (window.JBC_ATLAS90_SCRIPTURE_EVIDENCE || {})[aid];
+      var candidates = evidence && evidence.source_citation_candidates || [];
+      var firstRef = candidates.filter(function(c){return c.exact_korean_token;}).concat(candidates).map(function(c){return /^([a-z0-9]+-\d+):(\d+)$/.exec(c.ref || '');}).filter(function(m){return m && D.passages[m[1]] && hasVerse(m[1], +m[2]);})[0];
+      if (firstRef) {
+        atlas90Selection = null;
+        if (state.view === 'explore') closeSearch(true);
+        openRelatedPassage(firstRef[1], +firstRef[2]);
+        atlas90Selection = aid;
+        renderPanel();
+        return;
+      }
+      atlas90Selection = aid;
+      if (state.view === 'explore') closeSearch(true);
+      else render();
+      ensureContextVisible(); renderPanel();
+      return;
+    }
     var el = e.target && e.target.closest && e.target.closest('#search-results [data-search="1"]'); if (!el) return;
     var kind = el.dataset.kind, sid = el.dataset.stableId, ent = sid && STORE.get(sid), key = ent ? ent.compatibility_key : el.dataset.id;
-    var hasEntityResearch = (kind === "l" && !!(ent || placeIndex().byKey[key])) || (kind === "p" && !!ent);
+    var hasEntityResearch = (kind === "l" && !!(ent || placeIndex().byKey[key])) || ((kind === "p" || kind === "rgn") && !!ent);
     if (!cardPassage(el) && !hasEntityResearch) return;   // 본문이 없어도 실제 장소/인물 엔티티면 해당 연구 맥락은 열 수 있다
     e.preventDefault(); e.stopPropagation(); openCardPassageResearch(el);
   });
@@ -3778,10 +4429,7 @@
     if (t.closest("#panel-open, #panel-edge-open")) return setPanel("open");
     if (mapMoved) { mapMoved = false; if (t.closest("#map-body")) return; }
     if ((el = t.closest("[data-perspective]"))) return setView(el.dataset.perspective);
-    if ((el = t.closest("[data-util]"))) {
-      if (el.dataset.util === "search") return toggleSearch();
-      var pop = $("settings-pop"); pop.hidden = !pop.hidden; el.setAttribute("aria-expanded", String(!pop.hidden)); syncMapSettings(); return;
-    }
+    if ((el = t.closest('[data-util="search"]'))) return toggleSearch();
     if (t.closest("#reset-split")) return setFrac(SPLIT_DEFAULT, true);
     if ((el = t.closest("[data-map-action]"))) return mapAction(el.dataset.mapAction);
     if ((el = t.closest("[data-theme-toggle]"))) return setMapTheme(mapThemeNow() === "dark" ? "light" : "dark");   // 즉시 앱 전체(지도 포함) 테마 전환, 선택 저장
@@ -3809,13 +4457,14 @@
     if ((el = t.closest("[data-tl-step]"))) { ui.tlStep = el.dataset.tlStep; return renderTimeline(); }
     if ((el = t.closest("[data-tl-page]"))) { ui.tlPage = Math.max(0, (ui.tlPage || 0) + (+el.dataset.tlPage)); return renderTimeline(); }
     if ((el = t.closest("[data-tl-sort]"))) { ui.tlSort = el.dataset.tlSort; ui.tlPage = null; return renderTimeline(); }
+    if ((el = t.closest("[data-tl-context-research]"))) { ensureContextVisible(); setView("study"); panelScrollTop(); var cr=document.querySelector('#panel article.ctx-research-item[data-context-record="'+el.dataset.tlContextResearch+'"]'); if(cr&&cr.scrollIntoView)try{cr.scrollIntoView({block:"start"});}catch(e2){} return; }
     if ((el = t.closest("[data-tl-study], [data-tl-map]"))) { var tid = el.dataset.tlStudy || el.dataset.tlMap, ttp = timelineEraById(ui.tlEra), ti = ttp && (ttp.steps || []).findIndex(function(s){return s.id === tid;}); if (ttp && ti >= 0 && navOpenTopic(ttp.id)) { if (ti) navApplyStep(ti); if (el.dataset.tlStudy) { ui.rmode = "TEXT"; ensureContextVisible(); render(); panelScrollTop(); } } return; }
     if (t.closest("[data-jnav-timeline]")) return setView("timeline");
     if ((el = t.closest("[data-nav-mode]"))) { ui.navExplore = el.dataset.navMode === "explore"; return renderGuide(); }
     if ((el = t.closest("[data-obj]"))) { var oo = el.dataset.obj.split("."); return selectEntity(oo[0], oo[1]); }
     if ((el = t.closest("[data-guide]"))) return guideStep(+el.dataset.guide);
     if ((el = t.closest("[data-guide-step]"))) return guideGo(+el.dataset.guideStep);
-    if ((el = t.closest("[data-related-entity]"))) return void selectEntityStable(el.dataset.relatedEntity);
+    if ((el = t.closest("[data-related-entity]"))) { var related=STORE.get(el.dataset.relatedEntity); if(related && entityValid({kind:related.kind,id:related.compatibility_key})) return void selectEntityStable(el.dataset.relatedEntity); var refs=related&&related.passage_refs||[]; for(var ri=0;ri<refs.length;ri++){var ref=refs[ri], pid=ref.book+'-'+ref.chapter, verse=ref.v1||ref.verse||1;if(D.passages[pid]&&hasVerse(pid,+verse))return void openRelatedPassage(pid,+verse);} showRefError('연결 대상의 승인된 상세·성경본문이 아직 없습니다.');return; }
     if ((el = t.closest("[data-person-inline-range]"))) { var spec=el.dataset.personInlineRange, m=/^([a-z0-9]+-\d+):(\d+)-(\d+)$/.exec(spec), unit=el.closest(".person-story-unit, .person-research section"); if(!m||!unit)return; var old=unit.querySelector(".person-inline-scripture"); if(old){ var same=old.dataset.range===spec; old.remove(); [].slice.call(unit.querySelectorAll("[data-person-inline-range]")).forEach(function(b){b.setAttribute("aria-expanded","false");}); if(same)return; } var P=D.passages[m[1]],a=+m[2],b=+m[3]; if(!P)return; var verses=(P.verses||[]).filter(function(v){return v.n>=a&&v.n<=b;}); var box=document.createElement("div"); box.className="person-inline-scripture"; box.dataset.range=spec; box.innerHTML=verses.map(function(v){return '<p><span class="person-inline-verse-num">' + v.n + "</span> " + esc(v.text) + "</p>";}).join("") + '<button type="button" class="person-inline-open" data-open-range="' + esc(spec) + '">본문에서 보기</button>'; unit.appendChild(box); el.setAttribute("aria-expanded","true"); return; }
     if ((el = t.closest("[data-person-research-toggle]"))) { var pr=document.querySelector("#panel details.person-research"); if(pr){ pr.open=!pr.open; if(pr.open) try{pr.scrollIntoView({block:"start",behavior:"smooth"});}catch(e2){pr.scrollIntoView();} el.textContent=pr.open?"본문연구 접기":"본문연구"; } return; }
     if ((el = t.closest("[data-rs-mode]"))) return rsSetMode(el.dataset.rsMode);
@@ -3841,6 +4490,15 @@
     }
     if ((el = t.closest("[data-verse]"))) return selectVerse(+el.dataset.verse, e.shiftKey ? "range" : (e.ctrlKey || e.metaKey) ? "toggle" : null);
     if ((el = t.closest("[data-rel]"))) { var rr = el.dataset.rel.split("."); return selectEntity(rr[0], rr[1]); }
+    if ((el = t.closest("[data-ab-reader-geo]"))) {
+      var key=String(el.dataset.abReaderGeo||''), bits=key.split('|'), entry=AB_GEO_MEDIA[bits[0]], candidate=entry&&(bits.length>1?(entry.candidates||[])[+bits[1]]:entry.geo);
+      if(!candidate||!GEO.valid(candidate.lat,candidate.lon))return;
+      readerGeoFocus={id:bits[0],lat:candidate.lat,lon:candidate.lon,label:(function(){var a=ATLAS90_REF.find(function(x){return x.place_id===bits[0];}),b=LEVEL_B_87.find(function(x){return x.candidate_id===bits[0];});return (a&&a.name_ko)||(b&&b.name_ko)||entry.name_en||'지리 후보';})(),uncertain:true};
+      ui.gcam=clampGeoCam({x:candidate.lon,y:GEO.yOf(candidate.lat),w:Math.max(1.4,GEO_CAMERA.fitMinW)});
+      renderGeoOnly();
+      var pane=$("map-pane");if(pane)try{pane.scrollIntoView({block:"nearest",behavior:"smooth"});}catch(ex){pane.scrollIntoView();}
+      return;
+    }
     if ((el = t.closest("[data-map-focus-place]"))) { markerSelect(el.dataset.mapFocusPlace); var mp = $("map-pane"); if (mp) try { mp.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e2) { mp.scrollIntoView(); } return; }
     if ((el = t.closest("[data-open-range]"))) { var rm = /^([a-z0-9]+-\d+):(\d+)-(\d+)$/.exec(el.dataset.openRange); if (!rm) return; if (el.closest("#panel")) return openRelatedPassage(rm[1], +rm[2], +rm[3]); return openScripture(rm[1], +rm[2]); }
     if ((el = t.closest("[data-open-ref]"))) { var orr = parseKey(el.dataset.openRef); if (el.closest("#panel")) return openRelatedPassage(orr.passage, orr.verse); return openScripture(orr.passage, orr.verse); }
@@ -3849,6 +4507,16 @@
     if ((el = t.closest("[data-goto]"))) { e.preventDefault(); var k = parseKey(el.dataset.goto); return go(k.passage, k.verse); }
     if ((el = t.closest("[data-reskind]"))) { state.resKind = el.dataset.reskind; return render(); }
     if ((el = t.closest(".pin, .item[data-id]"))) return selectEntity(el.dataset.kind, el.dataset.id);
+    if ((el = t.closest("[data-open-memo]"))) {
+      var memo = document.querySelector('#panel details[data-ov="notes"]');
+      if (memo) {
+        memo.open = true; ui.ovOpen.notes = true;
+        memo.scrollIntoView({ block: "start", behavior: "auto" });
+        var editor = memo.querySelector("#note-title");
+        if (editor) editor.focus({ preventScroll: true });
+      }
+      return;
+    }
     if (t.id === "note-save") {
       var v = $("note-text").value.trim(), title=$("note-title")?$("note-title").value.trim():""; if (!v) { $("note-status").textContent = "내용을 입력하세요"; $("note-status").dataset.state = "idle"; return; }
       createNoteRecord(v,title); renderPanel(); var ns=$("note-status"); if(ns){ns.textContent="저장됨";ns.dataset.state="saved";} return;
@@ -3888,7 +4556,7 @@
       if (e.key === "ArrowUp" && ix >= 0) { e.preventDefault(); if (ix === 0) $("sw-query").focus(); else rows[ix - 1].focus(); return; }
     }
     if (e.key === "/" && tag !== "INPUT" && tag !== "TEXTAREA" && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); e.preventDefault(); openSearch(null); return; }
-    if (e.key === "Escape") { var sp0 = $("settings-pop"); if (sp0 && !sp0.hidden) { sp0.hidden = true; $("rail-settings").setAttribute("aria-expanded", "false"); e.preventDefault(); return; } if (state.entity) { e.preventDefault(); var en = state.entity; closeEntity(); returnFocusToText(en); } else if (state.preview) { state.preview = null; render(); } return; }
+    if (e.key === "Escape") { if (state.entity) { e.preventDefault(); var en = state.entity; closeEntity(); returnFocusToText(en); } else if (state.preview) { state.preview = null; render(); } return; }
     if (tag === "INPUT" || tag === "TEXTAREA") return;
     if ((e.key === "Enter" || e.key === " ") && tag !== "BUTTON" && tag !== "A" && t.getAttribute && t.getAttribute("tabindex") !== null) { e.preventDefault(); fire(t); }
   });
@@ -3947,6 +4615,27 @@
     swState.mode = "all"; swState.type = "all"; swState.testament = "all"; swState.period = "all"; swState.region = "all"; swState.placeType = "all"; swState.role = "all"; swState.story = "all"; swState.location = "all"; swState.photo = false; swState.archaeology = false; swState.limit = 30;
     openSearch(String(q || "").trim());
   }
+  // Quick-search entity opening uses the same primary-passage priority as search cards.
+  // The passage sets Scripture and the right-hand guide; the entity sets the detail and map.
+  function quickEntityPassage(e) {
+    if (!e) return null;
+    var t = validEntityPrimaryPassage(e);
+    if (!t && e.passage_refs && e.passage_refs.length) {
+      var r = e.passage_refs.slice().sort(function(a,b){return passageRank(a)-passageRank(b);})[0];
+      t = { pid: r.book + "-" + r.chapter, verse: r.verse || null };
+    }
+    if (!t && e.kind === "l") {
+      var p = placeIndex().byKey[e.compatibility_key];
+      if (p && p.passageIds && p.passageIds.length) t = { pid:p.passageIds[0], verse:null };
+    }
+    if (!t && e.kind === "rt") {
+      var ps = Object.prototype.hasOwnProperty.call(PRESENTATION_ROUTE_SPECS,e.stable_id) && PRESENTATION_ROUTE_SPECS[e.stable_id];
+      if (ps && ps.passages && ps.passages.length) t = { pid:ps.passages.slice().sort(function(a,b){return pidRank(a)-pidRank(b);})[0], verse:null };
+    }
+    if (!t || !D.passages[t.pid]) return null;
+    if (t.verse != null && !hasVerse(t.pid,t.verse)) t.verse = null;
+    return t;
+  }
   function qsPick(i) {
     if (typeof i === "string") { var sidx = -1; qs.items.forEach(function (x, k) { if (x.sid === i) sidx = k; }); if (sidx < 0) { qs.items = [{ t: "ent", sid: i }]; sidx = 0; } i = sidx; }
     var r = qs.items[i], inp = $("qs-input"), q = inp ? inp.value : ""; if (!r) return; qsClose();
@@ -3954,7 +4643,24 @@
     if (inp) inp.value = "";
     if (r.t === "verse") { if (state.view !== "study") setView("study"); go(r.pid, r.n); }
     else if (r.t === "research") { if (r.ref) { var ck = parseKey(r.ref); if (state.view !== "study") setView("study"); openRelatedPassage(ck.passage, ck.verse); } }
-    else { var e = STORE.get(r.sid); if (!e) return; if (state.view !== "study") setView("study"); jumpToEntity(r.sid); }
+    else {
+      var e = STORE.get(r.sid); if (!e) return;
+      // Global quick-search chooses a fresh entity context, not an old journey step.
+      // End stale topic/route overlays before showing the new entity.
+      if (ui.nav && ui.nav.topic) navEnd(true);
+      ui.rsStep = false; ui.navExplore = false;
+      var target = quickEntityPassage(e);
+      if (target) {
+        // go() also updates the header, Scripture and the contextual right guide.
+        if (!go(target.pid, target.verse, false, false)) return;
+      } else if (state.view !== "study") setView("study");
+      // go() resets PLACE mode; restore the selected entity mode only after passage navigation.
+      ui.rsPlace = null;
+      if (e.kind === "l") { ui.rmode = "PLACE"; ui.rsPlace = e.compatibility_key; }
+      else if (e.kind === "p") { ui.rmode = "PERSON"; ui.rsPerson = e.compatibility_key; }
+      else ui.rmode = "TEXT";
+      jumpToEntity(r.sid);
+    }
   }
   if ($("qs-input")) {
     $("qs-input").addEventListener("input", qsRender);
@@ -4100,7 +4806,11 @@
   (function () { var hs = history.state; if (hs && hs.bvcAnchor && hs.bvcAnchor.passage === state.passage) pendingScroll = { mode: state.verse != null ? "verse" : "top", anchor: hs.bvcAnchor }; })();
   try { var mq = window.matchMedia("(max-width: 760px)"), onMq = function () { updateHeaderMetrics(); var a = computeAnchor(); applySplit(); updateContextChrome(); updateStageChrome(); lastChrome = state.panel + "|" + state.sheet + "|" + isMobile(); if (a) restoreAnchor(a); }; if (mq.addEventListener) mq.addEventListener("change", onMq); else if (mq.addListener) mq.addListener(onMq); } catch (e) {}
   injectIcons(); syncThemeToggle(); syncMapSettings(); loadSplit(); bindSplit(); bindMapPan(); applySplit();
-  if (state.entity && state.entity.kind === "l" && isMobile()) ui.mapOpen = true;   // 장소가 선택된 채로 열리면 지도도 함께 보여 준다
+  if (state.entity && state.entity.kind === "l" && isMobile()) ui.mapOpen = true;
+  // URL-restored research detail also restores its presentation-only map viewport.
+  if (state.entity && (state.entity.kind === "rgn" || state.entity.kind === "rt")) {
+    focusRegionReading(state.entity.kind, state.entity.id);
+  }   // 장소가 선택된 채로 열리면 지도도 함께 보여 준다
   booting = true; render(); booting = false;
   window.addEventListener("load", function () { var rp = RPJ(); if (rp && rp.ready()) { mounted.force = true; render(); } });   // 연구 투영 스크립트는 app.js 뒤에 로드되므로, 준비되면 본문을 한 번 다시 그려 인물 이름 단어를 붙인다
   window.BVC = { cardPassage: cardPassage, mapRenderer: { mode: function () { return mlActive() ? "maplibre" : "legacy"; }, ready: function () { return !!ML.ready; }, map: function () { return ML.map; }, failed: function () { return ML.failed ? ML.error || true : false; }, errors: function () { return ML.errors || []; }, compose: function () { var sv = document.querySelector("#ml-ovl svg.gmap"); return sv ? mlCompose(sv.cloneNode(true)) : Promise.reject(new Error("no overlay")); }, printSheet: function () { var sv = document.querySelector("#ml-ovl svg.gmap"); return mlCompose(sv.cloneNode(true)).then(function (cv) { mlPrintSheet(cv.toDataURL("image/png")); return cv.width; }); }, printDone: function () { mlPrintDone(); } }, placeIndex: placeIndex, placeCard: placeCardHtml, openPlace: openPlaceKey, placeIndexSet: placeIndexSet, mapScene: mapSceneState, journey: { build: navBuildChain, fitPoints: navFitPoints, layout: journeyLayout }, selectRpPerson: selectRpPerson, refSources: REFSRC, refFeatures: REF_FEATURES, authority: { qaFixture: QA_FIXTURE, fixturePool: FIXTURE_POOL }, gateRecord: gateRecord, boundRelations: boundRelations, relAdjacency: relAdjacency, readerVisible: readerVisible, refBindings: REFBIND, quickSearchItems: quickSearchItems, unifiedSearch: unifiedSearch, qsPick: qsPick, extBindings: extBindings, boundExternalLabels: boundExternalLabels, labelLevels: LABEL_LEVELS, refPriority: refPriority, refLabelList: refLabelList, detailContext: detailContext, DETAIL_MODEL: DETAIL_MODEL, openRelatedPassage: openRelatedPassage, geo: { GEO: GEO, LOC_LABEL: LOC_LABEL, LOC_MARKER: LOC_MARKER, markerSpec: markerSpec, markers: geoMarkers, visibleMarkers: visibleGeoMarkers, markerTier: markerTier, semanticTierLimit: semanticTierLimit, labelPx: labelPx, labelLevels: LABEL_LEVELS, markerLevel: markerLevel, refLevel: refLevel, splitDefault: SPLIT_DEFAULT, setMapTheme: setMapTheme, mapThemeNow: mapThemeNow, available: geoAvailable, mode: mapModeNow, fit: geoFit, cam: geoCam }, navigationCandidates: navigationCandidates, renderGuide: renderGuide, store: STORE, entityExplorer: { set: entitySet, select: selectEntityStable }, scriptureIndex: SEI, entitiesAt: entitiesAt, mediaSourceHtml: mediaSourceHtml, mediaGate: mediaGate, stableId: stableOf, resolveKey: resolveKey, projection: PJ, personProjection: PERSON_PJ, setView: setView, setCam: setCam, zoomBy: zoomBy, ui: ui, guideStep: guideStep, guideGo: guideGo, guideRoute: guideRoute, guideIndex: guideIndex, guideSteps: guideSteps, guideTopic: guideTopic, guide: G, setFrac: setFrac, anchors: anchors, openSearch: openSearch, closeSearch: closeSearch, searchState: swState, markRanges: markRanges, setPanel: setPanel, setSheet: setSheet, toggleContext: toggleContext, isMobile: isMobile, entryAnchors: entryAnchors, openReference: openReference, scrollAnchor: computeAnchor, remount: function () { mounted.force = true; render(); }, variantFor: variantFor, krv: KRV, stepPassage: stepPassage, parseReference: parseReference, render: render, panels: PANELS, state: state, go: go, selectVerse: selectVerse, selectEntity: selectEntity, setTab: setTab, entitiesIn: entitiesIn, versesWith: versesWith, data: D };
