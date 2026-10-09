@@ -23,5 +23,8 @@ data/source/
 # Generated pipeline outputs
 tools/pipeline/out/
 
+# Production Pages artifact (rebuilt from the explicit public allowlist)
+dist/
+
 # Generated QA HTML outputs
 tools/_out_*.html
