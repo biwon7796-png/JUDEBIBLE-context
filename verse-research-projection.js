@@ -38,25 +38,50 @@
     return true;
   }
 
+  // 승인 등급(연결층·표시용): 기존 valid() 규칙 위에서, 'STAGE_APPROVED' 문자열만으로는 승인으로 보지 않는다(stage flag alone is not approval evidence).
+  //   APPROVED       = valid() + 하류 투영 승인의 근거(PROFESSIONAL_RESEARCH_PASS + APPROVED_DOWNSTREAM_PROJECTION + 승인 기록 + 승인 원본 SHA 일치)
+  //   STAGE_PINNED   = 단계 승인 + 이미 코드에 고정된 Pilot 원본 SHA(PIN) 일치 — 정식 하류 투영 승인은 아님(검증 유보)
+  //   STAGE_FLAG_ONLY= 단계 승인 문자열만 있고 근거 없음 / DRAFT_DISPLAY = 로컬 초안 표시(HOLD·후보) / NONE = 표시 불가
+  //   새 허용목록을 만들지 않는다: PIN 은 기존 valid() 가 이미 쓰던 값이다.
+  function approvalClass(d) {
+    if (!valid(d)) return "NONE";
+    var down = d.professionalStatus === "PROFESSIONAL_RESEARCH_PASS" && d.professionalReviewStatus === "APPROVED_DOWNSTREAM_PROJECTION" && !!d.approvalRecord && d.approvalSourceSha256 === d.sourceSha256;
+    if (down) return "APPROVED";
+    var stage = d.professionalStatus === "STAGE_APPROVED_WITH_VERIFY" || d.professionalStatus === "STAGE_APPROVED";
+    if (stage) return d.researchId === PIN.researchId && String(d.sourceSha256).toLowerCase() === PIN.sourceSha256 ? "STAGE_PINNED" : "STAGE_FLAG_ONLY";
+    return "DRAFT_DISPLAY";
+  }
+
   function records() {
     var all = [], seen = {};
     if (root.BVC_VERSE_RESEARCH_CONTENT) all.push(root.BVC_VERSE_RESEARCH_CONTENT);
     (root.BVC_PASSAGE_RESEARCH_CONTENT || []).forEach(function (d) { all.push(d); });
     return all.filter(function (d) {
       if (!valid(d)) return false;
-      var key = d.passage.book + "-" + d.passage.chapter;
+      var key = d.passage.book + "-" + d.passage.chapter + ":" + (d.passage.v1 || "") + "-" + (d.passage.chapterEnd || d.passage.chapter) + ":" + (d.passage.v2 || "");
       if (seen[key]) return false;
       seen[key] = true;
       return true;
     });
   }
 
+  // 연구 범위는 단락(pericope) 단위다: passage = {book, chapter, v1, v2} 이고, 장 경계를 넘으면 chapterEnd 를 더한다(v2 는 chapterEnd 의 끝 절).
+  function endChapter(d) { return +d.passage.chapterEnd || +d.passage.chapter; }
+  function touchesChapter(d, p) { return d.passage.book === p.book && p.chapter >= +d.passage.chapter && p.chapter <= endChapter(d); }
+  function coversVerse(d, p) {
+    if (!touchesChapter(d, p) || p.verse == null) return touchesChapter(d, p);
+    if (p.chapter === +d.passage.chapter && p.verse < +d.passage.v1) return false;
+    if (p.chapter === endChapter(d) && p.verse > +d.passage.v2) return false;
+    return true;
+  }
+  function recordsForChapter(p) { return p ? records().filter(function (d) { return touchesChapter(d, p); }) : []; }
   function dataFor(p) {
     if (!p) return null;
     var rs = records();
+    if (p.verse != null) { for (var k = 0; k < rs.length; k++) if (coversVerse(rs[k], p)) return rs[k]; }   // 절이 지정되면 그 절을 덮는 단락 연구를 먼저
     for (var i = 0; i < rs.length; i++) {
       var d = rs[i];
-      if (d.passage.book === p.book && +d.passage.chapter === p.chapter) return d;
+      if (touchesChapter(d, p)) return d;
     }
     // Explicit local review preview: same approved Reader UI, but no candidate is added to records()/Registry.
     // Default JudeBible remains approved-only. This branch is never a professional approval.
@@ -72,11 +97,12 @@
     return null;
   }
 
-  function sectionFor(d, v) {
+  function sectionFor(d, v, chapterOf) {
     if (!d) return null;
+    chapterOf = chapterOf == null ? +d.passage.chapter : chapterOf;
     var sections = readerModel(d).commentary.sections;
     for (var i = 0; i < sections.length; i++) {
-      if (v >= sections[i].v1 && v <= sections[i].v2) return sections[i];
+      if (v >= sections[i].v1 && v <= sections[i].v2 && (sections[i].c1 == null || sections[i].c1 === chapterOf)) return sections[i];
     }
     return null;
   }
@@ -90,14 +116,18 @@
       glance: {
         overview: glance.overview || d.overview || [],
         centralMessage: glance.centralMessage || d.centralMessage || "",
-        quickFacts: glance.quickFacts || []
+        quickFacts: glance.quickFacts || [],
+        structure: glance.structure || d.literaryStructure || []          // [{v1,v2,title,summary?}] 본문의 문학적 구조·앞뒤 문맥
       },
       commentary: { sections: commentary.sections || d.sections || [] },
       deepResearch: {
         discoveries: deep.discoveries || d.discoveries || [],
         lexicalCards: deep.lexicalCards || d.lexicalCards || [],
         cautions: deep.cautions || d.cautions || [],
-        canonicalLinks: deep.canonicalLinks || d.canonicalLinks || []
+        canonicalLinks: deep.canonicalLinks || d.canonicalLinks || [],
+        synthesis: deep.synthesis || d.theologicalSynthesis || [],         // 정경적 연결 및 신학적 종합 (문단 배열)
+        alternatives: deep.alternatives || d.alternativeReadings || [],     // [{title, paragraphs[]}] 실제 중요한 대안 해석/불확실성
+        related: deep.related || d.relatedResearch || []                    // [{kind:"passage|person|era|place", label, ref?}] 관련 연구 이동(표시용 포인터)
       },
       sourceRelation: {
         researchId: d.researchId,
@@ -130,8 +160,8 @@
 
   function verse(ref) {
     var p = parseRef(ref), d = dataFor(p);
-    if (!d || p.verse == null || p.verse < +d.passage.v1 || p.verse > +d.passage.v2) return null;
-    return { type: "VERSE_WORBS", ref: ref, verse: p.verse, section: sectionFor(d, p.verse), researchId: d.researchId };
+    if (!d || p.verse == null || !coversVerse(d, p)) return null;
+    return { type: "VERSE_WORBS", ref: ref, verse: p.verse, section: sectionFor(d, p.verse, p.chapter), researchId: d.researchId };
   }
 
   function passage(pid) {
@@ -168,6 +198,45 @@
       sec.appendChild(core);
     }
     box.appendChild(sec);
+  }
+
+  function rangeLabel(x) { return x.v1 == null ? "" : (x.v1 === x.v2 ? x.v1 + "절" : x.v1 + "–" + x.v2 + "절") + " · "; }
+  function renderStructure(box, model) {
+    var rows = (model.glance.structure || []).filter(function (x) { return x && (x.title || x.summary); });
+    if (!rows.length) return;
+    var sec = el("section", "rp-reader-section rp-structure");
+    sec.setAttribute("data-reader-tier", "glance");
+    addHeading(sec, "문학적 구조");
+    var ol = el("ol", "rp-structure-list");
+    rows.forEach(function (x) { var li = el("li", null); li.appendChild(el("strong", null, rangeLabel(x) + (x.title || ""))); if (x.summary) li.appendChild(el("span", "rp-lex-meta", " " + x.summary)); ol.appendChild(li); });
+    sec.appendChild(ol); box.appendChild(sec);
+  }
+  // 설계서 섹션용 문단 정리: 기존 readerParagraphs(잔재 제거)가 있으면 그것을, 없으면 빈 문단만 거른다.
+  function blueprintParas(a) { return typeof readerParagraphs === "function" ? readerParagraphs(a) : (a || []).filter(function (t) { return String(t == null ? "" : t).trim(); }); }
+  function renderSynthesis(box, model) {
+    var ps = blueprintParas(model.deepResearch.synthesis);
+    if (!ps.length) return;
+    var sec = el("section", "rp-reader-section rp-synthesis");
+    addHeading(sec, "신학적 종합");
+    ps.forEach(function (t) { sec.appendChild(el("p", "rp-commentary-p", t)); });
+    box.appendChild(sec);
+  }
+  function renderAlternatives(box, model) {
+    var rows = (model.deepResearch.alternatives || []).filter(function (x) { return x && (x.title || blueprintParas(x.paragraphs).length); });
+    if (!rows.length) return;
+    var sec = el("section", "rp-reader-section rp-alternatives");
+    addHeading(sec, "다른 해석과 불확실성");
+    rows.forEach(function (x) { var c = el("article", "rp-discovery"); if (x.title) c.appendChild(el("h5", "rp-section-title", x.title)); blueprintParas(x.paragraphs).forEach(function (t) { c.appendChild(el("p", "rp-commentary-p", t)); }); sec.appendChild(c); });
+    box.appendChild(sec);
+  }
+  function renderRelated(box, model) {
+    var rows = (model.deepResearch.related || []).filter(function (x) { return x && x.label; }), kinds = { passage: "본문", person: "인물", era: "시대", place: "장소" };
+    if (!rows.length) return;
+    var sec = el("section", "rp-reader-section rp-related");
+    addHeading(sec, "이어서 연구하기");
+    var ul = el("ul", "rp-caution-list");
+    rows.forEach(function (x) { var li = el("li", null, (kinds[x.kind] ? kinds[x.kind] + " · " : "") + x.label + (x.ref ? " (" + x.ref + ")" : "")); li.setAttribute("data-related-kind", x.kind || ""); ul.appendChild(li); });
+    sec.appendChild(ul); box.appendChild(sec);
   }
 
   function renderSection(box, s, currentVerse) {
@@ -275,7 +344,7 @@
   function render(box, ref) {
     var p = parseRef(ref), d = dataFor(p);
     box.textContent = "";
-    if (!d || !p || (p.verse != null && (p.verse < +d.passage.v1 || p.verse > +d.passage.v2))) {
+    if (!d || !p || (p.verse != null && !coversVerse(d, p))) {
       box.hidden = true;
       box.setAttribute("data-state", "UNAVAILABLE");
       return Promise.resolve(false);
@@ -302,13 +371,19 @@
     targets.forEach(function(t,i){var btn=el("button","rp-reading-link");btn.type="button";btn.dataset.readerTarget=t[0];btn.setAttribute("aria-label",t[1]+"로 이동");btn.setAttribute("aria-current",i===0?"location":"false");btn.appendChild(el("span","rp-reading-horizontal",t[1]));btn.addEventListener("click",function(){var dest=box.querySelector(t[2]);if(dest){var host=box.closest("#panel");if(host){var pos=host.scrollTop+dest.getBoundingClientRect().top-host.getBoundingClientRect().top-10;host.scrollTo({top:pos,behavior:"smooth"});}else dest.scrollIntoView({behavior:"smooth",block:"start"});nav.querySelectorAll(".rp-reading-link").forEach(function(b){b.setAttribute("aria-current",b===btn?"location":"false");});}});nav.appendChild(btn);});
     var scrollHost=box.closest("#panel")||box.parentElement;
     if(scrollHost){var ticking=false;scrollHost.addEventListener("scroll",function(){if(ticking||!box.isConnected)return;ticking=true;requestAnimationFrame(function(){ticking=false;var chosen=0,edge=scrollHost.getBoundingClientRect().top+85;targets.forEach(function(t,i){var sec=box.querySelector(t[2]);if(sec&&sec.getBoundingClientRect().top<=edge)chosen=i;});nav.querySelectorAll(".rp-reading-link").forEach(function(b,i){b.setAttribute("aria-current",i===chosen?"location":"false");});});},{passive:true});}
+    var chapterRecs = p.verse == null ? recordsForChapter(p) : [d];
+    if (p.verse == null && chapterRecs.length > 1) {   // 한 장에 단락 연구가 여럿이면 장 보기는 단락 순서대로 이어 붙인다(장 메시지는 단락 관계로 읽는다)
+      chapterRecs.forEach(function (rd) { var rm = readerModel(rd); box.appendChild(el("h3", "rp-pericope-title", (rd.passage.ref || rd.title))); renderOverview(box, rd, rm); renderStructure(box, rm); renderAllSections(box, rd); });
+    } else {
     renderOverview(box, d, model);
+    renderStructure(box, model);
     if (p.verse == null) renderAllSections(box, d);
     else {
-      renderSection(box, sectionFor(d, p.verse), p.verse);
+      renderSection(box, sectionFor(d, p.verse, p.chapter), p.verse);
       model.commentary.sections.forEach(function(s) {
         if (s.id === 'gen' + d.passage.chapter + '-depth-delta') renderSection(box, s, p.verse);
       });
+    }
     }
     var deep = el("section", "rp-deep-research");
     deep.setAttribute("data-reader-tier", "deep-research");
@@ -316,8 +391,11 @@
     var deepBody = el("div", "rp-deep-body");
     renderDiscoveries(deepBody, d);
     renderLexical(deepBody, { lexicalCards:model.deepResearch.lexicalCards }, p.verse);
-    renderCautions(deepBody, { cautions:model.deepResearch.cautions });
     renderCanonical(deepBody, { canonicalLinks:model.deepResearch.canonicalLinks });
+    renderSynthesis(deepBody, model);
+    renderCautions(deepBody, { cautions:model.deepResearch.cautions });
+    renderAlternatives(deepBody, model);
+    renderRelated(deepBody, model);
     deep.appendChild(deepBody); box.appendChild(deep);
     // Reader source/QA lineage is retained in data attributes, never displayed to readers.
     // Reuse the current panel stack as the navigation host, never add a standalone UI.
@@ -343,6 +421,7 @@
     recordFor: function (ref) { return dataFor(parseRef(ref)); },
     readerModel: readerModel,
     preservationAudit: preservationAudit,
-    valid: valid
+    valid: valid,
+    approvalClass: approvalClass
   };
 })(typeof window !== "undefined" ? window : globalThis);
