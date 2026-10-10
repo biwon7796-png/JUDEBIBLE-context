@@ -18,7 +18,8 @@
       "source_sha256": "307cead9c4c51120e283ec02cf6838d5a9bfcfb8ca439aaf0ff6a3410dc6b26d",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "아가야",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "그리스 펠로폰네소스 북서쪽의 좁은 지역에서 출발해, 로마 시대에는 그리스 남부 속주를 가리킨 이름입니다."
     },
     {
       "n": 2,
@@ -34,7 +35,8 @@
       "source_sha256": "419d4c0e277629c1547c8c64b32e4d6e1e9db280cdba793c696594a1263bf0db",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "아말렉",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "에서의 손자 아말렉에게서 비롯된, 에돔 계통 부족 족장의 이름입니다."
     },
     {
       "n": 3,
@@ -50,7 +52,8 @@
       "source_sha256": "1424da2fdfebe24e610e6a538535bccd749931b66d9a5b6b505fde8a6561dc50",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "암몬",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "롯의 아들 벤암미에게서 나온 이름으로, 그 후손인 암몬 족속도 가리킵니다."
     },
     {
       "n": 4,
@@ -66,7 +69,8 @@
       "source_sha256": "83945a2f242d1f55669b06b9dbdd26abf12b45bbc332ad83cbd9ccf4c1fecc4d",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "아라바",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "갈릴리 호수에서 사해까지 요단 강이 흐르는 움푹 꺼진 저지대로, 사해 남쪽으로 홍해 아카바 만까지 이어집니다."
     },
     {
       "n": 5,
@@ -82,7 +86,8 @@
       "source_sha256": "8430115a31f75b388d0835acd502d3fd7b827ecdbe89bc856c2bae51a1e7acb5",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "아람",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "셈의 아들 이름이자, 팔레스타인 북동쪽에서 유프라테스 강에 이르는 고원 지역의 이름입니다."
     },
     {
       "n": 6,
@@ -98,7 +103,8 @@
       "source_sha256": "bfc16abea1eba544ccb19db63d5081cb58398b95f9f87bc18586db7abb6e0c6e",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "아르논",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "요단 동쪽 이스라엘 영토와 모압 땅을 가르던 남쪽 경계의 강으로, 사해로 흘러듭니다."
     },
     {
       "n": 7,
@@ -114,7 +120,8 @@
       "source_sha256": "6f77100ba54b074a5c6db413cd0244329c7513b2347bc1cc657d3f9091450231",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "아스돗",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "가사와 욥바 중간, 지중해 가까이에 있던 블레셋 도시로 다곤 숭배의 중심지였습니다."
     },
     {
       "n": 8,
@@ -130,7 +137,8 @@
       "source_sha256": "3b5a509f6659db78dcb40db8d1641e16cf521473e11c89aaeb0cb68f2c207844",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "아시아",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "소아시아 서부에 있던 로마 속주로, 에베소가 수도였고 요한계시록의 일곱 교회가 있었습니다."
     },
     {
       "n": 9,
@@ -146,7 +154,8 @@
       "source_sha256": "e3aac4b28a272c7557fb47c36b0d650f6432357d8e92c9170a90a5051837910f",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "앗수르",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "티그리스 강 상류의 산악 지역에서 일어나 북부 아시아를 정복하고 이스라엘 왕국을 멸망시킨 제국입니다."
     },
     {
       "n": 10,
@@ -163,7 +172,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "바벨론",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "유프라테스 강변의 고대 도시로, 느부갓네살 때 고대 세계에서 가장 화려한 도시 가운데 하나였습니다."
     },
     {
       "n": 11,
@@ -179,7 +189,8 @@
       "source_sha256": "02d756496d07b835b1668bef188e43b5961559cb7804e467ec1ebe2f34f04d35",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "바산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "길르앗 북쪽 헤르몬까지 이어지는 기름진 땅으로, 옥 왕의 나라였고 므낫세 반 지파에게 주어졌습니다."
     },
     {
       "n": 12,
@@ -196,7 +207,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "브엘세바",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "아브라함이 판 “맹세의 우물” 도시로, “단에서 브엘세바까지”는 약속의 땅 전체를 가리키는 표현이 되었습니다."
     },
     {
       "n": 13,
@@ -213,7 +225,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "벧엘",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "예루살렘 북쪽 약 10마일의 성소 도시로, 야곱이 하늘에 닿는 사닥다리 환상을 본 곳입니다."
     },
     {
       "n": 14,
@@ -230,7 +243,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "베들레헴",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "예루살렘 남쪽 약 5마일에 있는 유다의 성읍으로, 다윗이 태어났고 그리스도가 나신 “떡집”입니다."
     },
     {
       "n": 15,
@@ -246,7 +260,8 @@
       "source_sha256": "71eaef6a5eeb88c88175a2f154c17df2833cdc01f84aead4f4628397fba16c04",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "가나안",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "요단 강과 사해 서쪽의 약속의 땅으로, 함의 아들 가나안의 이름에서 왔습니다."
     },
     {
       "n": 16,
@@ -262,7 +277,8 @@
       "source_sha256": "dfa0f72d2f2ad1e136b05a74f1b2e07a7bbed5cd17187d7a8c564bbfe5db81df",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "갈대아",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "바벨로니아 남부, 유프라테스 강과 티그리스 강 하류의 광대한 평야 지역입니다."
     },
     {
       "n": 17,
@@ -279,7 +295,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "다윗 성읍",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "다윗이 여부스 사람에게서 빼앗은 시온 산의 산성이며, 베들레헴도 “다윗의 동네”라 불립니다."
     },
     {
       "n": 18,
@@ -296,7 +313,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "구스",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "함의 아들 이름에서 온 나라로, 구약에서는 대체로 이스라엘 남쪽, 특히 이집트 남쪽 지역을 가리킵니다."
     },
     {
       "n": 19,
@@ -312,7 +330,8 @@
       "source_sha256": "be5c0f7d34754493abca94bdaa98ba10d390d366549ee3f607df26629e99dccc",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "다메섹",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "예루살렘 북쪽 약 133마일에 있던 수리아의 수도로, 사울이 회심한 곳입니다."
     },
     {
       "n": 20,
@@ -329,7 +348,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "단",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "야곱의 다섯째 아들이자 그 지파의 이름이며, 북쪽으로 옮겨 가 차지한 성읍의 이름이기도 합니다."
     },
     {
       "n": 21,
@@ -346,7 +366,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "동방",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "해가 뜨는 쪽을 가리키는 말로, 팔레스타인 동쪽의 아라비아와 메소포타미아 지역을 뜻하기도 합니다."
     },
     {
       "n": 22,
@@ -362,7 +383,8 @@
       "source_sha256": "b40443073d7a96ac7428ca6800f578bef6434e5b3a440af1ec168558b5b3d357",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "에돔",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "에서의 다른 이름이자, 그 후손이 차지한 사해 남쪽 세일 산지의 이름입니다."
     },
     {
       "n": 23,
@@ -378,7 +400,8 @@
       "source_sha256": "f25af05a6c911c8610090e45a508c80b0507ce916e926e4907a222ae9cc3be1f",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "애굽",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "나일 강과 피라미드의 나라로, 성경에서 매우 중요한 위치를 차지하는 가장 오래된 기록상의 왕국입니다."
     },
     {
       "n": 24,
@@ -394,7 +417,8 @@
       "source_sha256": "b8c952a226c36600d134ea1741d07caad80febf25502cdfdea15089400321d9d",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "에그론",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "블레셋 다섯 성읍 가운데 가장 북쪽에 있던 곳으로, 바알세붑의 유명한 신당이 있었습니다."
     },
     {
       "n": 25,
@@ -410,7 +434,8 @@
       "source_sha256": "d65c993e2434d301a89fe9fb52ef3792863fd501907e3c8664ccc3c6fac822c1",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "엘람",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "셈의 아들 이름이자 바벨로니아 동쪽 고지대의 나라로, 수산이 수도였습니다."
     },
     {
       "n": 26,
@@ -426,7 +451,8 @@
       "source_sha256": "7512b67d1d2b817d2a9df839c0afd1de2674715d2e85981f51e7ccbb5692da37",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "에베소",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "소아시아 서부 아시아 속주의 수도로, 다이아나 신전과 대극장으로 유명했고 바울이 약 삼 년 머문 곳입니다."
     },
     {
       "n": 27,
@@ -442,7 +468,8 @@
       "source_sha256": "86b143b3edd953351cc7554f424595d8fdc39c64dbf31dd202af795917816d31",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "유브라데강",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "서아시아에서 가장 크고 중요한 강으로, 약속의 땅 북동쪽 경계였습니다."
     },
     {
       "n": 28,
@@ -459,7 +486,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "갈릴리",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "팔레스타인 북부 지방으로, 우리 주님이 생애의 적어도 삼십 년을 보내시고 공생애 대부분을 보내신 곳입니다."
     },
     {
       "n": 29,
@@ -476,7 +504,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "가드",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "블레셋 다섯 왕성 가운데 하나로, 골리앗의 출생지 또는 거주지로 유명합니다."
     },
     {
       "n": 30,
@@ -492,7 +521,8 @@
       "source_sha256": "67c6055864322e9767f5a9cdbe86a83233048513bda098047e29aa37e493939c",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "가사",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "지중해 해안의 오래된 블레셋 성읍으로, 이집트와의 큰 교역 중심지이며 삼손의 마지막 무대입니다."
     },
     {
       "n": 31,
@@ -508,7 +538,8 @@
       "source_sha256": "da6f2f6a1d5bb027043e63749ee7151f4b1d33a0fb1d7e3ccdae268abcae29bd",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "그술",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "헤르몬 산과 디베랴 호수 사이의 수리아 공국으로, 압살롬이 피신한 곳입니다."
     },
     {
       "n": 32,
@@ -525,7 +556,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "기브아",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "베냐민 지파의 언덕 성읍으로, 사울의 출생지이자 그가 왕이 된 뒤의 거처입니다."
     },
     {
       "n": 33,
@@ -541,7 +573,8 @@
       "source_sha256": "f95ca12fecabd33d1d291c555a4e24755ed9484c5d35b727f490bc8c41179f59",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "기브온",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "아이보다 큰 왕도급 성읍이자 제사장 성읍으로, 한동안 장막이 있었고 여호수아의 큰 승리가 있었던 곳입니다."
     },
     {
       "n": 34,
@@ -558,7 +591,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "길르앗",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "요단 동쪽의 산악 지방으로, 갓과 르우벤 지파의 땅과 므낫세 남부를 포함했습니다."
     },
     {
       "n": 35,
@@ -575,7 +609,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "길갈",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "“구르다”라는 뜻의 이름으로, 여리고 평지의 첫 진영 등 여러 곳이 이렇게 불렸습니다."
     },
     {
       "n": 36,
@@ -591,7 +626,8 @@
       "source_sha256": "a30ebaf2543c1bce10b91f6dd888d74ca445a8d7d0fcabe20be43fcd5126a64d",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "고모라",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "싯딤 골짜기에서 불로 멸망한 다섯 성읍 가운데 하나로, 소돔과 함께 악의 전형입니다."
     },
     {
       "n": 37,
@@ -609,7 +645,8 @@
       "identity_note": "RELATED_SOURCE_ENTRY__NO_IDENTITY_PROMOTION",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
-      "name_ko": "대해"
+      "name_ko": "대해",
+      "intro_ko": "지중해와 사해, 홍해, 갈릴리 바다를 가리키는 히브리어·헬라어 이름들을 풀이한 항목입니다."
     },
     {
       "n": 38,
@@ -626,7 +663,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "하맛",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "오론테스 강변에 있던 상(上)수리아 왕국의 수도로, 팔레스타인 북쪽 경계에 있었습니다."
     },
     {
       "n": 39,
@@ -642,7 +680,8 @@
       "source_sha256": "63fc9bd0bdd31592905fbf32ffd6a43b54c6e4cf4b58988e6e80e81aaf772072",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "헤브론",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "예루살렘 남쪽 산지의 오래된 성읍으로, 아브라함이 살았고 사라를 막벨라 굴에 장사한 곳입니다."
     },
     {
       "n": 40,
@@ -658,7 +697,8 @@
       "source_sha256": "915ef28047e91f6834e1abaf26289f85eb60532ac95b05ff066277d87ae9cb1c",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "헤스본",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "아모리 왕 시혼이 다스리던 성읍으로, 후에 르우벤 지파의 레위 성읍이 되었습니다."
     },
     {
       "n": 41,
@@ -675,7 +715,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "성소 (1)",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "성막을 둘로 나눈 앞부분으로, 금 등대와 진설병 상, 금 분향단이 있었습니다."
     },
     {
       "n": 42,
@@ -692,7 +733,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "성소 (2)",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "성막을 둘로 나눈 앞부분으로, 금 등대와 진설병 상, 금 분향단이 있었습니다."
     },
     {
       "n": 43,
@@ -708,7 +750,8 @@
       "source_sha256": "dc155ab947722aaecb62f4e1ecbb1091fea234307bedc2c58be84ff7df1c8b91",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "길르앗 야베스",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "요단 동쪽 길르앗 언덕 위의 성읍으로, 사울이 구해 냈고 그의 시신을 거두어 장사한 곳입니다."
     },
     {
       "n": 44,
@@ -725,7 +768,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "여리고",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "요단 평지 종려나무 숲 가운데 있던 견고한 성으로, 이스라엘이 가나안에서 처음 점령한 성읍입니다."
     },
     {
       "n": 45,
@@ -741,7 +785,8 @@
       "source_sha256": "38096e43368f28ea9a47ce28e16e28d13671090beb20c5123dc1b1e42ed01ac6",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "예루살렘",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "“평화의 소유”라는 뜻의 거룩한 성으로, 다윗이 수도로 삼고 솔로몬이 성전을 지었습니다."
     },
     {
       "n": 46,
@@ -758,7 +803,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "이스르엘",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "잇사갈의 성읍으로 이스라엘 왕들이 자주 거하던 곳이며, 예후가 아합 집안을 친 무대입니다."
     },
     {
       "n": 47,
@@ -774,7 +820,8 @@
       "source_sha256": "cbbf92ed5aa4ac221781653065f116aae6582292c73fbc9518c170668a5bc6e5",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "요단강",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "헤르몬의 눈에서 발원해 갈릴리 바다를 지나 사해로 흘러가는 팔레스타인의 주된 강입니다."
     },
     {
       "n": 48,
@@ -791,7 +838,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "유대",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "포로기 이후에는 요단 서쪽 온 땅을, 그리스도 시대에는 팔레스타인 세 구역 가운데 가장 남쪽을 가리켰습니다."
     },
     {
       "n": 49,
@@ -808,7 +856,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "가데스 바네아",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "팔레스타인 남동쪽 경계 신 광야의 성스러운 곳으로, 이스라엘이 정탐꾼을 보내고 오래 머문 곳입니다."
     },
     {
       "n": 50,
@@ -824,7 +873,8 @@
       "source_sha256": "16b27b87348ced671f48edda63e65598bb30af2388f4392359fabb0e3ed6ba02",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "기드론",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "예루살렘 동쪽, 성과 감람산 사이 여호사밧 골짜기를 흐르는 겨울 급류입니다."
     },
     {
       "n": 51,
@@ -840,7 +890,8 @@
       "source_sha256": "d266eed2b47ea43df082139d9968a6e859c4a220793bce5aa7ec81bba320a49f",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "라기스",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "세펠라의 가나안 왕성으로, 르호보암 때 유다의 견고한 요새였고 산헤립에게 공격받았습니다."
     },
     {
       "n": 52,
@@ -856,7 +907,8 @@
       "source_sha256": "ca519fd440631e15b56a1943022ede628e8d3a28efd97da68d4db5a1b671de97",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "레바논",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "수리아에서 가장 높고 유명한 산맥으로, 백향목과 포도주와 시원한 물로 유명합니다."
     },
     {
       "n": 53,
@@ -872,7 +924,8 @@
       "source_sha256": "593549ed61722f8803f9692ae936a3777e6a649ab1a54d0f05197a72ab2c6175",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "마게도냐",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "신약 시대 그리스 북쪽의 로마 속주로, 바울이 환상으로 부름을 받아 복음을 전한 곳입니다."
     },
     {
       "n": 54,
@@ -888,7 +941,8 @@
       "source_sha256": "cd964590b23cf7e490288dec034c373af05558f5e6b2a26d5d01899a0eb576e4",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "메대",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "인더스 강 동쪽에서 온 아리안 계통의 민족으로, 바벨로니아와 함께 니느웨를 무너뜨렸으나 후에 페르시아와 합쳐졌습니다."
     },
     {
       "n": 55,
@@ -904,7 +958,8 @@
       "source_sha256": "d8ed9d12c46b1ebc08ca35314c62dad89fa7537df5f27c6ecf63c45a6137e355",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "미디안",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "아브라함이 그두라에게서 낳은 넷째 아들로, 미디안 사람의 조상입니다."
     },
     {
       "n": 56,
@@ -921,7 +976,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "미스바",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "“망대”라는 뜻의 이름으로 길르앗과 베냐민 등 여러 곳이 이렇게 불렸고, 사무엘이 온 이스라엘을 모은 곳도 있습니다."
     },
     {
       "n": 57,
@@ -938,7 +994,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "모압 (1)",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "롯의 맏아들의 이름이자, 그 후손과 요단 강·사해 동쪽 땅을 가리키는 이름입니다."
     },
     {
       "n": 58,
@@ -955,7 +1012,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "모압 (2)",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "롯의 맏아들의 이름이자, 그 후손과 요단 강·사해 동쪽 땅을 가리키는 이름입니다."
     },
     {
       "n": 59,
@@ -972,7 +1030,8 @@
       "identity_note": "SOURCE_OBJECT_TYPE_ALTAR_BUT_DICTIONARY_ENTRY_ROOM__NO_CANONICAL_BINDING",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "지성소 (2)",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "성막의 안쪽 부분으로, 언약궤만 있었고 대제사장만 일 년에 한 번 들어갈 수 있었습니다."
     },
     {
       "n": 60,
@@ -989,7 +1048,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "갈멜산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "이스르엘 평야에서 바다까지 뻗은 곶 모양의 산으로, 엘리야가 바알의 선지자들과 대결한 곳입니다."
     },
     {
       "n": 61,
@@ -1006,7 +1066,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "헤르몬산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "안티레바논 산맥의 동쪽 봉우리로, 팔레스타인의 북쪽 경계를 이루며 멀리서도 눈에 띕니다."
     },
     {
       "n": 62,
@@ -1023,7 +1084,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "호렙산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "시내 산을 한 봉우리로 포함하는 산맥 전체의 이름입니다."
     },
     {
       "n": 63,
@@ -1040,7 +1102,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "세일산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "사해 남동쪽에서 아카바 만 가까이까지 아라바 동쪽을 따라 뻗은, 에돔 사람이 차지한 산지입니다."
     },
     {
       "n": 64,
@@ -1057,7 +1120,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "시내산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "출애굽 후 이스라엘이 약 한 해 동안 진을 치고 율법을 받은 산입니다."
     },
     {
       "n": 65,
@@ -1074,7 +1138,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "시온산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "예루살렘이 세워진 언덕 가운데 하나로 다윗 성이 되었고, 후에 예루살렘 전체와 하나님의 백성을 가리키기도 했습니다."
     },
     {
       "n": 66,
@@ -1090,7 +1155,8 @@
       "source_sha256": "a944294698f3f66d8e15ba47fea4860676c3c250f2a0709cccda6bc34e089493",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "나사렛",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "갈릴리의 성읍으로, 요셉과 마리아의 고향이며 예수께서 자라신 곳입니다."
     },
     {
       "n": 67,
@@ -1107,7 +1173,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "네게브",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "팔레스타인 남쪽의 메마른 지방으로, 중부 팔레스타인에서 이집트로 가는 대상 무역로가 지났습니다."
     },
     {
       "n": 68,
@@ -1123,7 +1190,8 @@
       "source_sha256": "af26553e52c63324c77c1abec08aaaafc8bd3a2a28a85c449f53217cac44d58b",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "나일강",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "백나일과 청나일이 합쳐져 지중해로 흘러드는 이집트의 큰 강으로, 구약에서는 시홀이나 “그 강”으로 불립니다."
     },
     {
       "n": 69,
@@ -1139,7 +1207,8 @@
       "source_sha256": "9ba1a030fed8d695122ee96eeda9f57931c1183a7419e978090e794d7c9f40f5",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "니느웨",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "티그리스 강 동쪽의 앗수르 수도로, 요나가 전도했고 나훔과 스바냐의 예언대로 멸망했습니다."
     },
     {
       "n": 70,
@@ -1155,7 +1224,8 @@
       "source_sha256": "c9cd140d0809cb2c7945cfc534fbb29779e85cdc7c153edd04b8d82caed45be2",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "바사",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "인더스 강에서 트라키아까지 뻗었던 고대 페르시아 제국입니다."
     },
     {
       "n": 71,
@@ -1171,7 +1241,8 @@
       "source_sha256": "fc04ef15f8e1d7e6eaefd9896ac42053c518b4b8393378d6ccbdb3c668d85557",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "블레셋",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "팔레스타인을 가리키는 이름으로, “블레셋 사람의 땅”이라는 뜻입니다."
     },
     {
       "n": 72,
@@ -1188,7 +1259,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "홍해",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "아라비아 서해안을 따라 약 1,400마일 뻗은 바다로, 이스라엘이 건너고 이집트 군대가 멸망한 곳입니다."
     },
     {
       "n": 73,
@@ -1204,7 +1276,8 @@
       "source_sha256": "f49ef61e1f32a1f62bb58bc2a66bba50159ef210087f4cd2de95def0450b1121",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "염해",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "사해를 가리키는 이름입니다."
     },
     {
       "n": 74,
@@ -1221,7 +1294,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "사마리아 (1)",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "오므리가 세겜 북서쪽 언덕에 세운 북이스라엘의 수도로, 후에 앗수르에게 함락되었습니다."
     },
     {
       "n": 75,
@@ -1238,7 +1312,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "사마리아 (2)",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "오므리가 세겜 북서쪽 언덕에 세운 북이스라엘의 수도로, 후에 앗수르에게 함락되었습니다."
     },
     {
       "n": 76,
@@ -1255,7 +1330,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "갈릴리 바다",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "길이 12.5마일의 호수로, 예수께서 제자들을 부르시고 공생애를 보내신 중심지입니다."
     },
     {
       "n": 77,
@@ -1272,7 +1348,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "스바",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "여러 인물의 이름이자 남아라비아 왕국의 이름으로, 스바 여왕이 솔로몬을 찾아온 나라입니다."
     },
     {
       "n": 78,
@@ -1288,7 +1365,8 @@
       "source_sha256": "5693eb82c5c72c05ded32353f085637599d1aacf031fa46489840f415c5e31ea",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "세겜",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "에발 산과 그리심 산 사이 골짜기의 사마리아 성읍으로, 아브라함이 약속의 땅에서 처음 제단을 쌓은 곳입니다."
     },
     {
       "n": 79,
@@ -1306,7 +1384,8 @@
       "identity_note": "RELATED_SOURCE_ENTRY__NO_IDENTITY_PROMOTION",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
-      "name_ko": "세펠라"
+      "name_ko": "세펠라",
+      "intro_ko": "유다 산지 서쪽 기슭의 “저지대”로, 오랫동안 이스라엘과 블레셋 사이의 분쟁 지대였습니다."
     },
     {
       "n": 80,
@@ -1322,7 +1401,8 @@
       "source_sha256": "719363466da31b2cdd9710681a8b51926226633f7a378e675ea93b50c5f23ae1",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "실로",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "에브라임 땅의 성읍으로, 정복 뒤 장막이 세워져 사사 시대 내내 있었던 곳입니다."
     },
     {
       "n": 81,
@@ -1338,7 +1418,8 @@
       "source_sha256": "ef67b50b66fc5ca57c2ff89a8018c3a7a75412a755d407be4042cac31ad6c912",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "시돈",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "“고기잡이”, “어장”이라는 뜻의 이름으로 창세기와 복음서에 나오는 성읍입니다."
     },
     {
       "n": 82,
@@ -1354,7 +1435,8 @@
       "source_sha256": "a56d0f88f63d660be399b2ee7b38f665ae0f87497565a52a5694f9fe1897f5df",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "소돔",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "싯딤 골짜기에 있었으나 주민의 악함 때문에 하늘에서 내린 불로 멸망한 성읍입니다."
     },
     {
       "n": 83,
@@ -1371,7 +1453,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "수산",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "한때 엘람의 수도였던 수사로, 다니엘과 느헤미야와 에스더 이야기의 무대입니다."
     },
     {
       "n": 84,
@@ -1388,7 +1471,8 @@
       "identity_note": "EXACT_TERM_ONLY__HOMONYM_NOT_RESOLVED",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "수리아",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "구약의 아람, 곧 페니키아 북동쪽에서 유프라테스 강 너머까지 이르는 지방의 이름입니다."
     },
     {
       "n": 85,
@@ -1404,7 +1488,8 @@
       "source_sha256": "28ccd6915afe3f5e7f362d28a4df1aeb0b8f123b30399eba0c47924ad10f58f2",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "두로",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "시돈 남쪽에 있던 페니키아의 바위 도시로, 온 세계의 상업이 모이던 해상 무역의 중심지였습니다."
     },
     {
       "n": 86,
@@ -1421,7 +1506,8 @@
       "identity_note": "ALIAS_TERM_REFERENCE_ONLY__NO_CANONICAL_IDENTITY_CROSSWALK",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "힌놈 골짜기",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "시온 산과 “악한 모사의 언덕”을 가르는 깊고 좁은 골짜기로, 후에 지옥(게헨나)의 상징이 되었습니다."
     },
     {
       "n": 87,
@@ -1439,7 +1525,8 @@
       "identity_note": "RELATED_SOURCE_ENTRY__NO_IDENTITY_PROMOTION",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
-      "name_ko": "아르논 골짜기"
+      "name_ko": "아르논 골짜기",
+      "intro_ko": "사해 동쪽으로 흘러드는 아르논 강과 그 지류 골짜기로, 모압과 아모리 사람의 경계였습니다."
     },
     {
       "n": 88,
@@ -1457,7 +1544,8 @@
       "identity_note": "GENERAL_DESERT_ENTRY_ONLY__NOT_DEDICATED_SINAI_WILDERNESS",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
-      "name_ko": "시내 광야"
+      "name_ko": "시내 광야",
+      "intro_ko": "이스라엘이 알았던 “광야”를 풀이한 일반 항목으로, 대부분 모래 사막이 아니라 물만 있으면 열매 맺을 땅입니다."
     },
     {
       "n": 89,
@@ -1473,7 +1561,8 @@
       "source_sha256": "144e709a298627cdfd07791bb5d5a1f2517d1f19f5a0358b10a6282c5ef11f62",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "시온",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "예루살렘이 세워진 언덕 가운데 하나로 다윗 성이 되었고, 후에 예루살렘 전체와 하나님의 백성을 가리키기도 했습니다."
     },
     {
       "n": 90,
@@ -1489,7 +1578,8 @@
       "source_sha256": "6b4b31275aed28973b463065f115a842bf527a9ab0bd6fa31b6ada595af61e7c",
       "qa_status": "AI_PROOFREAD_AGAINST_SOURCE_20261010_HUMAN_THEOLOGICAL_REVIEW_PENDING",
       "name_ko": "소바",
-      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced"
+      "qa_note": "ko re-translated from en by Claude and compared with the original; en/source_sha256/place_id unchanged; machine translation replaced",
+      "intro_ko": "코일레시리아 남쪽에서 유프라테스 강 쪽으로 뻗어 있던 수리아의 지방 또는 왕국입니다."
     }
   ],
   "title_policy": "Korean display headings curated for navigation; parenthesized homonyms remain distinct; geography and source identity not approved."

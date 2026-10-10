@@ -85,12 +85,29 @@
   }
   // Presentation tiers only. B/C remain unassigned until their place sets are reviewed.
   function atlasTier(a) { return a && /^BAT01-PLACE-/.test(a.place_id || '') && ATLAS90_REF.some(function(x) {return x.place_id === a.place_id;}) ? 'A' : null; }
-  function atlasTierBadge(a) { var t = atlasTier(a); return t ? '<span class="atlas-tier atlas-tier-' + t.toLowerCase() + '" data-atlas-tier="' + t + '">Level ' + t + ' · 핵심지역</span>' : ''; }
-  // Explicit reader-only dictionary lookups. NOT an entity identity crosswalk.
-  var ATLAS90_PLACE_LOOKUP = { shechem: 'BAT01-PLACE-1116', bethel: 'BAT01-PLACE-0241', egypt: 'BAT01-PLACE-0382', hebron: 'BAT01-PLACE-0597', gilead: 'BAT01-PLACE-0509' };
-  function atlas90PlaceLookupButton(p) {
-    var id = p && ATLAS90_PLACE_LOOKUP[p.key];
-    return id && ATLAS90_REF.some(function(x) {return x.place_id === id && !!x.ko;}) ? '<button type="button" class="pill" data-atlas90-open="' + esc(id) + '" data-atlas90-lookup="term-only">외부사전 참고</button>' : '';
+  function atlasTierBadge(a) { return ''; } // "Level A · 핵심지역" 표기는 쓰지 않는다: 지역 소개 문구(atlas90Intro)로 대체.
+  // 이스턴 번역 첫 본문 문장 = 지역 소개 문구. 표제어 줄과 "~라는 뜻이다." 어원 문장은 건너뛴다.
+  function atlas90EnName(a) { return String((a && a.name_en) || '').replace(/\s+\d+$/, ''); } // 동음이의 번호("Bethel 1")는 표시하지 않는다.
+  function atlas90Intro(a) {
+    if (a && a.intro_ko) return a.intro_ko;
+    var body = String((a && a.ko) || '').split('\n').slice(1).join(' ').replace(/\s+/g, ' ').trim();
+    var sents = body.match(/[^.]+?(?:다|요)\.(?=\s|$)/g) || [];
+    var pick = sents.filter(function(s) { return !/(?:라는|이라는|뜻이다|뜻한다|의미한다)\s*\.?$/.test(s.trim()) && !/^[“"].{0,30}[”"]\s*(?:라는\s*)?뜻/.test(s.trim()); })[0] || sents[0] || body;
+    pick = pick.trim();
+    return pick.length > 130 ? pick.slice(0, 128).replace(/\s+\S*$/, '') + '…' : pick;
+  }
+  // 이스턴 번역 "지명 자료" 구역: 장소 카드 본문과 외부사전 상세가 같은 형식을 쓴다.
+  function atlas90NameDataHtml(a) {
+    return '<section class="d-sec" data-part="reference-translation"><h4 class="d-h">지명 자료</h4><p class="d-body" style="white-space:pre-wrap">' + esc(a.ko || '') + '</p><details><summary>영문 원문과 출처</summary><p class="meta">' + esc(a.source || '') + '</p><p class="d-body" style="white-space:pre-wrap">' + esc(a.en || '') + '</p></details></section>';
+  }
+  function atlas90ForPlace(p) {
+    if (!p) return null;
+    var norm = function(v) { return String(v || '').toLocaleLowerCase().replace(/[^a-z0-9가-힣]/g, ''); };
+    var keys = [p.key, p.en, p.label].map(norm).filter(Boolean);
+    return ATLAS90_REF.filter(function(a) {
+      var link = (window.JBC_ATLAS90_READER_CROSSWALK || {})[a.place_id];
+      return (link && link.place_key === p.key) || keys.indexOf(norm(a.name_en)) >= 0 || keys.indexOf(norm(a.name_ko)) >= 0;
+    })[0] || null;
   }
   // Level A reader projections share the existing PlaceCard and Place Basic Detail renderers.
   // They are NOT canonical entities, and never invent location, media, or registry bindings.
@@ -128,9 +145,9 @@
     var binding = (window.JBC_ATLAS90_READER_CROSSWALK || {})[a.place_id];
     var linked = binding && placeIndex().byKey[binding.place_key], geo=AB_GEO_MEDIA[a.place_id]||{};
     return { key: 'atlas90:' + a.place_id, stableId: '', canonical: false,
-      hasProfile: false, label: a.name_ko || a.name_en, en: a.name_en,
+      hasProfile: false, label: a.name_ko || a.name_en, en: atlas90EnName(a),
       type: a.kind === 'region' ? '지역' : '지명', region: '',
-      summary: 'Level A · 핵심지역',
+      summary: atlas90Intro(a),
       certainty: linked ? linked.certainty : '', primaryPassage: null, passages: linked ? linked.passages.slice() : atlas90EvidenceLabels(a), passageIds: linked ? linked.passageIds.slice() : [],
       people: linked ? linked.people.slice() : [], eras: linked ? linked.eras.slice() : [], journeys: linked ? linked.journeys.slice() : [],
       scenes: linked ? linked.scenes.slice() : [], media: linked&&linked.media ? linked.media : ((window.JBC_ATLAS90_READER_MEDIA || {})[a.place_id] || geo.media || null), lat: linked&&linked.lat!=null ? linked.lat : geo.geo ? geo.geo.lat : null, lon: linked&&linked.lon!=null ? linked.lon : geo.geo ? geo.geo.lon : null };
@@ -144,17 +161,15 @@
     var hits=list.filter(function(p){return normalize(p.key)===name || (!!p.en && normalize(p.en)===name);});
     return hits.length===1 ? hits[0] : null;
   }
-  function nativePlaceReferenceHtml(p) {
+  function nativePlaceReferenceHtml(p, skipA) {
     if(!p)return '';
     var norm=function(v){return String(v||'').toLocaleLowerCase().replace(/[^a-z0-9가-힣]/g,'');};
     var keys=[p.key,p.en,p.label].map(norm).filter(Boolean);
     var parts=[];
-    (window.JBC_ATLAS90_KOREAN_REFERENCE||[]).forEach(function(a){
+    (skipA?[]:(window.JBC_ATLAS90_KOREAN_REFERENCE||[])).forEach(function(a){
       var link=(window.JBC_ATLAS90_READER_CROSSWALK||{})[a.place_id];
       if((link&&link.place_key===p.key)||keys.indexOf(norm(a.name_en))>=0||keys.indexOf(norm(a.name_ko))>=0){
-        parts.push('<section class="d-sec" data-part="native-level-a-reference"><h4 class="d-h">Level A · 핵심지역 참고</h4>'+
-          atlas90ReferencePassages(a)+abReaderGeoSection(a.place_id)+'<p class="d-body" style="white-space:pre-wrap">'+esc(a.ko||'')+'</p>'+
-          '<p class="meta" style="font-size:.72rem;opacity:.65">Easton 참고 · 연구검토중</p></section>');
+        parts.push('<div data-part="native-level-a-reference">'+atlas90ReferencePassages(a)+abReaderGeoSection(a.place_id)+atlas90NameDataHtml(a)+'</div>');
       }
     });
     LEVEL_B_87.forEach(function(a){
@@ -195,7 +210,7 @@
     return html.replace(/data-place-open="/g, 'data-atlas90-open="').replace(/data-search="1"/g, 'data-atlas90-search="1"')
       .replace(/data-origin="JOURNEY_DATA"/g, 'data-origin="REFERENCE_ONLY"')
       .replace(/data-atlas90-open="atlas90:[^"]+"/g, 'data-atlas90-open="' + esc(a.place_id) + '"')
-      .replace('</button></article>', '<span class="ee-tag">Level A · 핵심지역</span></button></article>');
+      ;
   }
   function atlas90ReferenceHtml(placeId, englishTerm) {
     var matches = ATLAS90_REF.filter(function(x) {
@@ -2813,12 +2828,13 @@
     if (state.entity && entityValid(state.entity)) {
       var refSid = stableOf(state.entity.kind, state.entity.id);
       var refHtml = atlas90ReferenceHtml(refSid, null);
-      if (refHtml) html += refHtml;
+      var refNative = placeIndex().list.filter(function(x){return x.stableId===refSid;})[0];
+      if (refHtml && !(refNative && atlas90ForPlace(refNative))) html += refHtml;
     } else if (ui.placeBasic && placeIndex().byKey[ui.placeBasic]) {
       var refPlace = placeIndex().byKey[ui.placeBasic];
       var refKey = refPlace.stableId && /^BAT01-PLACE-/.test(refPlace.stableId) ? refPlace.stableId : null;
       var placeReference = atlas90ReferenceHtml(refKey, refKey ? null : refPlace.en);
-      if (placeReference) html += placeReference;
+      if (placeReference && !atlas90ForPlace(refPlace)) html += placeReference;
     }
     // Full canonical place profiles retain their approved layout and append reader references only.
     if(state.entity && entityValid(state.entity) && state.entity.kind==='l'){
@@ -2833,7 +2849,7 @@
       if (atlasCurrent) {
         var atlasSharedP = atlas90PlaceProjection(atlasCurrent);
         html = '<div data-part="atlas90-shared-detail" data-atlas-place-id="' + esc(atlas90Selection) + '"><button type="button" class="pill" data-atlas90-close="1">장소 상세 닫기</button>' +
-          placeBasicDetailHtml(null, atlasSharedP).replace('</article>', (function(){var binding=(window.JBC_ATLAS90_READER_CROSSWALK||{})[atlasCurrent.place_id], key=binding&&binding.place_key, place=key&&placeIndex().byKey[key];return place ? '<section class="d-sec" data-part="atlas90-map-link"><h4 class="d-h">지도 · 장소 탐색</h4><button type="button" class="pill" data-map-focus-place="'+esc(key)+'">기존 장소 지도에서 보기</button><p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · 독자용 탐색 연결</p></section>' : '<p class="meta" data-part="atlas90-map-pending" style="font-size:.72rem;opacity:.65">지도 위치 연구검토중</p>';})() + atlas90ReferencePassages(atlasCurrent) + abReaderGeoSection(atlasCurrent.place_id) + '<section class="d-sec" data-part="reference-translation"><h4 class="d-h">지명 자료</h4><p class="d-body" style="white-space:pre-wrap">' + esc(atlasCurrent.ko || '') + '</p><details><summary>영문 원문과 출처</summary><p class="meta">' + esc(atlasCurrent.source || '') + '</p><p class="d-body" style="white-space:pre-wrap">' + esc(atlasCurrent.en || '') + '</p></details></section></article>') + '</div>';
+          placeBasicDetailHtml(null, atlasSharedP).replace('</article>', (function(){var binding=(window.JBC_ATLAS90_READER_CROSSWALK||{})[atlasCurrent.place_id], key=binding&&binding.place_key, place=key&&placeIndex().byKey[key];return place ? '<section class="d-sec" data-part="atlas90-map-link"><h4 class="d-h">지도 · 장소 탐색</h4><button type="button" class="pill" data-map-focus-place="'+esc(key)+'">기존 장소 지도에서 보기</button><p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · 독자용 탐색 연결</p></section>' : '<p class="meta" data-part="atlas90-map-pending" style="font-size:.72rem;opacity:.65">지도 위치 연구검토중</p>';})() + atlas90ReferencePassages(atlasCurrent) + abReaderGeoSection(atlasCurrent.place_id) + atlas90NameDataHtml(atlasCurrent) + '</article>') + '</div>';
       }
     }
     // Entity research replaces overviewFlow; keep the chapter memo editor accessible.
@@ -3910,7 +3926,7 @@
       return '<div class="pc pc-map" data-place-key="' + key + '" data-stable-id="' + esc(p.stableId || "") + '" role="dialog" aria-label="' + esc(p.label) + ' 장소 카드">' + mapMedia + '<div class="pc-head"><strong class="pc-name">' + esc(p.label) + "</strong>" + (p.en ? '<span class="pc-en">' + esc(p.en) + "</span>" : "") + "</div>" +
         (meta ? '<div class="pc-meta">' + esc(meta) + "</div>" : "") + (p.summary ? '<p class="pc-sum">' + esc(p.summary) + "</p>" : "") + (pas ? '<div class="pc-row"><span>본문</span>' + esc(pas) + "</div>" : "") +
         (jl ? '<div class="pc-row"><span>여정</span>' + esc(jl) + "</div>" : "") + (p.certainty ? '<div class="pc-cert">' + esc(p.certainty) + "</div>" : "") +
-        (p.hasProfile ? '<button type="button" class="pc-open" data-place-open="' + key + '">장소연구 보기</button>' : "") + atlas90PlaceLookupButton(p) + "</div>";
+        (p.hasProfile ? '<button type="button" class="pc-open" data-place-open="' + key + '">장소연구 보기</button>' : "") + "</div>";
     }
     var m = p.media, listView = swState.view === "list", image = listView ? searchThumbHtml(m, true) : (ctx.card !== false ? searchThumbHtml(m, true) : "");
     var sel = (state.entity && p.stableId && stableOf(state.entity.kind, state.entity.id) === p.stableId) || (!!ui.placeBasic && ui.placeBasic === p.key), q = ctx.q, label = q ? markedHtml(p.label, markRanges(p.label, q), 0, p.label.length) : esc(p.label);
@@ -3936,6 +3952,9 @@
     // Full Place Profile(그랄·브엘세바)와 같은 골격·클래스를 쓴다: 고정 헤더(.entity-sticky-head) → 핵심 정의(.d-hook) → 한눈에 보기(.qf-list) → 대표 이미지(.d-hero) → 상세 정보(.qf-list) → 연구 상태(작은 하단 블록).
     // 자료가 없는 칸은 지우지 않고 상태값("연구 전" 등)으로 같은 자리에 둔다. 연구가 연결되면 같은 슬롯에 값만 채워진다. 없는 정보를 만들어 채우지 않는다.
     var p = externalP || placeIndex().byKey[key]; if (!p) return '<p class="empty helper">장소 정보를 찾을 수 없습니다.</p>';
+    // 이스턴 번역이 있는 지명: 영문명을 살리고, 지역 소개 문구(이스턴 번역 첫 문장)를 핵심 정의 자리에 쓴다. 별도 "외부사전" 진입 없이 카드 본문에서 바로 보여 준다.
+    var a90 = externalP ? null : atlas90ForPlace(p);
+    if (a90) p = Object.assign({}, p, { en: p.en || atlas90EnName(a90), summary: atlas90Intro(a90) });
     var pend = function (t) { return '<span class="is-pending">' + esc(t) + "</span>"; }, val = function (v, t) { return v ? esc(v) : pend(t); };
     var scenes = p.scenes.filter(function (s, i, a) { return a.findIndex(function (x) { return x.topic === s.topic && x.step === s.step; }) === i; });
     var events = scenes.map(function (s) { return s.title; }).filter(function (t, i, a) { return a.indexOf(t) === i; });
@@ -3951,8 +3970,9 @@
       '<section class="d-sec" data-part="facts"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">' + facts + "</dl></section>" +
       placeHeroHtml(p) +
       '<section class="d-sec" data-part="detail-info"><h4 class="d-h">상세 정보</h4><dl class="qf-list">' + detail + "</dl></section>" +
-      (!externalP ? nativePlaceReferenceHtml(p) : '') +
-      (atlas90PlaceLookupButton(p) ? '<section class="d-sec" data-part="atlas90-place-term-lookup"><p class="meta">외부사전 표제어 참고 · 기존 장소와 전문 동일성 결속 아님</p>' + atlas90PlaceLookupButton(p) + '</section>' : '') +
+      (a90 ? atlas90ReferencePassages(a90) + abReaderGeoSection(a90.place_id) + atlas90NameDataHtml(a90) : '') +
+      (!externalP ? nativePlaceReferenceHtml(p, true) : '') +
+      
       '<footer class="d-status research-status" data-part="research-status"><span class="rs-dot" aria-hidden="true"></span><span><strong>연구 상태</strong> 연구 전 · 상세 연구 자료가 연결되면 이 자리에 채워집니다.</span></footer></article>';
   }
   function openPlaceKey(key) {
