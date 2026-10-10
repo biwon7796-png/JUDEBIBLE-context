@@ -5687,3 +5687,14 @@ body[data-view="timeline"] #timeline-pane{--tl-sel-bg:#EDF4EF;--tl-sel-line:#5C8
 .tl-persons dd li b{font-weight:650;color:var(--tl-text,inherit)}
 .tl-persons dd li small{font-size:.68rem;color:var(--tl-muted,#756B61)}
 .tl-persons dd p{margin:6px 0 0;font-size:.72rem;line-height:1.45;color:var(--tl-muted,#756B61)}
+
+/* 연표 상세: 연결된 연구(승인 연구만 열림, 그 밖은 상태 표시만) */
+.tl-linked{margin:14px 0 0;padding-top:12px;border-top:1px solid var(--tl-edge,var(--line))}
+.tl-linked h3{margin:0 0 8px;font-size:.92rem;color:var(--tl-text,inherit)}
+.tl-linked ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.tl-linked li>button,.tl-linked li>div{display:flex;flex-direction:column;gap:2px;width:100%;padding:8px 10px;border:1px solid var(--tl-edge,var(--line));border-radius:10px;background:var(--tl-surface,#fff);color:var(--tl-text,inherit);font:inherit;text-align:left}
+.tl-linked li>button{cursor:pointer}
+.tl-linked li>button:hover{border-color:var(--tl-sel-line,#5C8C7B);background:var(--tl-sel-bg,#EDF4EF)}
+.tl-linked li b{font-size:.86rem}
+.tl-linked li small{font-size:.72rem;color:var(--tl-muted,#756B61)}
+.tl-linked li.is-static>div{opacity:.8;border-style:dashed}

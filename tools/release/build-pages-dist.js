@@ -128,7 +128,7 @@ function buildHtmlAndBundle() {
     }
     if (!insertedBundle) {
       insertedBundle = true;
-      return '<script src="assets/app.bundle.js?v=20261010-civr1"></script>';
+      return '<script src="assets/app.bundle.js?v=20261010-link1"></script>';
     }
     return "";
   });
