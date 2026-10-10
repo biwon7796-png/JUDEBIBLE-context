@@ -3446,18 +3446,47 @@
     return '<section class="tl-civ-sec" aria-label="고대문명 배경"><div class="tl-civ-head"><h3>고대문명 배경</h3><span>'+cards.length+'개 항목</span></div><p class="helper">성경 사건 연대와 별도로 제공하는 고고학·문명사 참고자료입니다(미승인).</p><div class="tl-civ-tabs" role="tablist" aria-label="문명권">'+tabs+'</div><div class="tl-civ-list">'+items+'</div></section>';
   }
   function civLine(c){return String(c.summary||"").split(/(?<=[.。])\s/)[0];}
+  // Research is additive editorial context only; never upgrades the HBA04 card's authority.
+  // The list remains compact while the right panel shows deeper evidence and cautions.
+  function civResearchBody(c){
+    var r=c&&c.research;if(!r)return "";
+    function block(h,lines){var list=Array.isArray(lines)?lines:[lines];list=list.filter(Boolean);
+      return list.length?'<section class="tl-civ-block"><h3>'+esc(h)+'</h3>'+list.map(function(t){return '<p>'+esc(t)+'</p>';}).join("")+'</section>':"";}
+    function bullets(h,lines){return lines&&lines.length?'<section class="tl-civ-block"><h3>'+esc(h)+'</h3><ul>'+lines.map(function(t){return '<li>'+esc(t)+'</li>';}).join("")+'</ul></section>':"";}
+    var chrono=r.chronology||{},out="";
+    out+=block("역사적 배경",r.history);
+    out+=block("고고학적 근거",r.archaeology);
+    out+=block("연대",chrono.label);
+    if(chrono.note)out+=block("연대 해석상의 주의",chrono.note);
+    out+=block("지리·지역",r.geography);
+    out+=block("성경과의 관계",r.biblicalRelation);
+    out+=bullets("해석상의 유의점",r.cautions);
+    return out;
+  }
+  function civSourcesHtml(c){
+    var r=c&&c.research,pg=c.page?" · "+esc(c.page)+"쪽":"";
+    var rows=['<li>'+esc(c.source||"")+pg+' (제공된 참고 도서)</li>'];
+    if(r&&r.sources)r.sources.forEach(function(s){
+      if(!s||!s.title||!s.url)return;
+      rows.push('<li><a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.title)+'</a></li>');
+    });
+    return '<section class="tl-civ-block"><h3>참고문헌·검증 자료</h3><ul>'+rows.join("")+'</ul></section>';
+  }
   function civDetailHtml(id){
-    var c=civCards().filter(function(x){return x.id===id;})[0]; if(!c)return "";
-    var reg=CIV_REGION[c.contextRegion]||"", pg=c.page?" · "+esc(c.page)+"쪽":"";
-    return '<aside class="tl-detail tl-civ-detail"><span class="tl-detail-badge">원역사 · 고대문명 배경</span><h2>'+esc(c.title)+'</h2><p class="tl-detail-ref">'+esc(c.kind||"")+'</p><section class="tl-civ-block"><h3>개요</h3><p>'+esc(c.summary||"")+'</p></section>'
-      +(reg?'<section class="tl-civ-block"><h3>지역 정보</h3><ul><li>지역: '+esc(reg)+'</li></ul></section>':"")
-      +'<section class="tl-civ-block"><h3>참고문헌</h3><ul><li>'+esc(c.source||"")+pg+'</li></ul></section><p class="tl-civ-note">미승인 참고 연구 · 성경 사건과 동일시하지 않으며 연대는 표시하지 않습니다.</p><div class="tl-detail-actions"><button class="btn ghost" type="button" data-tl-civ-clear>성경 사건으로 돌아가기</button></div></aside>';
+    var c=civCards().filter(function(x){return x.id===id;})[0];if(!c)return "";
+    var r=c.research,reg=CIV_REGION[c.contextRegion]||"";
+    return '<aside class="tl-detail tl-civ-detail"><span class="tl-detail-badge">원역사 · 고대문명 배경</span><h2>'+esc(c.title)+'</h2><p class="tl-detail-ref">'+esc(c.kind||"")+'</p>'+
+      '<section class="tl-civ-block"><h3>개요</h3><p>'+esc(r&&r.overview||c.summary||"")+'</p></section>'+
+      civResearchBody(c)+(!r&&reg?'<section class="tl-civ-block"><h3>지역 정보</h3><p>'+esc(reg)+'</p></section>':"")+
+      civSourcesHtml(c)+
+      '<p class="tl-civ-note">역사·고고학 참고 연구입니다. 성경 사건과 동일시하거나 연대를 대응시키지 않습니다.</p>'+
+      '<div class="tl-detail-actions"><button class="btn ghost" type="button" data-tl-civ-clear>성경 사건으로 돌아가기</button></div></aside>';
   }
   function hba04SearchHtml(q) {
     var pack=window.JBC_HBA04_REFERENCE, cards=pack&&pack.cards||[], needle=norm(q||"");
     if(!needle)return {html:"",count:0};
-    var hits=cards.filter(function(c){return norm([c.title,c.kind,c.summary,c.id].join(" ")).indexOf(needle)>=0;});
-    return {count:hits.length,html:hits.length?'<section class="sw-sec" data-sw-sec="hba04-reference"><h3 class="sec-h">고대 문명사 참고 연구 <span class="sw-sec-n">'+hits.length+'</span></h3><p class="helper">Holman Chapter 4 · 34–42쪽 · 미승인 참고자료</p><div class="ee-set">'+hits.map(function(c){return '<details class="hba04-search-item"><summary><strong>'+esc(c.title)+'</strong> <small>'+esc(c.kind)+' · '+esc(c.page)+'쪽</small></summary><p>'+esc(c.summary)+'</p><small>'+esc(c.source)+' · HISTORICAL_CONTEXT · canonical 아님</small></details>';}).join("")+'</div></section>':""};
+    var hits=cards.filter(function(c){var r=c.research||{};return norm([c.title,c.kind,c.summary,c.id,r.overview,(r.history||[]).join(" "),(r.archaeology||[]).join(" "),r.geography].join(" ")).indexOf(needle)>=0;});
+    return {count:hits.length,html:hits.length?'<section class="sw-sec" data-sw-sec="hba04-reference"><h3 class="sec-h">고대 문명사 참고 연구 <span class="sw-sec-n">'+hits.length+'</span></h3><p class="helper">Holman Chapter 4 · 34–42쪽 · 미승인 참고자료</p><div class="ee-set">'+hits.map(function(c){return '<details class="hba04-search-item"><summary><strong>'+esc(c.title)+'</strong> <small>'+esc(c.kind)+' · '+esc(c.page)+'쪽</small></summary><p>'+esc(c.research&&c.research.overview||c.summary)+'</p>'+civResearchBody(c)+civSourcesHtml(c)+'<small>참고 연구 · 성경 사건 연대와 별개</small></details>';}).join("")+'</div></section>':""};
   }
   function renderTimeline(){
     var el=$("tl-body");if(!el)return;
