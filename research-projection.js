@@ -73,7 +73,7 @@
       box.textContent = "";
       if (!c || !index()) { box.hidden = true; box.setAttribute("data-state", "UNAVAILABLE"); return false; }
       var head = el("div", "rp-head"), dl = el("dl", "rp-facts"), i, f, row, d2 = index();
-      head.appendChild(el("span", "rp-kind", "인물 · WORBS"));
+      head.appendChild(el("span", "rp-kind", "인물"));
       head.appendChild(el("strong", "rp-title", d2.subject.ko));
       box.appendChild(head);
       if (v) box.appendChild(el("p", "rp-rel", "관련 본문 " + relatedRef.replace(/^([a-z0-9]+)-(\d+):(\d+)$/, function (m, b, c2, v2) { return c2 + ":" + v2; }) + "절 · " + v.label));
@@ -84,7 +84,7 @@
       }
       box.appendChild(dl);
       if (c.note) box.appendChild(el("p", "rp-note", c.note));
-      box.appendChild(el("p", "rp-src", "PERSON_PROFILE_WORBS · " + d2.source.researchId + " " + d2.source.version + " · 앱 내부 열람용(외부 공개 아님)"));
+      box.appendChild(el("p", "rp-src", d2.source.researchId + " " + d2.source.version));
       box.setAttribute("data-state", "SHOWN");
       return true;
     });
