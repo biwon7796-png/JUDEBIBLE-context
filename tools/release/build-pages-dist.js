@@ -128,7 +128,7 @@ function buildHtmlAndBundle() {
     }
     if (!insertedBundle) {
       insertedBundle = true;
-      return '<script src="assets/app.bundle.js?v=20261009-secure-dist"></script>';
+      return '<script src="assets/app.bundle.js?v=20261010-civ1"></script>';
     }
     return "";
   });

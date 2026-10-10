@@ -3429,10 +3429,26 @@
     return h;
   }
   // HBA04 reference only: never promoted to canonical identity.
+  // 고대문명 배경(Holman ch.4 참고 카드 12개): 성경 사건과 다른 데이터 유형이며 연구 권위·식별자·연대를 만들지 않는다. 표시용 분류 묶음만 쓴다.
+  var CIV_GROUPS=[{id:"all",label:"전체"},{id:"form",label:"문명의 형성",ids:["HBA04-C01","HBA04-C02","HBA04-C03"]},{id:"meso",label:"메소포타미아",ids:["HBA04-C04","HBA04-C05","HBA04-C06","HBA04-C07","HBA04-C08"]},{id:"egl",label:"이집트·레반트",ids:["HBA04-C09","HBA04-C10","HBA04-C11","HBA04-C12"]}];
+  var CIV_REGION={"geo.fertile_crescent":"비옥한 초승달 지대","geo.mesopotamia":"메소포타미아","geo.mesopotamia.south":"남부 메소포타미아","geo.egypt":"이집트","geo.levant":"레반트"};
+  function civCards(){var pack=window.JBC_HBA04_REFERENCE;return pack&&pack.cards||[];}
+  function civInGroup(c,g){return !g||g.id==="all"||(g.ids||[]).indexOf(c.id)>=0;}
   function hba04TimelineHtml() {
-    var pack=window.JBC_HBA04_REFERENCE, cards=pack&&pack.cards||[];
+    var cards=civCards();
     if(!cards.length)return "";
-    return '<details class="tl-research tl-civ"><summary><strong>고고학적 문명사 참고</strong><span>'+cards.length+'개 · 성경 서사 순서와 BC 연대를 대응시키지 않는 미승인 참고 연구</span></summary><div class="hba04-lane">'+cards.map(function(c){return '<details class="hba04-item"><summary>'+esc(c.title)+'</summary><p>'+esc(c.summary)+'</p><small>'+esc(c.source)+' · '+esc(c.page)+'쪽 · 참고자료</small></details>';}).join("")+'</div></details>';
+    var g=CIV_GROUPS.filter(function(x){return x.id===ui.tlCivTab;})[0]||CIV_GROUPS[0], list=cards.filter(function(c){return civInGroup(c,g);});
+    var tabs=CIV_GROUPS.map(function(x){var k=cards.filter(function(c){return civInGroup(c,x);}).length,on=x.id===g.id;return '<button type="button" role="tab" class="tl-civ-tab'+(on?" is-on":"")+'" aria-selected="'+on+'" data-tl-civtab="'+x.id+'">'+esc(x.label)+' ('+k+')</button>';}).join("");
+    var items=list.map(function(c){var on=c.id===ui.tlCiv;return '<button type="button" class="tl-civ-item'+(on?" is-on":"")+'" data-tl-civ="'+esc(c.id)+'" aria-pressed="'+on+'"><span class="tl-civ-ico" aria-hidden="true"></span><span class="tl-civ-txt"><strong>'+esc(c.title)+'</strong><small>'+esc(civLine(c))+'</small></span><span class="tl-civ-arrow" aria-hidden="true">›</span></button>';}).join("");
+    return '<section class="tl-civ-sec" aria-label="고대문명 배경"><div class="tl-civ-head"><h3>고대문명 배경</h3><span>'+cards.length+'개 항목</span></div><p class="helper">성경 사건 연대와 별도로 제공하는 고고학·문명사 참고자료입니다(미승인).</p><div class="tl-civ-tabs" role="tablist" aria-label="문명권">'+tabs+'</div><div class="tl-civ-list">'+items+'</div></section>';
+  }
+  function civLine(c){return String(c.summary||"").split(/(?<=[.。])\s/)[0];}
+  function civDetailHtml(id){
+    var c=civCards().filter(function(x){return x.id===id;})[0]; if(!c)return "";
+    var reg=CIV_REGION[c.contextRegion]||"", pg=c.page?" · "+esc(c.page)+"쪽":"";
+    return '<aside class="tl-detail tl-civ-detail"><span class="tl-detail-badge">원역사 · 고대문명 배경</span><h2>'+esc(c.title)+'</h2><p class="tl-detail-ref">'+esc(c.kind||"")+'</p><section class="tl-civ-block"><h3>개요</h3><p>'+esc(c.summary||"")+'</p></section>'
+      +(reg?'<section class="tl-civ-block"><h3>지역 정보</h3><ul><li>지역: '+esc(reg)+'</li></ul></section>':"")
+      +'<section class="tl-civ-block"><h3>참고문헌</h3><ul><li>'+esc(c.source||"")+pg+'</li></ul></section><p class="tl-civ-note">미승인 참고 연구 · 성경 사건과 동일시하지 않으며 연대는 표시하지 않습니다.</p><div class="tl-detail-actions"><button class="btn ghost" type="button" data-tl-civ-clear>성경 사건으로 돌아가기</button></div></aside>';
   }
   function hba04SearchHtml(q) {
     var pack=window.JBC_HBA04_REFERENCE, cards=pack&&pack.cards||[], needle=norm(q||"");
@@ -3468,7 +3484,10 @@
 
       var slotCards=steps.length?"":Array.apply(null,{length:TL_PAGE}).map(function(_,i){return '<div class="tl-event-card is-slot" aria-hidden="true"><span class="tl-event-tick"></span><span class="tl-event-n">'+(i+1)+'</span><span class="tl-event-ph"></span><strong>사건 준비 중</strong><span class="tl-event-ref"></span><span class="tl-event-desc">승인된 연구가 연결되면 표시됩니다.</span></div>';}).join("");
       if(!sel)detail='<aside class="tl-detail is-slot"><span class="tl-detail-badge">'+esc(tp.title)+'</span><h2>'+esc(tp.title)+'</h2><p class="tl-detail-ref">'+esc(eraRange(tp))+'</p><div class="tl-detail-img tl-detail-ph"></div><p class="tl-detail-lead">'+esc(tp.summary||"")+'</p><dl class="tl-detail-facts"><div><dt>상태</dt><dd>준비 중 · 승인된 사건 연구 연결 대기</dd></div></dl><p class="tl-detail-slot-note">사건을 선택하면 이곳에 본문·장소·관련 사건이 표시됩니다.</p></aside>';
+      if(ui.tlCiv&&(tp.reference_lanes||[]).indexOf("hba04")>=0){var civD=civDetailHtml(ui.tlCiv);if(civD)detail=civD;else ui.tlCiv=null;}else ui.tlCiv=null;
+      var keepSc=ui.tlLastEra===tp.id&&el.querySelector(".tl-left")?el.querySelector(".tl-left").scrollTop:0;ui.tlLastEra=tp.id;
       el.innerHTML='<div class="tl-page"><div class="tl-left"><header class="tl-page-head"><div class="tl-head-title"><h1>성경 연표</h1><p>구원 역사를 한눈에 보는 흐름</p></div><div class="tl-head-context"><strong>'+esc(tp.title)+'</strong><span>'+esc(tr&&tr.title||"")+'</span><small>'+esc((tr&&tr.range_label)||eraRange(tp)||"")+'</small></div></header><div class="tl-era-strip">'+erasHtml+'</div><main class="tl-main"><section class="tl-era-summary"><div class="tl-sum-text"><h2>'+esc(tp.title)+'</h2><p class="tl-sum">'+esc(tp.summary||"")+'</p><p class="tl-range">'+esc((tr&&tr.range_label)||eraRange(tp))+'</p></div>'+(tracks.length?'<label class="tl-track">'+esc(tr&&tr.select_label||"인물")+' <select data-tl-track>'+trackHtml+'</select></label>':'<label class="tl-track is-slot">인물 <select disabled aria-disabled="true"><option>준비 중</option></select></label>')+'</section>'+(steps.length?'<section class="tl-event-sec"><div class="tl-event-head"><h3>'+esc((tr&&tr.title||tp.title)+" 주요 사건")+' <small>('+steps.length+'개)</small></h3>'+pagerHtml+'<div><button data-tl-sort="story" class="'+(ui.tlSort!=="scripture"?"is-on":"")+'">사건 순</button><button data-tl-sort="scripture" class="'+(ui.tlSort==="scripture"?"is-on":"")+'">본문 순</button></div></div><div class="tl-event-rail">'+cards+'</div></section>':'<section class="tl-event-sec is-slot"><div class="tl-event-head"><h3>'+esc(tp.title+" 주요 사건")+' <small>(준비 중)</small></h3><div><button type="button" class="is-on" disabled>사건 순</button><button type="button" disabled>본문 순</button></div></div><div class="tl-event-rail">'+slotCards+'</div></section>')+chronoHtml+(tp.reference_lanes||[]).map(function(k){return TL_REFERENCE_LANES[k]?TL_REFERENCE_LANES[k]():"";}).join("")+timelineResearchHtml()+'</main></div>'+detail+'</div>';
+      if(keepSc){var lf=el.querySelector(".tl-left");if(lf)lf.scrollTop=keepSc;}
     }catch(e){el.innerHTML='<div class="degraded" role="status">연표를 표시할 수 없습니다.</div>';}
   }
   var mapMoved = false;
@@ -4536,8 +4555,11 @@
     if ((el = t.closest("[data-nav-range]"))) { var nr = navParseRange(el.dataset.navRange); return nr ? void openRelatedPassage(nr.pid, nr.v1, nr.v2) : undefined; }
     if ((el = t.closest("[data-nav-ref]"))) return navEnsurePassage(el.dataset.navRef);
     if ((el = t.closest("[data-nav-act]"))) { var na = el.dataset.navAct; return na === "research" ? navToggleResearch() : navOpenTimeline(); }
-    if ((el = t.closest("[data-tl-era]"))) { ui.tlEra = el.dataset.tlEra; ui.tlTrack = null; ui.tlStep = null; ui.tlPage = null; return renderTimeline(); }
-    if ((el = t.closest("[data-tl-step]"))) { ui.tlStep = el.dataset.tlStep; return renderTimeline(); }
+    if ((el = t.closest("[data-tl-civ]"))) { ui.tlCiv = el.dataset.tlCiv; return renderTimeline(); }
+    if (t.closest("[data-tl-civ-clear]")) { ui.tlCiv = null; return renderTimeline(); }
+    if ((el = t.closest("[data-tl-civtab]"))) { ui.tlCivTab = el.dataset.tlCivtab; var cg = CIV_GROUPS.filter(function (x) { return x.id === ui.tlCivTab; })[0], cc = civCards().filter(function (x) { return x.id === ui.tlCiv; })[0]; if (cc && !civInGroup(cc, cg)) ui.tlCiv = null; return renderTimeline(); }
+    if ((el = t.closest("[data-tl-era]"))) { ui.tlCiv = null; ui.tlEra = el.dataset.tlEra; ui.tlTrack = null; ui.tlStep = null; ui.tlPage = null; return renderTimeline(); }
+    if ((el = t.closest("[data-tl-step]"))) { ui.tlCiv = null; ui.tlStep = el.dataset.tlStep; return renderTimeline(); }
     if ((el = t.closest("[data-tl-page]"))) { ui.tlPage = Math.max(0, (ui.tlPage || 0) + (+el.dataset.tlPage)); return renderTimeline(); }
     if ((el = t.closest("[data-tl-sort]"))) { ui.tlSort = el.dataset.tlSort; ui.tlPage = null; return renderTimeline(); }
     if ((el = t.closest("[data-tl-context-research]"))) { ensureContextVisible(); setView("study"); panelScrollTop(); var cr=document.querySelector('#panel article.ctx-research-item[data-context-record="'+el.dataset.tlContextResearch+'"]'); if(cr&&cr.scrollIntoView)try{cr.scrollIntoView({block:"start"});}catch(e2){} return; }
