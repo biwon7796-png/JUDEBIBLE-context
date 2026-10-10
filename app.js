@@ -75,13 +75,24 @@
   function atlasExpansionHtml(name) {
     var x = (window.JBC_ATLAS_BC_EXPANSION || []).filter(function(a){return a.name_en===name;})[0];
     if (!x) return '';
-    return '<article class="detail d-flat" data-part="atlas-expansion-standalone" data-expansion-name="' + esc(name) + '"><button type="button" class="pill" data-expansion-close="1">참고자료 닫기</button><h3 class="detail-name">' + esc(name) + '</h3><p class="meta">Level B/C 미분류 · 지명 동일성 미검증 · Easton 1897 외부사전 참고자료</p>' + (x.source_evidence && x.source_evidence.scripture_citations_as_printed.length ? '<p class="meta" data-evidence="easton-citation">사전 수록 성경구절 (본문 대조 전): ' + esc(x.source_evidence.scripture_citations_as_printed.join(', ')) + '</p>' : '') + (x.source_evidence && x.source_evidence.geographic_types.length ? '<p class="meta">사전 지리표현 단서: ' + esc(x.source_evidence.geographic_types.join(', ')) + '</p>' : '') + atlasSourceReferenceLinks(x) + (x.ko ? '<h4 class="d-h">한국어 자동 번역 · 미감수</h4><p class="d-body" style="white-space:pre-wrap">' + esc(x.ko) + '</p>' : '<p class="meta">지명 여부 검토 전으로 번역 보류</p>') + '<details><summary>영문 사전 원문</summary><p class="d-body" style="white-space:pre-wrap">' + esc(x.source_text) + '</p></details></article>';
+    return refCardHtml('atlas-expansion-standalone', 'data-expansion-name="' + esc(name) + '"', 'data-expansion-close="1"', refKoName(x.ko) || name, name, x.intro_ko,
+      'Level B/C 미분류 · 지명 동일성 미검증 · Easton 1897 외부사전 참고자료',
+      (x.source_evidence && x.source_evidence.scripture_citations_as_printed.length ? '<p class="meta" data-evidence="easton-citation">사전 수록 성경구절 (본문 대조 전): ' + esc(x.source_evidence.scripture_citations_as_printed.join(', ')) + '</p>' : '') + (x.source_evidence && x.source_evidence.geographic_types.length ? '<p class="meta">사전 지리표현 단서: ' + esc(x.source_evidence.geographic_types.join(', ')) + '</p>' : '') + atlasSourceReferenceLinks(x),
+      referenceNameDataHtml(x.ko, x.source_text, x.source));
+  }
+  // 확장·후보 참고 카드: 장소 패널과 같은 머리(닫기·한글명·영문명·소개)와 같은 "지명 자료" 형식을 쓰되, 동일성 미검증 안내를 유지한다.
+  function refCardHtml(part, idAttr, closeAttr, koName, enName, intro, caveat, extra, nameData) {
+    return '<article class="detail d-flat full-place-profile place-standard" data-part="' + part + '" ' + idAttr + '><button type="button" class="pill" ' + closeAttr + '>장소 상세 닫기</button>' +
+      '<div class="entity-sticky-head place-sticky-head"><header class="d-identity" data-part="identity"><div class="entity-title-line place-title-line"><h3 class="detail-name">' + esc(koName) + '</h3><span class="d-en">' + esc(enName) + '</span></div></header></div>' +
+      (intro ? '<p class="d-hook" data-part="hook">' + esc(intro) + '</p>' : '') + '<p class="meta">' + esc(caveat) + '</p>' + extra + nameData + '</article>';
   }
   function bcTierLabel(x) { return x.display_tier === 'B' ? 'Level B · 중요지역' : x.display_tier_status === 'HOLD_MULTIPLE_SENSES' ? '등급 보류 · 다의성 검토' : 'Level C · 참고지역 후보'; }
   function atlasBcReferenceHtml(id) {
     var x = (window.JBC_ATLAS_BC_CANDIDATES || []).filter(function(a) { return a.candidate_id === id; })[0];
     if (!x) return '';
-    return '<article class="detail d-flat" data-part="atlas-bc-standalone" data-bc-candidate-id="' + esc(id) + '"><button type="button" class="pill" data-bc-close="1">외부사전 닫기</button><h3 class="detail-name">' + esc(x.name_en) + '</h3><p class="meta">' + esc(bcTierLabel(x)) + ' · 편집 중요도 분류 · 대상 동일성/좌표 미승인 · Easton 1897 참고자료</p>' + (x.ko ? '<h4 class="d-h">한국어 자동 번역 · 미감수</h4><p class="d-body" style="white-space:pre-wrap">' + esc(x.ko) + '</p>' : '<p class="meta">원문 의미·대상 다의성 확인이 필요하여 번역 보류</p>') + '<details><summary>영문 사전 원문</summary><p class="d-body" style="white-space:pre-wrap">' + esc(x.source_text) + '</p></details></article>';
+    return refCardHtml('atlas-bc-standalone', 'data-bc-candidate-id="' + esc(id) + '"', 'data-bc-close="1"', refKoName(x.ko) || x.name_en, x.name_en, x.intro_ko,
+      bcTierLabel(x) + ' · 편집 중요도 분류 · 대상 동일성/좌표 미승인 · Easton 1897 참고자료', '',
+      referenceNameDataHtml(x.ko, x.source_text, x.source));
   }
   // Presentation tiers only. B/C remain unassigned until their place sets are reviewed.
   function atlasTier(a) { return a && /^BAT01-PLACE-/.test(a.place_id || '') && ATLAS90_REF.some(function(x) {return x.place_id === a.place_id;}) ? 'A' : null; }
@@ -97,8 +108,25 @@
     return pick.length > 130 ? pick.slice(0, 128).replace(/\s+\S*$/, '') + '…' : pick;
   }
   // 이스턴 번역 "지명 자료" 구역: 장소 카드 본문과 외부사전 상세가 같은 형식을 쓴다.
-  function atlas90NameDataHtml(a) {
-    return '<section class="d-sec" data-part="reference-translation"><h4 class="d-h">지명 자료</h4><p class="d-body" style="white-space:pre-wrap">' + esc(a.ko || '') + '</p><details><summary>영문 원문과 출처</summary><p class="meta">' + esc(a.source || '') + '</p><p class="d-body" style="white-space:pre-wrap">' + esc(a.en || '') + '</p></details></section>';
+  function referenceNameDataHtml(ko, en, source) {
+    if (!ko) return '<section class="d-sec" data-part="reference-translation"><h4 class="d-h">지명 자료</h4><p class="meta">지명 여부 검토 전으로 번역 보류</p></section>';
+    return '<section class="d-sec" data-part="reference-translation"><h4 class="d-h">지명 자료</h4><p class="d-body" style="white-space:pre-wrap">' + esc(ko) + '</p><details><summary>영문 원문과 출처</summary><p class="meta">' + esc(source || '') + '</p><p class="d-body" style="white-space:pre-wrap">' + esc(en || '') + '</p></details></section>';
+  }
+  function atlas90NameDataHtml(a) { return referenceNameDataHtml(a.ko, a.en, a.source); }
+  // 한국어 표제어("애굽. Egypt"의 앞부분). 한글 이름 자료가 없는 확장·후보 카드의 제목에 쓴다.
+  function refKoName(ko) { var h = String(ko || '').split('\n')[0]; var i = h.indexOf('. '); return i > 0 ? h.slice(0, i).trim() : ''; }
+  function levelBSource(a) { return (window.JBC_ATLAS_BC_CANDIDATES || []).filter(function(c) { return c.source_id === a.source_id; })[0] || null; }
+  function levelBNameDataHtml(a) { var c = levelBSource(a); return referenceNameDataHtml(a.ko, c && c.source_text, c && c.source || 'Easton Bible Dictionary (1897)'); }
+  function levelBIntro(a) { return (a && a.intro_ko) || ''; }
+  function levelBScriptureHtml(a) {
+    var refs = levelBRefs(a).slice(0, 8);
+    return '<section class="d-sec" data-part="levelb-scripture"><h4 class="d-h">사전 인용 성경본문</h4>' + (refs.length ? '<p class="meta" style="font-size:.75rem;opacity:.75">사전 인용 · 연구검토중</p>' + refs.map(function(c) { return '<button type="button" class="pill" data-levelb-ref="' + esc(c.ref) + '">' + esc(c.source) + '</button>'; }).join('') : '<p class="meta">본문 자료 연구검토중</p>') + '</section>';
+  }
+  function levelBForPlace(p) {
+    if (!p) return null;
+    var norm = function(v) { return String(v || '').toLocaleLowerCase().replace(/[^a-z0-9가-힣]/g, ''); };
+    var keys = [p.key, p.en, p.label].map(norm).filter(Boolean);
+    return LEVEL_B_87.filter(function(a) { var m = levelBExistingPlace(a); return (m && m.key === p.key) || keys.indexOf(norm(a.name_en)) >= 0 || keys.indexOf(norm(a.name_ko)) >= 0; })[0] || null;
   }
   function atlas90ForPlace(p) {
     if (!p) return null;
@@ -172,22 +200,18 @@
         parts.push('<div data-part="native-level-a-reference">'+atlas90ReferencePassages(a)+abReaderGeoSection(a.place_id)+atlas90NameDataHtml(a)+'</div>');
       }
     });
-    LEVEL_B_87.forEach(function(a){
+    if(!parts.length) LEVEL_B_87.forEach(function(a){
       var match=levelBExistingPlace(a);
       if((match&&match.key===p.key)||keys.indexOf(norm(a.name_en))>=0||keys.indexOf(norm(a.name_ko))>=0){
-        var refs=levelBRefs(a).slice(0,8);
-        parts.push('<section class="d-sec" data-part="native-level-b-reference"><h4 class="d-h">Level B · 중요지역 참고</h4>'+
-          '<div class="pill-group">'+refs.map(function(c){return '<button type="button" class="pill" data-levelb-ref="'+esc(c.ref)+'">'+esc(c.source)+'</button>';}).join('')+'</div>'+
-          abReaderGeoSection(a.candidate_id)+'<p class="d-body" style="white-space:pre-wrap">'+esc(a.ko||'')+'</p>'+
-          '<p class="meta" style="font-size:.72rem;opacity:.65">Easton 참고 · 연구검토중</p></section>');
+        parts.push('<div data-part="native-level-b-reference">'+levelBScriptureHtml(a)+abReaderGeoSection(a.candidate_id)+levelBNameDataHtml(a)+'</div>');
       }
     });
     return parts.length?'<div data-part="native-place-reference-merge">'+parts.join('')+'</div>':'';
   }
   function levelBProjection(a) {
     var r=levelBRefs(a), labels=r.slice(0,3).map(function(c){return c.source;}), linked=levelBExistingPlace(a), geo=AB_GEO_MEDIA[a.candidate_id]||{};
-    return {key:'levelb:'+a.candidate_id,stableId:'',canonical:false,hasProfile:false,label:a.name_ko||a.name_en,en:a.name_en,
-      type:'지명',region:'',summary:'Level B · 중요지역',certainty:'',primaryPassage:null,passages:labels,passageIds:[],
+    return {key:'levelb:'+a.candidate_id,stableId:'',canonical:false,hasProfile:false,label:a.name_ko||a.name_en,en:atlas90EnName(a),
+      type:'지명',region:'',summary:levelBIntro(a),certainty:'',primaryPassage:null,passages:labels,passageIds:[],
       people:linked?linked.people.slice():[],eras:linked?linked.eras.slice():[],journeys:linked?linked.journeys.slice():[],scenes:linked?linked.scenes.slice():[],media:linked&&linked.media||geo.media||null,lat:linked&&linked.lat!=null?linked.lat:geo.geo?geo.geo.lat:null,lon:linked&&linked.lon!=null?linked.lon:geo.geo?geo.geo.lon:null};
   }
   function levelBCard(a,q) {
@@ -196,11 +220,9 @@
       .replace(/data-levelb-open="levelb:[^"]+"/g,'data-levelb-open="'+esc(a.candidate_id)+'"');
   }
   function levelBDetail(a) {
-    var refs=levelBRefs(a).slice(0,8), linked=levelBExistingPlace(a);
-    var body=abReaderGeoSection(a.candidate_id)+(linked?'<section class="d-sec" data-part="levelb-map-link"><h4 class="d-h">지도 · 장소 탐색</h4><button type="button" class="pill" data-map-focus-place="'+esc(linked.key)+'">기존 장소 지도에서 보기</button><p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · 독자용 탐색 연결</p></section>':'<p class="meta" data-part="levelb-map-pending" style="font-size:.72rem;opacity:.65">지도 위치 연구검토중</p>')+'<section class="d-sec" data-part="levelb-scripture"><h4 class="d-h">관련 성경본문</h4>'+
-      (refs.length?refs.map(function(c){return '<button type="button" class="pill" data-levelb-ref="'+esc(c.ref)+'">'+esc(c.source)+'</button>';}).join(''):'<p class="meta">본문 자료 연구검토중</p>')+'</section>'+
-      '<section class="d-sec"><h4 class="d-h">지명 자료</h4><p class="d-body" style="white-space:pre-wrap">'+esc(a.ko||'')+'</p>'+
-      '<p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · Easton 사전 참고자료</p></section>';
+    var linked=levelBExistingPlace(a);
+    var body=(linked?'<section class="d-sec" data-part="levelb-map-link"><h4 class="d-h">지도 · 장소 탐색</h4><button type="button" class="pill" data-map-focus-place="'+esc(linked.key)+'">기존 장소 지도에서 보기</button><p class="meta" style="font-size:.72rem;opacity:.65">연구검토중 · 독자용 탐색 연결</p></section>':'<p class="meta" data-part="levelb-map-pending" style="font-size:.72rem;opacity:.65">지도 위치 연구검토중</p>')+
+      levelBScriptureHtml(a)+abReaderGeoSection(a.candidate_id)+levelBNameDataHtml(a);
     return '<div data-part="levelb-shared-detail" data-levelb-id="'+esc(a.candidate_id)+'"><button type="button" class="pill" data-levelb-close="1">장소 상세 닫기</button>'+
       placeBasicDetailHtml(null,levelBProjection(a)).replace('</article>',body+'</article>')+'</div>';
   }
@@ -3952,9 +3974,14 @@
     // Full Place Profile(그랄·브엘세바)와 같은 골격·클래스를 쓴다: 고정 헤더(.entity-sticky-head) → 핵심 정의(.d-hook) → 한눈에 보기(.qf-list) → 대표 이미지(.d-hero) → 상세 정보(.qf-list) → 연구 상태(작은 하단 블록).
     // 자료가 없는 칸은 지우지 않고 상태값("연구 전" 등)으로 같은 자리에 둔다. 연구가 연결되면 같은 슬롯에 값만 채워진다. 없는 정보를 만들어 채우지 않는다.
     var p = externalP || placeIndex().byKey[key]; if (!p) return '<p class="empty helper">장소 정보를 찾을 수 없습니다.</p>';
+    var origSummary = p.summary;
     // 이스턴 번역이 있는 지명: 영문명을 살리고, 지역 소개 문구(이스턴 번역 첫 문장)를 핵심 정의 자리에 쓴다. 별도 "외부사전" 진입 없이 카드 본문에서 바로 보여 준다.
-    var a90 = externalP ? null : atlas90ForPlace(p);
+    var a90 = externalP ? null : atlas90ForPlace(p), holdNote = '';
+    var b87 = (externalP || a90) ? null : levelBForPlace(p);
     if (a90) p = Object.assign({}, p, { en: p.en || atlas90EnName(a90), summary: atlas90Intro(a90) });
+    else if (b87) p = Object.assign({}, p, { en: p.en || atlas90EnName(b87), summary: levelBIntro(b87) || p.summary });
+    // 소개 문구로 바꾸더라도 기존 위치·연구 HOLD 안내는 지우지 않고 소개 아래에 남긴다.
+    if ((a90 || b87) && /HOLD/.test(String(origSummary || ''))) holdNote = origSummary;
     var pend = function (t) { return '<span class="is-pending">' + esc(t) + "</span>"; }, val = function (v, t) { return v ? esc(v) : pend(t); };
     var scenes = p.scenes.filter(function (s, i, a) { return a.findIndex(function (x) { return x.topic === s.topic && x.step === s.step; }) === i; });
     var events = scenes.map(function (s) { return s.title; }).filter(function (t, i, a) { return a.indexOf(t) === i; });
@@ -3967,11 +3994,12 @@
       '<div class="entity-sticky-head place-sticky-head"><header class="d-identity" data-part="identity"><div class="entity-title-line place-title-line"><h3 class="detail-name">' + esc(p.label) + "</h3>" + (p.en ? '<span class="d-en">' + esc(p.en) + "</span>" : '<span class="d-en is-pending">영문명 확인 중</span>') + "</div>" +
       '<p class="entity-meta-line place-meta-line"><span class="d-original is-pending">원어 표기·발음 자료 연결 예정</span></p></header></div>' +
       '<p class="d-hook" data-part="hook">' + (p.summary ? esc(p.summary) : '<span class="is-pending">핵심 정의 자료 연결 예정</span>') + "</p>" +
+      (holdNote ? '<p class="meta" data-part="position-hold">' + esc(holdNote) + '</p>' : '') +
       '<section class="d-sec" data-part="facts"><h4 class="d-h">한눈에 보기</h4><dl class="qf-list">' + facts + "</dl></section>" +
       placeHeroHtml(p) +
       '<section class="d-sec" data-part="detail-info"><h4 class="d-h">상세 정보</h4><dl class="qf-list">' + detail + "</dl></section>" +
       (a90 ? atlas90ReferencePassages(a90) + abReaderGeoSection(a90.place_id) + atlas90NameDataHtml(a90) : '') +
-      (!externalP ? nativePlaceReferenceHtml(p, true) : '') +
+      (b87 ? levelBScriptureHtml(b87) + abReaderGeoSection(b87.candidate_id) + levelBNameDataHtml(b87) : '') +
       
       '<footer class="d-status research-status" data-part="research-status"><span class="rs-dot" aria-hidden="true"></span><span><strong>연구 상태</strong> 연구 전 · 상세 연구 자료가 연결되면 이 자리에 채워집니다.</span></footer></article>';
   }
