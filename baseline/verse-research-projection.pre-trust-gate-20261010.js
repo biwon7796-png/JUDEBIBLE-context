@@ -18,53 +18,43 @@
     return m ? { pid: m[1] + "-" + m[2], book: m[1], chapter: +m[2], verse: m[3] == null ? null : +m[3] } : null;
   }
 
-  // PREPARE-ONLY PROJECTION INGEST GUARD. App-owner review required.
-  // Hashes below are actual preexisting research fixtures, not new approval authority.
-  var EXISTING_LOCAL_REVIEW_LOCKS = Object.freeze({
-    "JBC_GENESIS_01_05_WORBS_20261008_01": Object.freeze({sha:"022957cbf8d1334a5e30cad4f928b6f5a8fbde2bed4e494c51bc5a10ee943624",first:1,last:5,status:"QUALITY_PASS_WITH_VERIFY_STAGE_HOLD"}),
-    "JBC_GENESIS_06_08_WORBS_20261009_01": Object.freeze({sha:"1883356ab6a2fe9dd5c334dc5479c08c2ef14ceafb0ec62952eb58f5890c8ff3",first:6,last:8,status:"CANDIDATE_REVIEW_ONLY"}),
-    "JBC_GENESIS_09_11_WORBS_20261009_01": Object.freeze({sha:"b0c9cc02b25bac3c62c58f7d04e9b37e7a1eeaeb5690fb64f55e18962d46bfff",first:9,last:11,status:"CANDIDATE_REVIEW_ONLY"})
-  });
-
-  // Only an independently H06-verified build may generate an entry here.
-  // At present no v1.1-specific Reader H06-PASS binding exists.
-  // The browser must not treat approvalRecord, SHA, or status in a data
-  // record as independent verification. A build-time provenance receipt is required.
-  var H06_VERIFIED_READER_BINDINGS = Object.freeze([]);
-  function approvalClass(d) {
-    if (!d || !d.passage || !d.researchId || !d.sourceSha256 ||
-        d.projectionStatus !== "INTERNAL_READER_PROJECTION" ||
-        d.externalRelease !== "NOT_AUTHORIZED") return "NONE";
-    var passage = d.passage;
-    if (passage.book === "gen" && d.researchId === PIN.researchId &&
-        String(d.sourceSha256).toLowerCase() === PIN.sourceSha256.toLowerCase() &&
-        +passage.chapter === 22 && (+passage.chapterEnd || 22) === 22 &&
-        +passage.v1 === PIN.v1 && +passage.v2 === PIN.v2 &&
-        d.professionalStatus === PIN.professionalStatus) {
-      return "STAGE_PINNED";
-    }
-    var draft = EXISTING_LOCAL_REVIEW_LOCKS[d.researchId];
-    if (draft && passage.book === "gen" &&
-        String(d.sourceSha256).toLowerCase() === draft.sha &&
-        +passage.chapter >= draft.first && +passage.chapter <= draft.last &&
-        (+passage.chapterEnd || +passage.chapter) <= draft.last &&
-        d.professionalStatus === draft.status) return "DRAFT_DISPLAY";
-
-    // Future verified projections are added only after offline source verification.
-    // d.approvalRecord supplied by a record is never proof on its own.
-    for (var i=0; i<H06_VERIFIED_READER_BINDINGS.length; i++) {
-      var b=H06_VERIFIED_READER_BINDINGS[i];
-      if (d.researchId === b.readerId && d.sourceSha256 === b.readerSourceSha &&
-          d.professionalStatus === "PROFESSIONAL_RESEARCH_PASS" &&
-          d.professionalReviewStatus === "APPROVED_DOWNSTREAM_PROJECTION" &&
-          d.approvalRecord === b.approvalReceipt &&
-          d.approvedRepresentativeId === b.researchId &&
-          d.approvedRepresentativeVersion === b.version &&
-          d.approvedRepresentativeSha256 === b.representativeSha) return "APPROVED";
-    }
-    return "NONE";
+  function valid(d) {
+    if (!d || !d.researchId || !d.sourceSha256 || !d.passage) return false;
+    if (d.projectionStatus !== "INTERNAL_READER_PROJECTION" || d.externalRelease !== "NOT_AUTHORIZED") return false;
+    var stageApproved = d.professionalStatus === "STAGE_APPROVED_WITH_VERIFY" || d.professionalStatus === "STAGE_APPROVED";
+    // Current Project01 decision: Genesis 1-5 remains HOLD_STAGE_APPROVAL.
+    // Keep candidate reader bytes for traceability, but suppress unapproved projection.
+    // Captain authorized local JudeBible display of these existing WORBS drafts on 2026-10-09.
+    // DISPLAY ONLY: professional HOLD/Registry/representative status remains unchanged.
+    var localDraftDisplay = (d.researchId === "JBC_GENESIS_01_05_WORBS_20261008_01" ||
+      d.researchId === "JBC_GENESIS_06_08_WORBS_20261009_01" ||
+      d.researchId === "JBC_GENESIS_09_11_WORBS_20261009_01") &&
+      d.passage.book === "gen" && +d.passage.chapter >= 1 && +d.passage.chapter <= 11 &&
+      (d.professionalStatus === "QUALITY_PASS_WITH_VERIFY_STAGE_HOLD" || d.professionalStatus === "CANDIDATE_REVIEW_ONLY");
+    var verifiedDownstream = d.professionalStatus === "PROFESSIONAL_RESEARCH_PASS" &&
+      d.professionalReviewStatus === "APPROVED_DOWNSTREAM_PROJECTION" &&
+      d.professionalAuthorityOwner === "01_목회연구_WORBS_BICS" &&
+      d.approvalSourceSha256 === d.sourceSha256 && !!d.approvalRecord;
+    if (!stageApproved && !localDraftDisplay && !verifiedDownstream) return false;
+    var fromPromptFactory = d.generatedByProject === "04_목회프롬프트_하네스제작" || d.promptFactoryProject === "04_목회프롬프트_하네스제작";
+    if (fromPromptFactory && !(d.professionalAuthorityOwner === "01_목회연구_WORBS_BICS" && /^APPROVED/.test(d.professionalReviewStatus || ""))) return false;
+    if (d.researchId === PIN.researchId && String(d.sourceSha256).toLowerCase() !== PIN.sourceSha256) return false;
+    return true;
   }
-  function valid(d) { return approvalClass(d) !== "NONE"; }
+
+  // 승인 등급(연결층·표시용): 기존 valid() 규칙 위에서, 'STAGE_APPROVED' 문자열만으로는 승인으로 보지 않는다(stage flag alone is not approval evidence).
+  //   APPROVED       = valid() + 하류 투영 승인의 근거(PROFESSIONAL_RESEARCH_PASS + APPROVED_DOWNSTREAM_PROJECTION + 승인 기록 + 승인 원본 SHA 일치)
+  //   STAGE_PINNED   = 단계 승인 + 이미 코드에 고정된 Pilot 원본 SHA(PIN) 일치 — 정식 하류 투영 승인은 아님(검증 유보)
+  //   STAGE_FLAG_ONLY= 단계 승인 문자열만 있고 근거 없음 / DRAFT_DISPLAY = 로컬 초안 표시(HOLD·후보) / NONE = 표시 불가
+  //   새 허용목록을 만들지 않는다: PIN 은 기존 valid() 가 이미 쓰던 값이다.
+  function approvalClass(d) {
+    if (!valid(d)) return "NONE";
+    var down = d.professionalStatus === "PROFESSIONAL_RESEARCH_PASS" && d.professionalReviewStatus === "APPROVED_DOWNSTREAM_PROJECTION" && !!d.approvalRecord && d.approvalSourceSha256 === d.sourceSha256;
+    if (down) return "APPROVED";
+    var stage = d.professionalStatus === "STAGE_APPROVED_WITH_VERIFY" || d.professionalStatus === "STAGE_APPROVED";
+    if (stage) return d.researchId === PIN.researchId && String(d.sourceSha256).toLowerCase() === PIN.sourceSha256 ? "STAGE_PINNED" : "STAGE_FLAG_ONLY";
+    return "DRAFT_DISPLAY";
+  }
 
   function records() {
     var all = [], seen = {};

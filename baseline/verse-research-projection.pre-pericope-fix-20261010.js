@@ -18,53 +18,39 @@
     return m ? { pid: m[1] + "-" + m[2], book: m[1], chapter: +m[2], verse: m[3] == null ? null : +m[3] } : null;
   }
 
-  // PREPARE-ONLY PROJECTION INGEST GUARD. App-owner review required.
-  // Hashes below are actual preexisting research fixtures, not new approval authority.
-  var EXISTING_LOCAL_REVIEW_LOCKS = Object.freeze({
-    "JBC_GENESIS_01_05_WORBS_20261008_01": Object.freeze({sha:"022957cbf8d1334a5e30cad4f928b6f5a8fbde2bed4e494c51bc5a10ee943624",first:1,last:5,status:"QUALITY_PASS_WITH_VERIFY_STAGE_HOLD"}),
-    "JBC_GENESIS_06_08_WORBS_20261009_01": Object.freeze({sha:"1883356ab6a2fe9dd5c334dc5479c08c2ef14ceafb0ec62952eb58f5890c8ff3",first:6,last:8,status:"CANDIDATE_REVIEW_ONLY"}),
-    "JBC_GENESIS_09_11_WORBS_20261009_01": Object.freeze({sha:"b0c9cc02b25bac3c62c58f7d04e9b37e7a1eeaeb5690fb64f55e18962d46bfff",first:9,last:11,status:"CANDIDATE_REVIEW_ONLY"})
-  });
-
-  // Only an independently H06-verified build may generate an entry here.
-  // At present no v1.1-specific Reader H06-PASS binding exists.
-  // The browser must not treat approvalRecord, SHA, or status in a data
-  // record as independent verification. A build-time provenance receipt is required.
-  var H06_VERIFIED_READER_BINDINGS = Object.freeze([]);
-  function approvalClass(d) {
-    if (!d || !d.passage || !d.researchId || !d.sourceSha256 ||
-        d.projectionStatus !== "INTERNAL_READER_PROJECTION" ||
-        d.externalRelease !== "NOT_AUTHORIZED") return "NONE";
-    var passage = d.passage;
-    if (passage.book === "gen" && d.researchId === PIN.researchId &&
-        String(d.sourceSha256).toLowerCase() === PIN.sourceSha256.toLowerCase() &&
-        +passage.chapter === 22 && (+passage.chapterEnd || 22) === 22 &&
-        +passage.v1 === PIN.v1 && +passage.v2 === PIN.v2 &&
-        d.professionalStatus === PIN.professionalStatus) {
-      return "STAGE_PINNED";
-    }
-    var draft = EXISTING_LOCAL_REVIEW_LOCKS[d.researchId];
-    if (draft && passage.book === "gen" &&
-        String(d.sourceSha256).toLowerCase() === draft.sha &&
-        +passage.chapter >= draft.first && +passage.chapter <= draft.last &&
-        (+passage.chapterEnd || +passage.chapter) <= draft.last &&
-        d.professionalStatus === draft.status) return "DRAFT_DISPLAY";
-
-    // Future verified projections are added only after offline source verification.
-    // d.approvalRecord supplied by a record is never proof on its own.
-    for (var i=0; i<H06_VERIFIED_READER_BINDINGS.length; i++) {
-      var b=H06_VERIFIED_READER_BINDINGS[i];
-      if (d.researchId === b.readerId && d.sourceSha256 === b.readerSourceSha &&
-          d.professionalStatus === "PROFESSIONAL_RESEARCH_PASS" &&
-          d.professionalReviewStatus === "APPROVED_DOWNSTREAM_PROJECTION" &&
-          d.approvalRecord === b.approvalReceipt &&
-          d.approvedRepresentativeId === b.researchId &&
-          d.approvedRepresentativeVersion === b.version &&
-          d.approvedRepresentativeSha256 === b.representativeSha) return "APPROVED";
-    }
-    return "NONE";
+  function valid(d) {
+    if (!d || !d.researchId || !d.sourceSha256 || !d.passage) return false;
+    if (d.projectionStatus !== "INTERNAL_READER_PROJECTION" || d.externalRelease !== "NOT_AUTHORIZED") return false;
+    var stageApproved = d.professionalStatus === "STAGE_APPROVED_WITH_VERIFY" || d.professionalStatus === "STAGE_APPROVED";
+    // Current Project01 decision: Genesis 1-5 remains HOLD_STAGE_APPROVAL.
+    // Keep candidate reader bytes for traceability, but suppress unapproved projection.
+    // Captain authorized local JudeBible display of these existing WORBS drafts on 2026-10-09.
+    // DISPLAY ONLY: professional HOLD/Registry/representative status remains unchanged.
+    var localDraftDisplay = (d.researchId === "JBC_GENESIS_01_05_WORBS_20261008_01" ||
+      d.researchId === "JBC_GENESIS_06_08_WORBS_20261009_01" ||
+      d.researchId === "JBC_GENESIS_09_11_WORBS_20261009_01") &&
+      d.passage.book === "gen" && +d.passage.chapter >= 1 && +d.passage.chapter <= 11 &&
+      (d.professionalStatus === "QUALITY_PASS_WITH_VERIFY_STAGE_HOLD" || d.professionalStatus === "CANDIDATE_REVIEW_ONLY");
+    var verifiedDownstream = d.professionalStatus === "PROFESSIONAL_RESEARCH_PASS" &&
+      d.professionalReviewStatus === "APPROVED_DOWNSTREAM_PROJECTION" &&
+      d.professionalAuthorityOwner === "01_목회연구_WORBS_BICS" &&
+      d.approvalSourceSha256 === d.sourceSha256 && !!d.approvalRecord;
+    if (!stageApproved && !localDraftDisplay && !verifiedDownstream) return false;
+    var fromPromptFactory = d.generatedByProject === "04_목회프롬프트_하네스제작" || d.promptFactoryProject === "04_목회프롬프트_하네스제작";
+    if (fromPromptFactory && !(d.professionalAuthorityOwner === "01_목회연구_WORBS_BICS" && /^APPROVED/.test(d.professionalReviewStatus || ""))) return false;
+    if (d.researchId === PIN.researchId && String(d.sourceSha256).toLowerCase() !== PIN.sourceSha256) return false;
+    return true;
   }
-  function valid(d) { return approvalClass(d) !== "NONE"; }
+
+  // 승인 등급(연결층·표시용): 기존 valid() 규칙을 그대로 재사용한다. 새 승인 규칙을 만들지 않는다.
+  //   APPROVED = valid() 통과 + 단계 승인(STAGE_APPROVED*) 또는 하류 투영 승인(PROFESSIONAL_RESEARCH_PASS + 승인 기록)
+  //   DRAFT_DISPLAY = valid() 는 통과하지만 승인 아님(2026-10-09 로컬 초안 표시: HOLD·후보) / NONE = 표시 불가
+  function approvalClass(d) {
+    if (!valid(d)) return "NONE";
+    var stage = d.professionalStatus === "STAGE_APPROVED_WITH_VERIFY" || d.professionalStatus === "STAGE_APPROVED";
+    var down = d.professionalStatus === "PROFESSIONAL_RESEARCH_PASS" && d.professionalReviewStatus === "APPROVED_DOWNSTREAM_PROJECTION" && !!d.approvalRecord;
+    return stage || down ? "APPROVED" : "DRAFT_DISPLAY";
+  }
 
   function records() {
     var all = [], seen = {};
@@ -88,32 +74,14 @@
     if (p.chapter === endChapter(d) && p.verse > +d.passage.v2) return false;
     return true;
   }
-  // 성경 순서(시작 장 → 시작 절)로 정렬한다. 입력 순서에 의존하지 않는다.
-  function biblicalOrder(a, b) { return (+a.passage.chapter - +b.passage.chapter) || (+a.passage.v1 - +b.passage.v1) || (endChapter(a) - endChapter(b)) || (+a.passage.v2 - +b.passage.v2); }
-  function recordsForChapter(p) { return p ? records().filter(function (d) { return touchesChapter(d, p); }).sort(biblicalOrder) : []; }
-  function recordsForVerse(p) { return p && p.verse != null ? records().filter(function (d) { return coversVerse(d, p); }).sort(biblicalOrder) : []; }
-  // 같은 절을 둘 이상의 연구가 덮는 경우를 보고한다(읽기 전용). 자동으로 어느 쪽도 승인·우선하지 않는다.
-  function conflicts() {
-    var rs = records().sort(biblicalOrder), out = [];
-    for (var i = 0; i < rs.length; i++) for (var j = i + 1; j < rs.length; j++) {
-      var a = rs[i], b = rs[j];
-      if (a.passage.book !== b.passage.book) continue;
-      var aS = +a.passage.chapter * 1000 + +a.passage.v1, aE = endChapter(a) * 1000 + +a.passage.v2;
-      var bS = +b.passage.chapter * 1000 + +b.passage.v1, bE = endChapter(b) * 1000 + +b.passage.v2;
-      if (aS <= bE && bS <= aE) out.push({ a: a.researchId, b: b.researchId, book: a.passage.book });
-    }
-    return out;
-  }
+  function recordsForChapter(p) { return p ? records().filter(function (d) { return touchesChapter(d, p); }) : []; }
   function dataFor(p) {
     if (!p) return null;
     var rs = records();
-    if (p.verse != null) {   // 절이 지정되면 그 절을 정확히 덮는 단락 연구만. 범위 밖이면 null, 둘 이상이 덮으면(충돌) 임의 선택하지 않고 null.
-      var cov = recordsForVerse(p);
-      if (cov.length === 1) return cov[0];
-      if (cov.length > 1) return null;
-    } else {
-      var chap = recordsForChapter(p);
-      if (chap.length) return chap[0];
+    if (p.verse != null) { for (var k = 0; k < rs.length; k++) if (coversVerse(rs[k], p)) return rs[k]; }   // 절이 지정되면 그 절을 덮는 단락 연구를 먼저
+    for (var i = 0; i < rs.length; i++) {
+      var d = rs[i];
+      if (touchesChapter(d, p)) return d;
     }
     // Explicit local review preview: same approved Reader UI, but no candidate is added to records()/Registry.
     // Default JudeBible remains approved-only. This branch is never a professional approval.
@@ -121,7 +89,7 @@
       var candidates = root.BVC_PASSAGE_RESEARCH_CONTENT || [];
       for (var j=0; j<candidates.length; j++) {
         var c=candidates[j];
-        if (c && c.passage && c.passage.book===p.book && +c.passage.chapter===p.chapter && (p.verse==null || coversVerse(c,p)) &&
+        if (c && c.passage && c.passage.book===p.book && +c.passage.chapter===p.chapter &&
             c.projectionStatus==="INTERNAL_READER_PROJECTION" && c.externalRelease==="NOT_AUTHORIZED" &&
             (c.professionalStatus==="CANDIDATE_REVIEW_ONLY" || c.professionalStatus==="QUALITY_PASS_WITH_VERIFY_STAGE_HOLD")) return c;
       }
@@ -250,10 +218,8 @@
     rows.forEach(function (x) { var li = el("li", null); li.appendChild(el("strong", null, rangeLabel(x) + (x.title || ""))); if (x.summary) li.appendChild(el("span", "rp-lex-meta", " " + x.summary)); ol.appendChild(li); });
     sec.appendChild(ol); box.appendChild(sec);
   }
-  // 설계서 섹션용 문단 정리: 기존 readerParagraphs(잔재 제거)가 있으면 그것을, 없으면 빈 문단만 거른다.
-  function blueprintParas(a) { return typeof readerParagraphs === "function" ? readerParagraphs(a) : (a || []).filter(function (t) { return String(t == null ? "" : t).trim(); }); }
   function renderSynthesis(box, model) {
-    var ps = blueprintParas(model.deepResearch.synthesis);
+    var ps = readerParagraphs(model.deepResearch.synthesis);
     if (!ps.length) return;
     var sec = el("section", "rp-reader-section rp-synthesis");
     addHeading(sec, "신학적 종합");
@@ -261,11 +227,11 @@
     box.appendChild(sec);
   }
   function renderAlternatives(box, model) {
-    var rows = (model.deepResearch.alternatives || []).filter(function (x) { return x && (x.title || blueprintParas(x.paragraphs).length); });
+    var rows = (model.deepResearch.alternatives || []).filter(function (x) { return x && (x.title || readerParagraphs(x.paragraphs).length); });
     if (!rows.length) return;
     var sec = el("section", "rp-reader-section rp-alternatives");
     addHeading(sec, "다른 해석과 불확실성");
-    rows.forEach(function (x) { var c = el("article", "rp-discovery"); if (x.title) c.appendChild(el("h5", "rp-section-title", x.title)); blueprintParas(x.paragraphs).forEach(function (t) { c.appendChild(el("p", "rp-commentary-p", t)); }); sec.appendChild(c); });
+    rows.forEach(function (x) { var c = el("article", "rp-discovery"); if (x.title) c.appendChild(el("h5", "rp-section-title", x.title)); addParagraphs(c, x.paragraphs); sec.appendChild(c); });
     box.appendChild(sec);
   }
   function renderRelated(box, model) {
@@ -326,8 +292,8 @@
     box.appendChild(sec);
   }
 
-  function renderLexical(box, d, currentVerse, currentChapter) {
-    var cards = (d.lexicalCards || []).filter(function (c) { return currentVerse == null || (+c.verse === currentVerse && (c.chapter == null || currentChapter == null || +c.chapter === currentChapter)); });
+  function renderLexical(box, d, currentVerse) {
+    var cards = (d.lexicalCards || []).filter(function (c) { return currentVerse == null || +c.verse === currentVerse; });
     if (!cards.length) return;
     var sec = el("section", "rp-reader-section rp-lexical");
     addHeading(sec, "핵심 원어 카드");
@@ -426,26 +392,18 @@
       });
     }
     }
-    // 깊게보기는 장 보기에서도 모든 단락 연구의 것을 빠짐없이 보여 준다(성경 순서).
-    function renderDeep(rd, titled) {
-      var rm = readerModel(rd);
-      var deep = el("section", "rp-deep-research");
-      deep.setAttribute("data-reader-tier", "deep-research");
-      deep.setAttribute("data-research-id", rd.researchId);
-      deep.appendChild(el("h4", "rp-deep-summary", "깊게보기"));
-      if (titled) deep.appendChild(el("h5", "rp-pericope-title", rd.passage.ref || rd.title));
-      var deepBody = el("div", "rp-deep-body");
-      renderDiscoveries(deepBody, rd);
-      renderLexical(deepBody, { lexicalCards: rm.deepResearch.lexicalCards }, p.verse, p.chapter);
-      renderCanonical(deepBody, { canonicalLinks: rm.deepResearch.canonicalLinks });
-      renderSynthesis(deepBody, rm);
-      renderCautions(deepBody, { cautions: rm.deepResearch.cautions });
-      renderAlternatives(deepBody, rm);
-      renderRelated(deepBody, rm);
-      deep.appendChild(deepBody); box.appendChild(deep);
-    }
-    if (p.verse == null && chapterRecs.length > 1) chapterRecs.forEach(function (rd) { renderDeep(rd, true); });
-    else renderDeep(d, false);
+    var deep = el("section", "rp-deep-research");
+    deep.setAttribute("data-reader-tier", "deep-research");
+    deep.appendChild(el("h4", "rp-deep-summary", "깊게보기"));
+    var deepBody = el("div", "rp-deep-body");
+    renderDiscoveries(deepBody, d);
+    renderLexical(deepBody, { lexicalCards:model.deepResearch.lexicalCards }, p.verse);
+    renderCanonical(deepBody, { canonicalLinks:model.deepResearch.canonicalLinks });
+    renderSynthesis(deepBody, model);
+    renderCautions(deepBody, { cautions:model.deepResearch.cautions });
+    renderAlternatives(deepBody, model);
+    renderRelated(deepBody, model);
+    deep.appendChild(deepBody); box.appendChild(deep);
     // Reader source/QA lineage is retained in data attributes, never displayed to readers.
     // Reuse the current panel stack as the navigation host, never add a standalone UI.
     var stack=box.closest(".panel-stack");
@@ -468,7 +426,6 @@
     render: render,
     ready: function () { return records().length > 0; },
     recordFor: function (ref) { return dataFor(parseRef(ref)); },
-    conflicts: conflicts,
     readerModel: readerModel,
     preservationAudit: preservationAudit,
     valid: valid,
