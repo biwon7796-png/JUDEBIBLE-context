@@ -5680,3 +5680,10 @@ body[data-view="timeline"] #timeline-pane{--tl-sel-bg:#EDF4EF;--tl-sel-line:#5C8
  .tl-era-summary .tl-sum{white-space:normal}
  .tl-chrono{position:static}
 }
+
+/* 연표 상세: 본문에 이름이 나오는 인물(미승인 후보) — 족장 시대 상세 패널의 facts 행과 같은 톤 */
+.tl-persons dd ul{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.tl-persons dd li{display:inline-flex;align-items:baseline;gap:5px;padding:3px 9px;border:1px solid var(--tl-edge,var(--line));border-radius:999px;background:var(--tl-surface-alt,#F6F0E7);font-size:.84rem}
+.tl-persons dd li b{font-weight:650;color:var(--tl-text,inherit)}
+.tl-persons dd li small{font-size:.68rem;color:var(--tl-muted,#756B61)}
+.tl-persons dd p{margin:6px 0 0;font-size:.72rem;line-height:1.45;color:var(--tl-muted,#756B61)}

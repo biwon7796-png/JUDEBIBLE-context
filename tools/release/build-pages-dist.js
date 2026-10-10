@@ -128,7 +128,7 @@ function buildHtmlAndBundle() {
     }
     if (!insertedBundle) {
       insertedBundle = true;
-      return '<script src="assets/app.bundle.js?v=20261010-civ1"></script>';
+      return '<script src="assets/app.bundle.js?v=20261010-pers1"></script>';
     }
     return "";
   });
