@@ -12,7 +12,7 @@ t("LK-02","Gerar Full Profile research exposes exact-bound internal Event object
  var d=document.querySelector("#panel details.research");ok(d,"research details");d.open=true;var bs=[...d.querySelectorAll("[data-related-entity]")].filter(b=>/^JBC-CR-EVENT-GERAR-/.test(b.dataset.relatedEntity));ok(bs.length===6,"buttons="+bs.length);ev.push("research event buttons=6");
 });
 t("LK-03","Direct exact Event stable ID opens Event research detail without Place semantics",async ev=>{
- ok(BVC.entityExplorer.select("JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01"),"select event");await sleep(60);var a=document.querySelector('#panel article[data-detail="evt"]');ok(a,"event detail");ok(/사건 · 내부 연구 객체 · 비공개/.test(a.textContent),"boundary label");ok(/창세기 20(?::|장 )1–18(?:절)?/.test(a.textContent),"passage range");ok(!a.querySelector('[data-map-focus-place]'),"place map action leaked");ev.push("event detail + Gen20:1-18");
+ ok(BVC.entityExplorer.select("JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01"),"select event");await sleep(60);var a=document.querySelector('#panel article[data-detail="evt"]');ok(a,"event detail");ok(a.dataset.public==="false" && !BVC.readerVisible("JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01"),"unpublished Event boundary");ok(/창세기 20(?::|장 )1–18(?:절)?/.test(a.textContent),"passage range");ok(!a.querySelector('[data-map-focus-place]'),"place map action leaked");ev.push("event detail + Gen20:1-18");
 });
 t("LK-04","Reader-facing quick search does not expose unpublished Event",async ev=>{
  var hits=BVC.quickSearchItems("Abraham_and_Sarah_in_Gerar");ok(!hits.some(x=>/^JBC-CR-EVENT-GERAR-/.test(x.sid)),"event leaked to reader search");ok(BVC.readerVisible("JBC-CR-EVENT-GERAR-ABRAHAM-SARAH-01")===false,"visibility gate");ev.push("event readerVisible=false");
@@ -22,22 +22,34 @@ t("LK-05","Search keeps Event/Route tabs visible with empty states; unpublished 
  var evCards=()=>[...document.querySelectorAll('#search-results [data-search="1"][data-kind="evt"]')];
  BVC.openSearch("");await sleep(60);var eb=q('[data-swmode="event"]'),rb=q('[data-swmode="route"]');ok(eb&&!eb.hidden,"사건 tab hidden");ok(rb&&!rb.hidden,"경로 tab hidden");
  eb.click();await sleep(60);ok(q('[data-sw-empty="event"]'),"Event empty state missing");ok(!evCards().length,"internal Event leaked into Event tab");
+ ok(!q('#search-results [data-local-person-research]')&&!q('#search-results [data-sw-sec="person"]'),"Person draft leaked into Event tab");
+ ok(q('#sw-summary').textContent.trim()==="0건","Event summary should match empty results");
+ q('[data-swfilter="view:list"]').click();await sleep(40);
+ ok(q('[data-sw-empty="event"]')&&!q('#search-results [data-local-person-research]'),"Person draft leaked in Event list view");
+ q('[data-swfilter="view:card"]').click();await sleep(40);
+ q('[data-swmode="person"]').click();await sleep(50);
+ var personDrafts=[...document.querySelectorAll('#search-results [data-local-person-research]')];
+ var personCards=[...document.querySelectorAll('#search-results .ee-item')];
+ ok(personDrafts.length===2,"Person drafts missing in Person mode: "+personDrafts.length);
+ ok(q('#sw-summary').textContent.trim()===personCards.length+"건","Person summary differs from rendered cards");
+ q('[data-swmode="all"]').click();await sleep(50);
+ ok(document.querySelectorAll('#search-results [data-local-person-research]').length===2,"Person drafts missing in All mode");
  ok(!BVC.entityExplorer.set("",{type:"event"}).some(x=>/^JBC-CR-EVENT-GERAR-/.test(x.stable_id)),"internal Event leaked into entity set");
- rb.click();await sleep(60);ok(q('[data-sw-empty="route"]'),"Route empty state missing");
+ rb.click();await sleep(60);var routes=[...document.querySelectorAll('#search-results [data-search="1"][data-kind="rt"]')];ok(routes.length>0||q('[data-sw-empty="route"]'),"Route cards or explicit empty state missing");
  try{r.reader.published=true;r.activation.publishable=true;ok(BVC.readerVisible(sid)===true,"temporary publish gate");
   ok(BVC.entityExplorer.set("",{type:"event"}).some(x=>x.stable_id===sid),"Event not accepted by shared entitySet");ok(BVC.quickSearchItems("Abraham_and_Sarah").some(x=>x.sid===sid),"Event not accepted by quick search");
   q('[data-swmode="event"]').click();await sleep(80);var c=evCards().filter(x=>x.dataset.stableId===sid);ok(c.length===1,"published Event card missing from Event tab");ok(c[0].closest(".ee-item"),"Event card not rendered by the shared entity card");ok(!q('[data-sw-empty="event"]'),"empty state shown beside a result");
  }finally{r.reader.published=oldPub;r.activation.publishable=oldCan;var all=q('[data-swmode="all"]');if(all)all.click();await sleep(30);BVC.closeSearch();}
  ok(BVC.readerVisible(sid)===false&&!BVC.entityExplorer.set("",{type:"event"}).some(x=>x.stable_id===sid),"fixture not restored");ev.push("tabs visible · empty states · gate intact · temp Event via shared set · restored");
 });
-t("LK-06","Genesis 26 timeline consumes asset-local projected Events",async ev=>{
- BVC.go("gen-26");BVC.setView("timeline");await sleep(60);var sec=document.querySelector('#tl-body [data-part="projected-events"]');ok(sec,"projected event timeline");var rows=sec.querySelectorAll("[data-related-entity]");ok(rows.length===4,"gen26 events="+rows.length);ok(/독립 정경 사건으로 승격되지 않았습니다/.test(sec.textContent),"promotion boundary");ev.push("Gen26 internal events="+rows.length);BVC.setView("study");
+t("LK-06","Genesis 26 new timeline preserves internal Event graph without canonical promotion",async ev=>{
+ BVC.go("gen-26");BVC.setView("timeline");await sleep(60);var sec=document.querySelector("#tl-body .tl-page");ok(sec,"current timeline missing");ok(sec.querySelector(".tl-event-card"),"timeline event cards missing");ok(BVC.boundRelations("JBC-CR-PLACE-GERAR-001",true).some(x=>BVC.store.get(x.sid)?.entity_type==="Event"),"asset-local Event relation lost");ok(Object.keys(BVC.projection.events||{}).some(sid=>/^JBC-CR-EVENT-GERAR-/.test(sid)),"source Event projection missing");ev.push("new timeline + internal Event graph preserved; no canonical promotion claimed");BVC.setView("study");
 });
-t("LK-07","Joshua 19:15 timeline consumes contextual timeline binding without promotion",async ev=>{
- BVC.go("jos-19",15);BVC.setView("timeline");await sleep(60);var sec=document.querySelector('#tl-body [data-part="contextual-timeline"]');ok(sec,"contextual timeline missing");ok(/이름이 같다고 같은 장소인가/.test(sec.textContent),"context title");ok(/canonical ID 없음/.test(sec.textContent),"candidate boundary");ok(/정경 객체 자동 승격 없음/.test(sec.textContent),"promotion warning");ev.push("RN-PART05-CH26-v1 consumed");BVC.setView("study");
+t("LK-07","Joshua 19:15 new timeline preserves separate contextual binding without canonical promotion",async ev=>{
+ BVC.go("jos-19",15);BVC.setView("timeline");await sleep(60);var sec=document.querySelector("#tl-body .tl-page"),entry=sec&&sec.querySelector('[data-tl-context-research="RN-PART05-CH26-v1"]');ok(sec,"current timeline missing");var ctx=window.JBC_CONTEXTUAL_RESEARCH,raw=JSON.stringify(ctx&&ctx.by_passage&&ctx.by_passage["jos-19"]||[]);ok(raw.includes("RN-PART05-CH26-v1"),"contextual source binding missing");ok(entry,"contextual research entry missing");entry.click();await sleep(60);var item=document.querySelector('#panel article.ctx-research-item[data-context-record="RN-PART05-CH26-v1"]');ok(BVC.state.view==="study"&&item,"contextual research did not open in Reader");ok(/이름이 같다고 같은 장소인가/.test(item.textContent)&&item.querySelector("details.research"),"approved contextual research content missing");ok(!BVC.store.get("RN-PART05-CH26-v1"),"contextual note promoted into canonical entity store");ev.push("Joshua timeline → approved contextual Reader research; canonical promotion=0");
 });
 t("LK-08","Region research flow remains separate from Place and invents no geometry",async ev=>{
- ok(BVC.entityExplorer.select("JBC-CR-PLACE-ACHAIA-001"),"select region");await sleep(50);var a=document.querySelector('#panel article[data-detail="rgn"]');ok(a,"region detail");ok(/지역 · 연구 검토용/.test(a.textContent),"region label");ok(/지도/.test(a.textContent),"map boundary");ev.push("region detail preserved");
+ ok(BVC.entityExplorer.select("JBC-CR-PLACE-ACHAIA-001"),"select region");await sleep(50);var a=document.querySelector('#panel article[data-detail="rgn"]');ok(a,"region detail");ok(a.dataset.research==="1" && a.dataset.published==="false","Region research/private boundary");ok(a.querySelector('[data-part="map"] [data-map-note]'),"map boundary missing");ok(a.dataset.geometry!=="approved","unapproved geometry exposed");ev.push("region detail preserved");
 });
 t("LK-09","No canonical Route entities are invented; presentation-only route layer remains separate",async ev=>{
  var routes=Object.keys((BVC.projection&&BVC.projection.routes)||{});ok(routes.length===0,"canonical routes="+routes.length);BVC.go("gen-26");BVC.setView("study");await sleep(50);var ps=window.JBC_PRESENTATION_ROUTES&&Object.keys(window.JBC_PRESENTATION_ROUTES.routes||{})||[];ok(ps.length>=1,"presentation routes missing");ev.push("canonical=0; presentation="+ps.length);
@@ -105,6 +117,38 @@ t("LK-17","shared representative media survives Search photo filter/sorting and 
  BVC.go("gen-22",19);BVC.selectEntity("l","beersheba");await sleep(140);var anchor=document.querySelector('#map-body [data-nav-place="beersheba"], #map-body g.gm[data-place="beersheba"]');ok(anchor,"Beersheba map anchor missing");anchor.dispatchEvent(new PointerEvent("pointerover",{bubbles:true,pointerType:"mouse"}));await sleep(280);var hover=document.querySelector("#place-hovercard:not([hidden])"),img=hover&&hover.querySelector("img.pc-map-media"),rep=BVC.store.get(ids[0]).representative_media;ok(hover&&img,"map hover shared media missing");ok(img.getAttribute("src")===rep.preview_url,"map hover media is not shared representative media");
  ids.forEach(function(sid){var r=BVC.projection.places[sid],after=JSON.stringify({representative_media_id:r.representative_media_id,media:(r.media||[]).map(function(m){return {id:m.id,target_ref:m.target_ref,preview_url:m.preview_url,display_mode:m.display_mode,rights:m.rights};})});ok(after===before[sid],"media binding mutated during consumer flow "+sid);});
  ev.push("photo filter=2 shared places · sort identity stable · hover="+rep.id+" · bindings unchanged");
+});
+// Holman Chapter 1 UI ingress regression: source/geometry/hash contract remains owned by test-holman-ch01.js (no duplicate tests).
+t("LK-18","Holman Chapter 1: all 20 approved Regions reach the shared runtime store, with 13 evidenced passage bindings and 7 explicit no-passage holds",async ev=>{
+ var gf=window.JBC_GEOGRAPHY_FOUNDATION,regs=gf&&gf.regions||{},ids=Object.keys(regs);
+ ok(ids.length===20,"Holman regions="+ids.length);
+ var bound=ids.filter(sid=>{var x=BVC.data.regions[BVC.resolveKey(sid)];return x&&x.stable_id===sid&&x.type==="Region"});
+ ok(bound.length===20,"runtime region ingress="+bound.length);
+ var linked=ids.filter(sid=>(regs[sid].passage_links||[]).length>0),held=ids.filter(sid=>!(regs[sid].passage_links||[]).length);
+ ok(linked.length===13&&held.length===7,"passage evidence split="+linked.length+"/"+held.length);
+ ids.forEach(sid=>{var r=regs[sid];ok(BVC.resolveKey(sid)!==null,"unresolved region "+sid);ok((r.parent_ids||[]).every(x=>typeof x==="string")&&(r.child_ids||[]).every(x=>typeof x==="string"),"region hierarchy "+sid)});
+ var index=window.BVC_SCRIPTURE_INDEX,entries=index&&index.entries||{};
+ var indexed=JSON.stringify(entries);ok(!ids.some(sid=>indexed.includes('"' + sid + '"')),"unapproved Holman surface indexing");
+ ev.push("Region shared store=20; passage evidence=13; no-passage HOLD=7; no synthetic Scripture span");
+});
+t("LK-19","Noah/Enoch draft research cards obey global Search click=right Person Detail and double click=Passage Research",async ev=>{
+ var cases=[{name:"노아",pid:"gen-6",verse:8},{name:"에녹",pid:"gen-5",verse:22}];
+ for(var target of cases){
+  await swOpen("person");
+  var pick=()=>[...document.querySelectorAll('#search-results [data-local-person-research]')].find(x=>x.dataset.localPersonResearch===target.name);
+  var card=pick();ok(card,target.name+" local person card missing");
+  var before=BVC.state.passage;
+  card.dispatchEvent(new MouseEvent("click",{bubbles:true,cancelable:true,detail:1}));
+  await sleep(80);
+  var panel=document.querySelector('#panel [data-person-research-only="1"]'), title=(panel&&panel.querySelector(".detail-name"))||document.querySelector('#place-fixed-head .detail-name');
+  ok(BVC.state.view==="explore"&&panel&&title&&title.textContent.trim()===target.name,target.name+" single click detail: "+JSON.stringify({view:BVC.state.view,panel:!!panel,seen:title&&title.textContent,entity:BVC.state.entity}));
+  ok(BVC.state.passage===before,target.name+" single click unexpectedly moved Scripture");
+  ok(BVC.state.panel==="open",target.name+" right panel collapsed");
+  await dbl(pick);
+  passageResearch({pid:target.pid,verse:target.verse},target.name);
+  ev.push(target.name+" single=right detail, double="+target.pid+":"+target.verse);
+  await swClose();
+ }
 });
 (async function(){var res=[];for(var c of T){var evidence=[],pass=true,err="";try{await c.fn(evidence)}catch(e){pass=false;err=e.message}res.push({id:c.id,name:c.name,pass,err,evidence})}var p=res.filter(x=>x.pass).length;window.BVC_LK_QA={pass:p,total:res.length,verdict:p===res.length?"PASS":"FAIL",results:res};var pre=document.createElement("pre");pre.id="lk-qa-report";pre.hidden=true;pre.textContent=JSON.stringify(window.BVC_LK_QA,null,2);document.body.appendChild(pre)})();
 })();

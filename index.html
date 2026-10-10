@@ -28,8 +28,16 @@
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=20261009-navy-gold">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png?v=20261009-navy-gold">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20261009-navy-gold">
-<script>try{var __t=localStorage.getItem("jbc.theme")||localStorage.getItem("jbc.mapTheme");if(__t==="light"||__t==="dark"){document.documentElement.dataset.theme=__t;document.documentElement.dataset.mapTheme=__t;}}catch(e){}</script>
-<link rel="stylesheet" href="styles.css?v=20261007-shift-range1">
+<script>(function(){
+  // Resolve a single visual theme before CSS paints, including mobile system-dark mode.
+  var saved = null, preferred = "light";
+  try { saved = localStorage.getItem("jbc.theme") || localStorage.getItem("jbc.mapTheme"); } catch (e) {}
+  try { preferred = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } catch (e) {}
+  var resolved = saved === "light" || saved === "dark" ? saved : preferred;
+  document.documentElement.dataset.theme = resolved;
+  document.documentElement.dataset.mapTheme = resolved;
+})();</script>
+<link rel="stylesheet" href="styles.css?v=20261010-link1">
 </head>
 <body>
 <header class="top">
@@ -103,7 +111,7 @@
 <p id="ref-error" role="status"></p>
 <main id="workspace">
   <div id="stage" class="stage">
-    <section id="text-pane" class="scripture-panel" aria-label="본문"><div class="pane-head scripture-head"><div class="chapter-head-nav" role="group" aria-label="현재 장 이동"><button type="button" data-step="-1" aria-label="이전 장" title="이전 장">‹</button><h2 id="passage-title"></h2><button type="button" data-step="1" aria-label="다음 장" title="다음 장">›</button></div><button id="panel-open" class="btn ghost" type="button" aria-controls="side-pane" hidden>맥락 열기</button></div><div id="verses" class="scripture-scroll-area"></div>
+    <section id="text-pane" class="scripture-panel" aria-label="본문"><div class="pane-head scripture-head"><div class="chapter-head-nav" role="group" aria-label="현재 장 이동"><button type="button" data-step="-1" aria-label="이전 장" title="이전 장">‹</button><h2 id="passage-title"></h2><button type="button" data-step="1" aria-label="다음 장" title="다음 장">›</button></div><button id="panel-open" class="btn ghost" type="button" aria-controls="side-pane" hidden>본문연구</button></div><div id="verses" class="scripture-scroll-area"></div>
       <div class="scripture-bottom-rail" aria-hidden="true"></div></section>
     <section id="map-pane" aria-label="주드성경 지리지도">
       <div class="mp-head"><h2 class="mp-title">주드성경 지리지도</h2><span id="mp-cap" class="meta"></span><button id="map-toggle" class="btn ghost" type="button" aria-controls="map-body" aria-expanded="true">접기</button></div>
@@ -190,9 +198,9 @@
           <p class="mi-src-line">기본 지형: Mapzen Terrain Tiles / AWS Open Data · SRTM/GMTED: USGS · 수계: Natural Earth 10m v5.0.0 (Public Domain) · JudeBible 무라벨 음영 처리</p>
         </details>
       </div>
+      <section class="set-grp map-split-reset" data-set-group="layout"><h4 class="set-h">화면 배치</h4><button type="button" class="btn" id="reset-split">지도·본문 분할 비율 초기화</button><p>이 기기에 저장된 분할 비율을 기본값으로 되돌립니다.</p></section>
     </div>
-    <div class="rail-group rail-util" role="group" aria-label="도구"><button type="button" id="rail-settings" class="rail-btn util" data-util="settings" aria-haspopup="dialog" aria-expanded="false" data-ico="settings"><span class="rail-lab">설정</span></button><button type="button" id="rail-theme" class="rail-btn util" data-theme-toggle data-ico="moon" aria-pressed="false" aria-label="다크 모드" title="다크 모드"><span class="rail-lab">다크</span></button></div>
-    <div id="settings-pop" role="dialog" aria-label="설정" hidden><p class="sec-h">설정</p><button type="button" class="btn" id="reset-split">지도·본문 분할 비율 초기화</button><p class="helper">이 기기에만 저장되는 화면 설정입니다. 그 외 설정 항목은 아직 정의되지 않았습니다.</p></div>
+    <div class="rail-group rail-util" role="group" aria-label="도구"><button type="button" id="rail-theme" class="rail-btn util" data-theme-toggle data-ico="moon" aria-pressed="false" aria-label="다크 모드" title="다크 모드"><span class="rail-lab">다크</span></button></div>
   </nav>
   <aside id="guide-pane" aria-label="네비게이션"></aside>
   <section id="timeline-pane" aria-label="연표" hidden><div id="tl-body"></div></section>
@@ -214,19 +222,39 @@
 <script src="data/reference.features.js"></script>
 <script src="data/reference.bindings.js"></script>
 <script src="data/projection.research.js"></script>
-<script src="data/geography.foundation.ch01.js?v=20261007-hba01"></script>
+<script src="data/geography.foundation.ch01.js?v=20261008-map-rollback"></script>
 <script src="data/place.profiles.js"></script>
-<script src="data/presentation.routes.js"></script>
-<script src="data/exploration.topics.js?v=20261007-jn40"></script>
+<script src="data/presentation.routes.js?v=20261008-hba01-corridors"></script>
+<script src="data/exploration.topics.js?v=20261010-eras11-2"></script>
+<script src="data/timeline.era.slots.js?v=20261010-eras11-2"></script>
+<script src="data/timeline.era.persons.js?v=20261010-pers1"></script>
+<script src="data/timeline.era.research.js?v=20261010-link1"></script>
+<script src="data/holman.ch04.reference.js?v=20261009-reader-cards-1"></script>
+<script src="data/holman.ch04.research.js?v=20261010-hba04-research-v01"></script>
 <script src="data/contextual.research.js"></script>
 <script src="data/scripture.index.js"></script>
 <script src="data/research.projection.js"></script>
 <script src="data/projection.person.js"></script>
 <script src="data/research.gen22.reader.js"></script>
-<script src="verse-research-projection.js"></script>
-<script src="app.js?v=20261008-hba01-foundation"></script>
+<script src="data/research.gen1-5.reader.js?v=20261008-genesis-01-05"></script>
+<script src="data/research.gen6-11.reader.js?v=20261009-common-reader"></script>
+<script src="data/research.approved.reader.js"></script>
+<script src="data/research.person.20261009.js?v=20261009-person-common"></script>
+<script src="verse-research-projection.js?v=20261010-label1"></script>
+<script src="data/atlas_ab.reader.geo.media.js?v=20261009-candidate-photos-r3"></script>
+<script src="data/level_b_87.word.links.js?v=20261009-b87-word-r1"></script>
+<script src="data/level_b_87.reader.js?v=20261010-b87-retrans-r1"></script>
+<script src="data/atlas90.easton.ko.js?v=20261010-easton-front-r1"></script>
+<script src="data/atlas_bc.candidates.js?v=20261010-b87-retrans-r1"></script>
+<script src="data/atlas_bc.expansion.discovery.js?v=20261010-ko-fill-r1"></script>
+<script src="data/atlas.place.word.links.js?v=20261009-match47-r1"></script>
+<script src="data/atlas90.reader.place.crosswalk.js?v=20261009-reader-crosswalk-r1"></script>
+<script src="data/atlas90.word.links.js?v=20261009-a-verse-r1"></script>
+<script src="data/atlas90.scripture.evidence.js?v=20261009-atlas90-ref-r1"></script>
+<script src="data/atlas90.reader.media.js?v=20261009-susa-nineveh-r5"></script>
+<script src="app.js?v=20261010-link1"></script>
 <script src="original-language-loader.js"></script>
-<script src="research-projection.js"></script>
+<script src="research-projection.js?v=20261010-label1"></script>
 <script src="original-language-word-card.js"></script>
 <script src="original-language-view.js"></script>
 <script src="research-evidence.js"></script>
