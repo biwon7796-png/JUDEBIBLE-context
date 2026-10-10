@@ -5600,3 +5600,22 @@ body[data-view="study"] #side-pane .pane-bar:has(> .study-memo-open) > #panel-to
 #side-pane .rp-editorial-reader .rp-commentary .rp-unit{border-bottom:1px solid var(--line)}
 #side-pane .rp-editorial-reader .rp-discovery{border:0;border-bottom:1px solid var(--line);border-radius:0;padding:12px 0}
 #side-pane .rp-editorial-reader .rp-reader-section,.rp-deep-research{scroll-margin-top:12px}
+
+/* Holman Chapter 4 noncanonical reference cards */
+.hba04-lane{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px;margin:12px 0 22px}.hba04-item,.hba04-search-item{display:block;border:1px solid var(--border,#d6d6d6);border-radius:12px;padding:12px;background:var(--surface,#fff);font-size:.9rem}.hba04-item small,.hba04-search-item small{display:block;margin-top:7px;opacity:.7}.hba04-item summary,.hba04-search-item summary{cursor:pointer;font-weight:650}.hba04-search-item{margin-bottom:10px}.hba04-item p,.hba04-search-item p{line-height:1.6}
+/* 원역사 연표(족장 시대와 같은 구조) — 사진 미연결 카드의 자리표시와 문명사 참고 접기 */
+.tl-event-ph{display:block;width:100%;border-radius:8px;background:linear-gradient(135deg,color-mix(in srgb,var(--tint) 70%,var(--paper)),color-mix(in srgb,var(--line) 55%,var(--paper)));border:1px dashed var(--line)}
+.tl-detail-ph{min-height:150px}
+.tl-research.tl-civ{margin-top:8px;padding:6px 12px}
+.tl-research.tl-civ>summary{display:flex;align-items:baseline;gap:10px;font-size:.84rem}
+.tl-research.tl-civ>summary span{font-weight:400;font-size:.74rem;color:var(--muted,#7a6f62);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tl-research.tl-civ[open]>summary{margin-bottom:6px}
+.tl-research.tl-civ .hba04-lane{margin:6px 0 4px}
+
+/* 연표 시대 슬롯(2026-10-09): 빈 시대도 족장 시대 승인 골격을 그대로 쓰고, 준비 중 상태만 표시한다. 색상 토큰은 기존 값 재사용. */
+#timeline-pane .tl-event-card.is-slot{cursor:default;border-style:dashed;opacity:.62;box-shadow:none}
+#timeline-pane .tl-event-card.is-slot:hover{border-color:var(--tl-edge,var(--line))}
+#timeline-pane .tl-event-card.is-slot .tl-event-n{background:var(--ink-3)}
+#timeline-pane .tl-event-sec.is-slot .tl-event-head button[disabled],#timeline-pane .tl-track.is-slot select[disabled]{opacity:.55;cursor:default}
+#timeline-pane .tl-detail.is-slot .tl-detail-ph{border:1px dashed var(--tl-edge,var(--line))}
+#timeline-pane .tl-detail-slot-note{margin:12px 0 0;color:var(--tl-muted,var(--ink-3));font-size:.82rem;line-height:1.5}
