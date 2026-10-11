@@ -212,7 +212,7 @@
     var r=levelBRefs(a), labels=r.slice(0,3).map(function(c){return c.source;}), linked=levelBExistingPlace(a), geo=AB_GEO_MEDIA[a.candidate_id]||{};
     return {key:'levelb:'+a.candidate_id,stableId:'',canonical:false,hasProfile:false,label:a.name_ko||a.name_en,en:atlas90EnName(a),
       type:'지명',region:'',summary:levelBIntro(a),certainty:'',primaryPassage:null,passages:labels,passageIds:[],
-      people:linked?linked.people.slice():[],eras:linked?linked.eras.slice():[],journeys:linked?linked.journeys.slice():[],scenes:linked?linked.scenes.slice():[],media:linked&&linked.media||geo.media||null,lat:linked&&linked.lat!=null?linked.lat:geo.geo?geo.geo.lat:null,lon:linked&&linked.lon!=null?linked.lon:geo.geo?geo.geo.lon:null};
+      people:linked?linked.people.slice():[],eras:linked?linked.eras.slice():[],journeys:linked?linked.journeys.slice():[],scenes:linked?linked.scenes.slice():[],media:linked&&linked.media||geo.media||((a.candidate_id==="ATLBC-CAND-0006")?(window.JBC_ATLAS90_READER_MEDIA||{})["JBC-LEVELB-ARIMATHEA-RANTIS"]:null)||((a.candidate_id==="ATLBC-CAND-0095")?(window.JBC_ATLAS90_READER_MEDIA||{})["JBC-LEVELB-ZOAR-GHOR-SAFI-REGION"]:null)||((a.candidate_id==="ATLBC-CAND-0094")?(window.JBC_ATLAS90_READER_MEDIA||{})["JBC-LEVELB-ZIKLAG-KHIRBET-ER-RAI"]:null)||null,lat:linked&&linked.lat!=null?linked.lat:geo.geo?geo.geo.lat:null,lon:linked&&linked.lon!=null?linked.lon:geo.geo?geo.geo.lon:null};
   }
   function levelBCard(a,q) {
     return placeCardHtml(levelBProjection(a),'search',{q:q})
@@ -3972,6 +3972,9 @@
     });
     Object.keys(byKey).forEach(function (k) { var p = byKey[k]; if (!p.label) return; p.searchText = norm([p.label, p.en, p.type, p.region, p.summary, p.certainty, p.passages.join(" "), p.people.join(" "), p.eras.join(" "), p.journeys.join(" "), p.scenes.map(function (s) { return s.title; }).join(" ")].join(" ")); list.push(p); });
     list.sort(function (a, b) { return a.label.localeCompare(b.label, "ko"); });
+    // Display-only: attach verified Commons media to otherwise empty search PlaceCards. Do not change place identity.
+    var referencePhotoForPlace={jericho:"BAT01-PLACE-0677",shiloh:"BAT01-PLACE-1129",hba7_nebo:"JBC-SEARCH-HBA7-NEBO",gibeon:"JBC-SEARCH-GIBEON",hba7_delta:"JBC-SEARCH-HBA7-DELTA",hba7_edom:"BAT01-PLACE-0376",hba7_southern:"JBC-SEARCH-SINAI-SOUTH",hba7_central:"JBC-SEARCH-SINAI-CENTRAL",hba7_northern:"JBC-SEARCH-SINAI-NORTH",hba7_moab:"JBC-SEARCH-MOAB-PLAINS",hba7_kadesh:"JBC-SEARCH-KADESH-QUDEIRAT",mahanaim:"JBC-SEARCH-MAHANAIM-WESTERN-TELL",hba7_lakes:"JBC-SEARCH-REEDSEA-TIMSAH-CANDIDATE",ai:"JBC-SEARCH-AI-ETTELL-CANDIDATE"};
+    list.forEach(function(p){if(p.media && mediaGate(p.media)==="image")return;var key=referencePhotoForPlace[p.key],m=key&&(window.JBC_ATLAS90_READER_MEDIA||{})[key];if(m&&mediaGate(m)==="image")p.media=m;});
     return (PLACE_INDEX = { byKey: byKey, list: list });
   }
   // 검색: canonical 은 기존 entitySet(필터·정렬 그대로)의 결과를 색인 항목으로, 지도에만 있는 장소는 같은 색인에서 텍스트·가능한 필터로 찾는다.
