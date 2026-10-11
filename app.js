@@ -4290,6 +4290,32 @@
           (!aQuery || [a.name_ko||'',a.name_en||''].some(function(v){return String(v).toLocaleLowerCase().indexOf(aQuery)>=0;}));
       }).map(levelBProjection);
       R.groups.place = R.groups.place.concat(addedAtlas,addedB);
+      // Re-sort the complete displayed set after canonical, Atlas A and Level B merges.
+      var placeBibleKey=function(p){
+        var best=Infinity;
+        (p.passageIds||[]).forEach(function(pid){
+          var bi=bookIndexOf(pid),ch=Number(String(pid).split("-")[1]);
+          if(bi>=0&&Number.isFinite(ch))best=Math.min(best,bi*1000000+ch*1000);
+        });
+        return best;
+      };
+      var placePeriodKey=function(p){
+        var e=p.stableId&&STORE.get(p.stableId),raw=e&&e.period_sort_value;
+        if(raw!=null&&raw!==""){var n=Number(raw);if(Number.isFinite(n))return [0,n];}
+        var labels=(p.eras||[]).slice();
+        if(e&&e.period)labels.push(e.period);
+        var ranks=labels.map(function(v){return SW_PERIOD_ORDER.indexOf(v);}).filter(function(n){return n>=0;});
+        return ranks.length?[1,Math.min.apply(null,ranks)]:[2,Infinity];
+      };
+      R.groups.place.sort(function(a,b){
+        var cmp=0;
+        if(swState.sort==="bible")cmp=placeBibleKey(a)-placeBibleKey(b);
+        else if(swState.sort==="period"){
+          var ak=placePeriodKey(a),bk=placePeriodKey(b);
+          cmp=ak[0]-bk[0]||ak[1]-bk[1];
+        }
+        return (Number.isNaN(cmp)?0:cmp)||a.label.localeCompare(b.label,"ko")||a.key.localeCompare(b.key);
+      });
       R.counts.place = R.groups.place.length;
     }
     var SEC={person:"인물",place:"장소",region:"지역",event:"사건",route:"경로"}, html=refErr?'<p class="empty helper" data-ref-error="1">'+esc(refErr)+'</p>':"", total=0, parts=[];
