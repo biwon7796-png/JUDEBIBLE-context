@@ -3496,8 +3496,12 @@
     var hits=cards.filter(function(c){var r=c.research||{};return norm([c.title,c.kind,c.summary,c.id,r.overview,(r.history||[]).join(" "),(r.archaeology||[]).join(" "),r.geography].join(" ")).indexOf(needle)>=0;});
     return {count:hits.length,html:hits.length?'<section class="sw-sec" data-sw-sec="hba04-reference"><h3 class="sec-h">고대 문명사 참고 연구 <span class="sw-sec-n">'+hits.length+'</span></h3><p class="helper">Holman Chapter 4 · 34–42쪽 · 미승인 참고자료</p><div class="ee-set">'+hits.map(function(c){return '<details class="hba04-search-item"><summary><strong>'+esc(c.title)+'</strong> <small>'+esc(c.kind)+' · '+esc(c.page)+'쪽</small></summary><p>'+esc(c.research&&c.research.overview||c.summary)+'</p>'+civResearchBody(c)+civSourcesHtml(c)+'<small>참고 연구 · 성경 사건 연대와 별개</small></details>';}).join("")+'</div></section>':""};
   }
-  function renderTimeline(){
+  function renderTimeline(retainCivViewport){
     var el=$("tl-body");if(!el)return;
+    // Keep the current reading position when filtering the existing civilization reference cards.
+    var leftBefore=el.querySelector(".tl-left"),civBefore=retainCivViewport&&leftBefore&&leftBefore.querySelector(".tl-civ-sec");
+    var civTop=civBefore?civBefore.getBoundingClientRect().top:null;
+    var civMainHeight=civBefore?leftBefore.querySelector(".tl-main").getBoundingClientRect().height:0;
     try{
       var eras=timelineEraTopics();if(!eras.length){el.innerHTML='<p class="empty helper">표시할 시대 연표 데이터가 없습니다.</p>';return;}
       if(!ui.tlEra||!timelineEraById(ui.tlEra))ui.tlEra=timelineAutoEra(eras).id;
@@ -3527,7 +3531,19 @@
       if(ui.tlCiv&&(tp.reference_lanes||[]).indexOf("hba04")>=0){var civD=civDetailHtml(ui.tlCiv);if(civD)detail=civD;else ui.tlCiv=null;}else ui.tlCiv=null;
       var keepSc=ui.tlLastEra===tp.id&&el.querySelector(".tl-left")?el.querySelector(".tl-left").scrollTop:0;ui.tlLastEra=tp.id;
       el.innerHTML='<div class="tl-page"><div class="tl-left"><header class="tl-page-head"><div class="tl-head-title"><h1>성경 연표</h1><p>구원 역사를 한눈에 보는 흐름</p></div><div class="tl-head-context"><strong>'+esc(tp.title)+'</strong><span>'+esc(tr&&tr.title||"")+'</span><small>'+esc((tr&&tr.range_label)||eraRange(tp)||"")+'</small></div></header><div class="tl-era-strip">'+erasHtml+'</div><main class="tl-main"><section class="tl-era-summary"><div class="tl-sum-text"><h2>'+esc(tp.title)+'</h2><p class="tl-sum">'+esc(tp.summary||"")+'</p><p class="tl-range">'+esc((tr&&tr.range_label)||eraRange(tp))+'</p></div>'+(tracks.length?'<label class="tl-track">'+esc(tr&&tr.select_label||"인물")+' <select data-tl-track>'+trackHtml+'</select></label>':'<label class="tl-track is-slot">인물 <select disabled aria-disabled="true"><option>준비 중</option></select></label>')+'</section>'+(steps.length?'<section class="tl-event-sec"><div class="tl-event-head"><h3>'+esc((tr&&tr.title||tp.title)+" 주요 사건")+' <small>('+steps.length+'개)</small></h3>'+pagerHtml+'<div><button data-tl-sort="story" class="'+(ui.tlSort!=="scripture"?"is-on":"")+'">사건 순</button><button data-tl-sort="scripture" class="'+(ui.tlSort==="scripture"?"is-on":"")+'">본문 순</button></div></div><div class="tl-event-rail">'+cards+'</div></section>':'<section class="tl-event-sec is-slot"><div class="tl-event-head"><h3>'+esc(tp.title+" 주요 사건")+' <small>(준비 중)</small></h3><div><button type="button" class="is-on" disabled>사건 순</button><button type="button" disabled>본문 순</button></div></div><div class="tl-event-rail">'+slotCards+'</div></section>')+chronoHtml+(tp.reference_lanes||[]).map(function(k){return TL_REFERENCE_LANES[k]?TL_REFERENCE_LANES[k]():"";}).join("")+timelineResearchHtml()+'</main></div>'+detail+'</div>';
-      if(keepSc){var lf=el.querySelector(".tl-left");if(lf)lf.scrollTop=keepSc;}
+      var lf=el.querySelector(".tl-left");
+      if(civBefore&&lf){
+        var nm=lf.querySelector(".tl-main"),ns=lf.querySelector(".tl-civ-sec");
+        if(nm&&civMainHeight){
+          var missing=Math.max(0,civMainHeight-nm.getBoundingClientRect().height);
+          if(missing>0)nm.style.paddingBottom=(parseFloat(getComputedStyle(nm).paddingBottom)||0)+Math.ceil(missing)+"px";
+        }
+        if(ns){var shift=ns.getBoundingClientRect().top-civTop;
+          if(getComputedStyle(lf).overflowY!=="visible")lf.scrollTop+=shift;
+          else {var pane=$("timeline-pane");if(pane&&pane.scrollHeight>pane.clientHeight+2)pane.scrollTop+=shift;
+            else window.scrollBy(0,shift);}
+        }
+      }else if(keepSc&&lf)lf.scrollTop=keepSc;
     }catch(e){el.innerHTML='<div class="degraded" role="status">연표를 표시할 수 없습니다.</div>';}
   }
   var mapMoved = false;
@@ -4625,9 +4641,9 @@
     if ((el = t.closest("[data-nav-ref]"))) return navEnsurePassage(el.dataset.navRef);
     if ((el = t.closest("[data-nav-act]"))) { var na = el.dataset.navAct; return na === "research" ? navToggleResearch() : navOpenTimeline(); }
     if ((el = t.closest("[data-tl-rs-open]"))) { var rsr = navParseRange(el.dataset.tlRsOpen); if (rsr && go(rsr.pid, rsr.v1, false, false, false)) { ui.rmode = "TEXT"; ensureContextVisible(); render(); panelScrollTop(); } return; }
-    if ((el = t.closest("[data-tl-civ]"))) { ui.tlCiv = el.dataset.tlCiv; return renderTimeline(); }
-    if (t.closest("[data-tl-civ-clear]")) { ui.tlCiv = null; return renderTimeline(); }
-    if ((el = t.closest("[data-tl-civtab]"))) { ui.tlCivTab = el.dataset.tlCivtab; var cg = CIV_GROUPS.filter(function (x) { return x.id === ui.tlCivTab; })[0], cc = civCards().filter(function (x) { return x.id === ui.tlCiv; })[0]; if (cc && !civInGroup(cc, cg)) ui.tlCiv = null; return renderTimeline(); }
+    if ((el = t.closest("[data-tl-civ]"))) { ui.tlCiv = el.dataset.tlCiv; return renderTimeline(true); }
+    if (t.closest("[data-tl-civ-clear]")) { ui.tlCiv = null; return renderTimeline(true); }
+    if ((el = t.closest("[data-tl-civtab]"))) { ui.tlCivTab = el.dataset.tlCivtab; var cg = CIV_GROUPS.filter(function (x) { return x.id === ui.tlCivTab; })[0], cc = civCards().filter(function (x) { return x.id === ui.tlCiv; })[0]; if (cc && !civInGroup(cc, cg)) ui.tlCiv = null; return renderTimeline(true); }
     if ((el = t.closest("[data-tl-era]"))) { ui.tlCiv = null; ui.tlEra = el.dataset.tlEra; ui.tlTrack = null; ui.tlStep = null; ui.tlPage = null; return renderTimeline(); }
     if ((el = t.closest("[data-tl-step]"))) { ui.tlCiv = null; ui.tlStep = el.dataset.tlStep; return renderTimeline(); }
     if ((el = t.closest("[data-tl-page]"))) { ui.tlPage = Math.max(0, (ui.tlPage || 0) + (+el.dataset.tlPage)); return renderTimeline(); }
