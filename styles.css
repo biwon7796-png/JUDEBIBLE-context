@@ -5698,3 +5698,8 @@ body[data-view="timeline"] #timeline-pane{--tl-sel-bg:#EDF4EF;--tl-sel-line:#5C8
 .tl-linked li b{font-size:.86rem}
 .tl-linked li small{font-size:.72rem;color:var(--tl-muted,#756B61)}
 .tl-linked li.is-static>div{opacity:.8;border-style:dashed}
+
+/* Visible Wikimedia Commons copyright notices outside place-card action buttons. */
+.pc-photo-credit{font-size:.68rem;line-height:1.45;color:var(--muted,#777);padding:3px 10px 7px;overflow-wrap:anywhere;}
+.pc-photo-credit a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
+.pc-photo-credit a:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
