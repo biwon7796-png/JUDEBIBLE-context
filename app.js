@@ -2281,6 +2281,12 @@
     var u = m && m.source_url_verified === true && typeof m.source_url === "string" && /^https:\/\/commons\.wikimedia\.org\/wiki\/[^\s"'<>]+$/.test(m.source_url) ? m.source_url : null;
     return u ? '<a class="src-link" href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(m.file) + "</a>" : esc(m && m.file);
   }
+  function placePhotoCreditHtml(m) {
+    if (!m || mediaGate(m) !== "image") return "";
+    var label = "사진: " + m.creator + " · " + (m.license_label || m.license);
+    var source = m.source_url_verified === true && /^https:\/\/commons\.wikimedia\.org\/wiki\/[^\s"'<>]+$/.test(m.source_url || "") ? m.source_url : "";
+    return '<div class="pc-photo-credit" aria-label="사진 저작권 및 출처">' + esc(label) + (source ? ' · <a href="' + esc(source) + '" target="_blank" rel="noopener noreferrer">원본·라이선스</a>' : '') + '</div>';
+  }
   function mediaGate(m) {
     var ok = !!(m && typeof m.preview_url === "string" && /^https:\/\/(upload|thumb)\.wikimedia\.org\/wikipedia\/commons\/[^\s"'<>]+$/.test(m.preview_url) && m.creator && m.license && m.file && m.rights && m.rights.validated === true && m.rights.status === "CLEARED");
     return ok ? "image" : "attribution_only";
@@ -4026,7 +4032,7 @@
       return '<div class="pc pc-map" data-place-key="' + key + '" data-stable-id="' + esc(p.stableId || "") + '" role="dialog" aria-label="' + esc(p.label) + ' 장소 카드">' + mapMedia + '<div class="pc-head"><strong class="pc-name">' + esc(p.label) + "</strong>" + (p.en ? '<span class="pc-en">' + esc(p.en) + "</span>" : "") + "</div>" +
         (meta ? '<div class="pc-meta">' + esc(meta) + "</div>" : "") + (p.summary ? '<p class="pc-sum">' + esc(p.summary) + "</p>" : "") + (pas ? '<div class="pc-row"><span>본문</span>' + esc(pas) + "</div>" : "") +
         (jl ? '<div class="pc-row"><span>여정</span>' + esc(jl) + "</div>" : "") + (p.certainty ? '<div class="pc-cert">' + esc(p.certainty) + "</div>" : "") +
-        (p.hasProfile ? '<button type="button" class="pc-open" data-place-open="' + key + '">장소연구 보기</button>' : "") + "</div>";
+        (p.hasProfile ? '<button type="button" class="pc-open" data-place-open="' + key + '">장소연구 보기</button>' : "") + placePhotoCreditHtml(p.media) + "</div>";
     }
     var m = p.media, listView = swState.view === "list", image = listView ? searchThumbHtml(m, true) : (ctx.card !== false ? searchThumbHtml(m, true) : "");
     var sel = (state.entity && p.stableId && stableOf(state.entity.kind, state.entity.id) === p.stableId) || (!!ui.placeBasic && ui.placeBasic === p.key), q = ctx.q, label = q ? markedHtml(p.label, markRanges(p.label, q), 0, p.label.length) : esc(p.label);
@@ -4036,11 +4042,11 @@
       '<span class="ee-list-desc">' + esc(p.summary || "") + "</span>" +
       '<span class="ee-list-passage">' + esc(pas || "") + "</span>" +
       '<span class="ee-list-tags">' + (tags.length ? tags.map(function (t) { return '<span class="ee-tag">' + esc(t) + "</span>"; }).join("") : "") + "</span>" +
-      '<span class="ee-list-chevron" aria-hidden="true">›</span></button></article>';
+      '<span class="ee-list-chevron" aria-hidden="true">›</span></button>' + placePhotoCreditHtml(m) + '</article>';
     return '<article class="ee-item ee-card pc pc-search' + (sel ? " is-selected" : "") + '" data-entity-id="' + sid + '" data-place-key="' + key + '" data-origin="' + (p.canonical ? "CANONICAL" : "JOURNEY_DATA") + '"><button type="button" class="sr-row ee-primary ' + (image ? "has-media" : "no-media") + '" data-search="1" data-kind="l" data-id="' + key + '" data-stable-id="' + esc(p.stableId || "") + '" data-place-open="' + key + '">' + image +
       '<span class="ee-copy"><span class="sr-ref">' + label + '<span class="sr-kind">' + esc(p.type || "장소") + "</span></span>" + (p.en ? '<span class="pc-en">' + esc(p.en) + "</span>" : "") + (p.region ? '<span class="ee-meta">' + esc(p.region) + "</span>" : "") + "</span>" +
       '<span class="ee-card-extra">' + (p.summary ? '<span class="sr-preview">' + esc(p.summary) + "</span>" : "") + (pas ? '<span class="ee-count">' + esc(pas) + (p.passages.length > 1 ? " · " + p.passages.length + "곳" : "") + "</span>" : "") +
-      (tags.length ? '<span class="ee-tags">' + tags.map(function (t) { return '<span class="ee-tag">' + esc(t) + "</span>"; }).join("") + "</span>" : "") + "</span></button></article>";
+      (tags.length ? '<span class="ee-tags">' + tags.map(function (t) { return '<span class="ee-tag">' + esc(t) + "</span>"; }).join("") + "</span>" : "") + "</span></button>" + placePhotoCreditHtml(m) + "</article>";
   }
   // Full Place Profile 가 있으면 공통 본문연구 패널(selectEntity)로, 없으면 같은 색인으로 만든 기본 장소 상세.
   function placeHeroHtml(p) {   // 대표 이미지: Search 카드와 같은 p.media 한 곳을 읽는다. 없으면 같은 규격의 placeholder.
