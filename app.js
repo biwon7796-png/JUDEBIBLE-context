@@ -2289,7 +2289,7 @@
   }
   function mediaGate(m) {
     var ok = !!(m && typeof m.preview_url === "string" && /^https:\/\/(upload|thumb)\.wikimedia\.org\/wikipedia\/commons\/[^\s"'<>]+$/.test(m.preview_url) && m.creator && m.license && m.file && m.rights && m.rights.validated === true && m.rights.status === "CLEARED");
-    return ok ? "image" : "attribution_only";
+    return ok && /^(?:CC BY(?:-SA)? (?:2\.0|2\.5|3\.0|4\.0)(?: de)?|CC0(?: 1\.0)?)$/.test(m.license) ? "image" : "attribution_only";
   }
   var mediaLightboxReturn = null;
   function findMedia(id) {
