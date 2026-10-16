@@ -1,0 +1,21 @@
+{
+  "status": "ISOLATED_REVIEW_NOT_RELEASED",
+  "statistics": {
+    "place": {
+      "original": 54,
+      "retained": 54
+    },
+    "ab": {
+      "original": 177,
+      "retained": 131
+    },
+    "era": {
+      "originalGroups": 51,
+      "retainedGroups": 38,
+      "originalImages": 136,
+      "retainedImages": 136
+    }
+  },
+  "geoAuthorityChange": false,
+  "externalReleaseAuthorized": false
+}

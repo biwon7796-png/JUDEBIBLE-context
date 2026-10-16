@@ -1,0 +1,52 @@
+[
+  {
+    "file": "cord/cord-tile.png",
+    "source": "청보라_진홍색_실크_삼색_땋은_끈.png",
+    "sha256": "d704cdcffe3009dda8e8e0c45d7df96799e9a9c070833a8abbef6013f83543a2"
+  },
+  {
+    "file": "cord/cord-top-cap.png",
+    "source": "고대_금빛_장식과_삼색_braided_tassel.png",
+    "sha256": "4085b920bffed4412d6d80c2efbeed87ac89d09599048720ae4af62a743f7fc8"
+  },
+  {
+    "file": "cord/cord-bottom-cap.png",
+    "source": "삼색_밧줄_황동_태슬_장식.png",
+    "sha256": "725b386ea4d44a1d118a478a90da10f5c463e89a788ac802702ac974c28dd5be"
+  },
+  {
+    "file": "stone/granite-cream.png",
+    "source": "따뜻한_크림빛_화강암_질감.png",
+    "sha256": "be3fb22db6fe60686e45cc585ac2e3e6e5b401f3e737ee244cbf64a2d3462ddc"
+  },
+  {
+    "file": "parchment/parchment-center.png",
+    "source": "은은한_크림빛_빈티지_양피지_질감.png",
+    "sha256": "040d6b46b5588c642fc5daf4f9364ecf4dfd00afc6af0d59ac2cd1ca4a300b1a"
+  },
+  {
+    "file": "parchment/parchment-top.png",
+    "source": "낡은_양피지_상단_테두리.png",
+    "sha256": "acb054a14f0187009e04b62f74c3c1a793bbc189873ba021a0f6a215c5503f1e"
+  },
+  {
+    "file": "parchment/parchment-bottom.png",
+    "source": "고풍스러운_양피지_하단_테두리.png",
+    "sha256": "1345b1b3578dba1b68f95c3fc79a47149bea42081d753bc458704cdb5501f237"
+  },
+  {
+    "file": "parchment/parchment-left.png",
+    "source": "빈티지_양피지_질감과_낡은_왼쪽_테두리.png",
+    "sha256": "a3f0e50fb14ec41d7a8a6d8d4e515472c6b803a0af51571c25962130c874d605"
+  },
+  {
+    "file": "parchment/parchment-right.png",
+    "source": "세로형_빈티지_양피지_오른쪽_테두리.png",
+    "sha256": "a4c34c02c87438a066a4693a80740312fb7977025f7274b5265767ac78759f00"
+  },
+  {
+    "file": "parchment/parchment-original.png",
+    "source": "빈티지_양피지_질감_배경.png",
+    "sha256": "85a69b174f0f081ace0c63e305b01e11365e798386cb6421cf62e3176e383c73"
+  }
+]

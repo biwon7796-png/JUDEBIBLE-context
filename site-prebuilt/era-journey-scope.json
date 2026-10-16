@@ -1,0 +1,9 @@
+{
+  "status": "ISOLATED_PRESENTATION_CANDIDATE",
+  "enhancedEra": "era.conquest",
+  "source": "Existing explicit era.conquest overlay.display_places, waypoint and per-place lat/lon",
+  "route_semantics": "SCHEMATIC_EVENT_ORDER_ONLY_NOT_ATTESTED_TRAVEL",
+  "otherErasWithoutAnchors": "HOLD_NO_INFERRED_PLACE_OR_ROUTE",
+  "promotion": false,
+  "externalRelease": false
+}

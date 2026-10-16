@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>주드성경 · JudeBible</title>
+<meta name="description" content="본문에서 시작하는 깊이 있는 성경 연구">
+<link rel="canonical" href="https://biwon7796-png.github.io/JUDEBIBLE-context/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:site_name" content="JudeBible">
+<meta property="og:title" content="주드성경 · JudeBible">
+<meta property="og:description" content="본문에서 시작하는 깊이 있는 성경 연구">
+<meta property="og:url" content="https://biwon7796-png.github.io/JUDEBIBLE-context/">
+<meta property="og:image" content="https://biwon7796-png.github.io/JUDEBIBLE-context/judebible-link-preview.png">
+<meta property="og:image:secure_url" content="https://biwon7796-png.github.io/JUDEBIBLE-context/judebible-link-preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="성경과 성지 풍경 위에 JudeBible 주드성경 로고와 본문 연구, 성경 연표, 인물과 장소 기능이 표시된 이미지">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="주드성경 · JudeBible">
+<meta name="twitter:description" content="본문에서 시작하는 깊이 있는 성경 연구">
+<meta name="twitter:image" content="https://biwon7796-png.github.io/JUDEBIBLE-context/judebible-link-preview.png">
+<meta name="twitter:image:alt" content="성경과 성지 풍경 위에 JudeBible 주드성경 로고가 표시된 이미지">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.ico?v=20261009-navy-gold" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png?v=20261009-navy-gold">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png?v=20261009-navy-gold">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20261009-navy-gold">
+<script>(function(){
+  // Resolve a single visual theme before CSS paints, including mobile system-dark mode.
+  var saved = null, preferred = "light";
+  try { saved = localStorage.getItem("jbc.theme") || localStorage.getItem("jbc.mapTheme"); } catch (e) {}
+  try { preferred = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"; } catch (e) {}
+  var resolved = saved === "light" || saved === "dark" ? saved : preferred;
+  document.documentElement.dataset.theme = resolved;
+  document.documentElement.dataset.mapTheme = resolved;
+})();</script>
+<link rel="stylesheet" href="styles.css?v=20261012-fixes4">
+<link rel="stylesheet" href="data/scroll.thread.proto.css?v=proto23">
+<link rel="stylesheet" href="stone-surfaces-20261016.css?v=2">
+<link rel="stylesheet" href="stone-backgrounds-20261016.css?v=fixes2">
+<script src="data/scroll.thread.proto.js?v=proto11" defer></script>
+</head>
+<body>
+<header class="top">
+  <h1 class="brand"><button id="brand-home" class="brand-home" type="button" aria-label="주드성경 JudeBible 초기 화면으로 이동"><span class="brand-ico" data-ico="brand" aria-hidden="true"></span>주드성경 <small>JudeBible</small></button></h1>
+  <div id="ann-tools" class="ann-tools" role="toolbar" aria-orientation="horizontal" aria-label="지도 필기 도구">
+    <button type="button" data-ann-tool="hand" aria-pressed="true" aria-label="이동·선택" title="이동·선택 (V)" data-ico="hand"></button>
+    <button type="button" data-ann-tool="pen" aria-pressed="false" aria-label="펜" title="펜 (P)" data-ico="pen"></button>
+    <button type="button" data-ann-tool="hl" aria-pressed="false" aria-label="형광펜" title="형광펜 (M)" data-ico="highlighter"></button>
+    <button type="button" data-ann-tool="eraser" aria-pressed="false" aria-label="지우개" title="지우개 (E)" data-ico="eraser"></button>
+    <button type="button" data-ann-tool="dist" aria-pressed="false" aria-label="거리 측정" title="거리 측정 (D)" data-ico="ruler"></button>
+    <span class="map-tool-sep"></span>
+    <button type="button" data-ann-act="undo" aria-label="실행 취소" title="실행 취소 (Ctrl+Z)" data-ico="undo" disabled></button>
+    <button type="button" data-ann-act="clear" aria-label="모두 지우기" title="모두 지우기 (실행 취소로 되살림)" data-ico="trash" disabled></button>
+    <div id="ann-opts" class="ann-opts" role="group" aria-label="색상과 굵기"></div>
+    <span class="map-tool-sep"></span>
+    <button type="button" data-ann-act="visible" aria-pressed="true" aria-label="필기 보기" title="필기 보기/숨기기" data-ico="eye"></button>
+    <button type="button" data-ann-act="lecture" aria-pressed="false" aria-label="강의 모드" title="강의 모드 — 전체화면 (Esc: 종료)" data-ico="present"></button>
+  </div>
+  <div id="quick-search" class="qs" role="search" aria-label="빠른 전체검색">
+    <div class="qs-main"><input id="qs-input" class="qs-input" type="search" placeholder="성경 전체 검색 (본문·인물·장소)" aria-label="빠른 전체검색" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="qs-list" aria-autocomplete="list"></div>
+    <ul id="qs-list" class="qs-list" role="listbox" hidden></ul>
+  </div>
+  <form id="ref-form" class="ref-form" role="search" aria-label="성경 본문 이동"><input id="ref-input" type="text" autocomplete="off" spellcheck="false" placeholder="성경 본문 이동 (예: 창 22:2)" aria-label="성경 본문 이동" aria-describedby="ref-error"><div id="ref-pop" class="ref-pop" role="dialog" aria-label="성경 빠른 찾기" hidden></div></form>
+  <button id="search-open" class="btn ghost search-open" type="button" aria-label="검색 열기">검색</button>
+</header>
+<section id="search-workspace" class="sw" aria-label="상세 통합검색" hidden>
+  <div class="sw-shell">
+    <aside class="sw-nav" aria-label="검색 조건">
+      <header class="sw-nav-head"><h2 id="sw-title" class="sw-title">통합검색</h2></header>
+      <div class="sw-mode" role="tablist" aria-label="검색 대상">
+        <button type="button" data-swmode="all" role="tab" aria-selected="true">전체</button>
+        <button type="button" data-swmode="verse" role="tab" aria-selected="false">본문</button>
+        <button type="button" data-swmode="person" role="tab" aria-selected="false">인물</button>
+        <button type="button" data-swmode="place" role="tab" aria-selected="false">장소</button>
+        <button type="button" data-swmode="event" role="tab" aria-selected="false">사건</button>
+        <button type="button" data-swmode="route" role="tab" aria-selected="false">경로</button>
+        <button type="button" data-swmode="research" role="tab" aria-selected="false">연구</button>
+      </div>
+      <label class="sw-search"><span class="sr-only">통합검색</span><input id="sw-query" type="search" placeholder="본문, 인물, 장소, 사건, 경로, 연구 검색" aria-label="통합검색" autocomplete="off"></label>
+      <div class="sw-nav-scroll">
+        <section class="sw-block"><h3>성경 범위</h3><div class="sw-choice"><button type="button" data-swfilter="testament:all" aria-pressed="true">전체</button><button type="button" data-swfilter="testament:ot" aria-pressed="false">구약</button><button type="button" data-swfilter="testament:nt" aria-pressed="false">신약</button></div></section>
+        <section class="sw-block" data-sw-place><h3>장소 유형</h3><label class="sw-select sw-select-stack"><select id="sw-place-type" aria-label="장소 유형"><option value="all">전체</option></select></label></section>
+        <section class="sw-block" data-sw-person hidden><h3>역할</h3><label class="sw-select sw-select-stack"><select id="sw-role" aria-label="인물 역할"><option value="all">전체</option></select></label></section>
+        <section class="sw-block"><h3>시대</h3><label class="sw-select sw-select-stack"><select id="sw-period" aria-label="시대"><option value="all">전체 시대</option></select></label></section>
+        <section class="sw-block"><h3>이야기</h3><label class="sw-select sw-select-stack"><select id="sw-story" aria-label="이야기"><option value="all">전체 이야기</option></select></label></section>
+        <section class="sw-block"><h3>여정</h3><label class="sw-select sw-select-stack"><select id="sw-journey" aria-label="여정"><option value="all">전체 여정</option></select></label></section>
+        <details id="sw-adv" class="sw-adv">
+          <summary>고급 필터</summary>
+          <div class="sw-adv-body">
+            <label class="sw-select sw-select-stack"><span class="sw-flabel">지역</span><select id="sw-region" aria-label="지역 필터"><option value="all">전체</option></select></label>
+            <label class="sw-select sw-select-stack" data-sw-place><span class="sw-flabel">위치 상태</span><select id="sw-location" aria-label="위치 상태"><option value="all">전체</option></select></label>
+            <label class="sw-check"><input id="sw-photo" type="checkbox"> 사진 있음</label>
+            <label class="sw-check" data-sw-place><input id="sw-archaeology" type="checkbox"> 고고학 자료</label>
+          </div>
+        </details>
+      </div>
+      <button id="sw-clear" class="btn ghost sw-clear" type="button">탐색 조건 초기화</button>
+    </aside>
+    <section class="sw-main" aria-label="검색 결과">
+      <header class="sw-resultbar">
+        <p id="sw-summary" class="helper" aria-live="polite"></p>
+        <div class="sw-view" role="group" aria-label="보기 방식"><button type="button" data-swfilter="view:card" aria-pressed="true">카드</button><button type="button" data-swfilter="view:list" aria-pressed="false">목록</button></div>
+        <label class="sw-select sw-sort"><span class="sr-only">정렬</span><select id="sw-sort" aria-label="정렬"><option value="label">가나다순</option><option value="bible">성경순</option><option value="period">시대순</option></select></label>
+      </header>
+      <div id="search-results" class="sw-results"></div>
+      <div class="sw-more"><button id="sw-more" class="btn ghost" type="button" hidden>더 보기</button></div>
+    </section>
+  </div>
+</section>
+<section id="topic-board" class="tb" role="dialog" aria-label="주제 탐색" aria-modal="false" hidden></section>
+<p id="ref-error" role="status"></p>
+<main id="workspace">
+  <div id="stage" class="stage">
+    <section id="text-pane" class="scripture-panel" aria-label="본문"><div class="pane-head scripture-head"><div class="chapter-head-nav" role="group" aria-label="현재 장 이동"><button type="button" data-step="-1" aria-label="이전 장" title="이전 장">‹</button><h2 id="passage-title"></h2><button type="button" data-step="1" aria-label="다음 장" title="다음 장">›</button></div><button id="panel-open" class="btn ghost" type="button" aria-controls="side-pane" hidden>본문연구</button></div><div id="verses" class="scripture-scroll-area"></div>
+      <div class="scripture-bottom-rail" aria-hidden="true"></div></section>
+    <section id="map-pane" aria-label="지도">
+      <div class="mp-head"><h2 class="mp-title" hidden></h2><span id="mp-cap" class="meta"></span><button id="map-toggle" class="btn ghost" type="button" aria-controls="map-body" aria-expanded="true">접기</button></div>
+      <button id="map-tiles" type="button" hidden aria-pressed="false">현대 지도</button>
+      <button id="panel-edge-open" class="jb-research-edge-open" type="button" hidden aria-label="본문연구 패널 펼치기" title="본문연구 패널 펼치기"><span>본문연구</span></button>
+      <div id="map-body" class="jb-map-region"></div>
+      <svg id="ann-layer" class="ann-layer" data-role="lecture-annotation-not-research" aria-hidden="true" preserveAspectRatio="xMidYMid slice" hidden><g id="ann-shapes"></g><g id="ann-live"></g></svg>
+      <p id="ann-print-note" class="ann-print-note" hidden>강의 필기(임시 표시)가 포함되어 있습니다 · 연구 자료·확정된 경로·거리가 아닙니다</p>
+      <section id="side-pane" aria-label="맥락 패널">
+    <div class="pane-bar"><h2 class="pane-title">본문연구</h2><button id="panel-toggle" class="btn ghost" type="button" aria-controls="panel" aria-expanded="true">접기</button></div>
+    <div class="panel-stack"><div id="rs-shell" class="rs-shell" data-part="research-shell" hidden></div><div id="place-fixed-head" hidden></div><div id="panel" role="tabpanel"></div></div>
+  </section>
+    </section>
+    <div id="split" role="separator" aria-orientation="vertical" aria-label="지도와 본문 너비 조절" aria-valuemin="20" aria-valuemax="85" aria-valuenow="40" tabindex="0" title="드래그하여 지도와 본문 너비 조절 (더블클릭: 초기화)"></div>
+  </div>
+  <nav id="rail" aria-label="관점과 도구">
+    <div class="rail-group" role="group" aria-label="관점"><button type="button" id="rail-study" class="rail-btn" data-perspective="study" data-ico="book"><span class="rail-lab">본문연구</span></button><button type="button" id="rail-timeline" class="rail-btn" data-perspective="timeline" data-ico="timeline"><span class="rail-lab">연표</span></button><button type="button" id="rail-search" class="rail-btn" data-perspective="explore" data-ico="search" aria-controls="search-workspace"><span class="rail-lab">검색</span></button></div>
+    <div id="map-tools" class="map-tools rail-map-tools" role="toolbar" aria-label="지도 도구">
+      <button type="button" id="map-zoom-in" data-map-action="zoom-in" aria-label="확대" title="확대" data-ico="plus"></button>
+      <button type="button" id="map-zoom-out" data-map-action="zoom-out" aria-label="축소" title="축소" data-ico="minus"></button>
+      <span class="map-tool-sep"></span>
+      <button type="button" data-map-action="israel-home" aria-label="이스라엘 기본 보기" title="이스라엘 기본 보기" data-ico="locate"></button>
+      <button type="button" data-map-action="world" aria-label="성경세계 전체 보기" title="성경세계 전체 보기" data-ico="compass"></button>
+      <button type="button" id="map-zoom-fit" data-zoom="0" hidden aria-label="현재 지도대상 맞춤"></button>
+      <span class="map-tool-sep"></span>
+      <button type="button" data-map-action="settings" aria-label="지도 설정" aria-expanded="false" title="지도 설정" data-ico="layers"></button>
+      <span class="map-tool-sep"></span>
+      <button type="button" data-map-action="save-image" aria-label="지도 이미지 저장" title="지도 이미지 저장" data-ico="download"></button>
+      <button type="button" data-map-action="print" aria-label="지도 인쇄" title="지도 인쇄" data-ico="print"></button>
+    </div>
+    <div id="map-settings-pop" class="map-settings-pop" role="dialog" aria-label="지도 설정" hidden>
+      <div class="pop-head"><h3>지도 설정</h3><button type="button" class="set-x" data-map-settings-close aria-label="지도 설정 닫기" title="닫기"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+      <section class="set-grp" data-set-group="names"><h4 class="set-h">주드성경 지명 표시</h4>
+        <label><span>성경 지명</span><input type="checkbox" data-map-layer="labels" checked></label>
+        <label><span>고대 참고 지명</span><input type="checkbox" data-map-layer="ancientRef" checked></label>
+        <label><span>현대 참고 지명(현대 도시)</span><input type="checkbox" data-map-layer="modernNames" checked></label>
+        <p>성경 지명·고대 참고 지명·현대 참고 지명은 주드성경 참고 자료를 지도 위에 얹어 보여 줍니다. 시대 개략도(색면) 장면에서는 이 표시가 나타나지 않습니다. 배경지도 자체의 글자는 아래 ‘배경지도’에서 켜고 끕니다.</p></section>
+      <section class="set-grp" data-set-group="base"><h4 class="set-h">배경지도</h4>
+        <p class="set-fact"><strong>OpenFreeMap 배경지도</strong> · 선택 불가(하나만 제공)</p>
+        <label><span>배경지도 글자(지명·도로명)</span><input type="checkbox" data-map-layer="baseLabels" checked></label>
+        <p>배경지도는 OpenFreeMap(OpenMapTiles 스타일, OpenStreetMap 데이터)이며 표시하려면 인터넷 연결이 필요합니다. 해안선·수역·도로는 배경지도가 그리며 따로 켜고 끌 수 없습니다. 지형 음영은 제공하지 않습니다.</p></section>
+      <div class="set-reset"><button type="button" class="btn-plain" data-map-action="reset-prefs" title="지도 표시 설정을 처음 값으로 되돌립니다">지도 설정 기본값으로</button><p>지도 설정은 이 기기에 저장되며, 장면·시대·장소를 바꿔도 유지됩니다.</p></div>
+      <div class="map-info" data-part="map-information" role="group" aria-label="지도 정보">
+        <section class="mi-sec" data-mi="scene"><h4 class="mi-h">주제·장면 표시</h4><ul class="mi-list">
+          <li><span class="mi-aa" aria-hidden="true">●</span>갈색 점 — 주제·여정 장면에 연결된 참고 지점 (위치를 확정하지 않습니다)</li>
+          <li><i class="lg-area" aria-hidden="true"></i>시대 개략도 — 색면과 점선은 개략 범위·이동 방향이며 역사적 확정 경계가 아닙니다</li></ul></section>
+        <section class="mi-sec" data-mi="reference"><h4 class="mi-h">참고 표시</h4><ul class="mi-list">
+          <li><i class="lg-mark lg-mk-modern" aria-hidden="true"></i>현대 참고 (현대 도시)</li>
+          <li><span class="mi-aa" aria-hidden="true">가</span>참고 지명 (수역·지역·현대 지명)</li>
+          <li><span class="mi-bg" aria-hidden="true"></span>참고 배경 (OpenFreeMap 배경지도: 해안선·수역·도로·지명)</li></ul></section>
+        <p class="mi-note">표시는 참고 자료를 바탕으로 한 정보이며 성경 장소의 위치를 확정하지 않습니다. 이 지도는 교육용 참고 자료입니다.</p>
+        <div class="map-src" data-part="map-sources" role="group" aria-label="자료 출처">
+          <p class="map-src-h">자료 출처</p>
+          <ul class="map-src-list">
+            <li><span class="map-src-k">배경지도</span><a href="https://openfreemap.org/" target="_blank" rel="noopener noreferrer">OpenFreeMap</a> © <a href="https://openmaptiles.org/" target="_blank" rel="noopener noreferrer">OpenMapTiles</a> · Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a></li>
+            <li><span class="map-src-k">지도 엔진</span><a href="https://maplibre.org/" target="_blank" rel="noopener noreferrer">MapLibre</a></li>
+            <li><span class="map-src-k">현대 참고 지명</span><a href="https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/" target="_blank" rel="noopener noreferrer">Natural Earth 현대 지명</a> (Public Domain)</li>
+            <li><span class="map-src-k">참고 위치</span><button type="button" class="map-src-btn" data-map-src-info="research" aria-expanded="false" aria-controls="map-src-research">주드성경 연구 자료</button></li>
+          </ul>
+          <p id="map-src-research" class="map-src-info" hidden>참고 위치는 기존 주제·여정 지도 자료를 바탕으로 한 참고 지점입니다. 시대 개략도의 색면과 점선은 화면 설명용 개략 표시이며 연구 데이터의 경계나 경로로 저장되지 않습니다.</p>
+        </div>
+        <details class="mi-more"><summary>자세히 보기</summary>
+          <p>배경지도(해안선·수역·도로·지명)와 현대 참고 지명은 참고 배경이며 어떤 성경 장소의 위치도 확정하지 않습니다.</p>
+          <p>참고 자료는 사람이 근거와 출처, 사용 조건을 검토한 뒤에만 연구 근거로 채택될 수 있으며, 자동으로 바뀌지 않습니다. 채택되어도 원래 출처와 다른 견해는 함께 남습니다.</p>
+          <p>시대 개략도의 색면과 점선은 확정된 길이나 경계가 아니라 대략적인 범위와 이동 방향을 보여 주는 표시입니다.</p>
+          <p>표시된 점은 주제·여정 장면의 참고 지점과 현대 도시이며, 성경의 장소가 정확히 그곳이라는 뜻은 아닙니다.</p>
+          <p class="mi-src-line">배경지도·현대 지도: MapLibre | OpenFreeMap © OpenMapTiles Data from OpenStreetMap · 현대 참고 지명: Natural Earth(퍼블릭 도메인) · 지명 좌표 대조: OpenBible.info(CC BY 4.0). 경로와 범위는 강의용 개략선이며, 위치가 불확실한 곳은 ‘추정’(?)으로 표시했습니다.</p>
+        </details>
+      </div>
+      <section class="set-grp map-split-reset" data-set-group="layout"><h4 class="set-h">화면 배치</h4><button type="button" class="btn" id="reset-split">지도·본문 분할 비율 초기화</button><p>이 기기에 저장된 분할 비율을 기본값으로 되돌립니다.</p></section>
+    </div>
+    <div class="rail-group rail-util" role="group" aria-label="도구"><button type="button" id="rail-theme" class="rail-btn util" data-theme-toggle data-ico="moon" aria-pressed="false" aria-label="다크 모드" title="다크 모드"><span class="rail-lab">다크</span></button></div>
+  </nav>
+  <aside id="guide-pane" aria-label="네비게이션"></aside>
+  <section id="timeline-pane" aria-label="연표" hidden><div id="tl-body"></div></section>
+</main>
+<section id="public-ol-attribution" aria-label="원어 데이터 출처 및 이용 조건"><details><summary>원어 데이터 출처·라이선스 (6종)</summary><p>원어 본문·형태 분석·사전 데이터는 출처와 이용 조건이 각각 다릅니다. 다음 안내는 원천 자료의 이용 조건 설명이며 JudeBible 연구 원고의 별도 공개 승인을 뜻하지 않습니다.</p><ol><li><strong>Open Scriptures Hebrew Bible (OSHB)</strong> <span>(v.2.2)</span><p>Original work of the Open Scriptures Hebrew Bible available at https://github.com/openscriptures/morphhb</p><p>라이선스: CC BY 4.0 (OSHB work); WLC text is in the Public Domain · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">이용 조건</a> · <a href="https://github.com/openscriptures/morphhb" target="_blank" rel="noopener noreferrer">원출처</a></p><p>JudeBible에서의 가공: Token re-keying, per-book packaging, dictionary-encoded lemma/morph; raw token text preserved.</p></li><li><strong>SBL Greek New Testament (SBLGNT)</strong> <span>(v1.2)</span><p>SBL Greek New Testament, https://github.com/Faithlife/SBLGNT, licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)</p><p>라이선스: CC BY 4.0 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">이용 조건</a> · <a href="https://github.com/Faithlife/SBLGNT" target="_blank" rel="noopener noreferrer">원출처</a></p><p>JudeBible에서의 가공: Split into pre/word/post parts (lossless), per-book packaging; text bytes preserved.</p></li><li><strong>MACULA Greek Linguistic Datasets (SBLGNT edition)</strong> <span>(24.06.17)</span><p>MACULA Greek Linguistic Datasets, available at https://github.com/Clear-Bible/macula-greek/</p><p>라이선스: CC BY 4.0 · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">이용 조건</a> · <a href="https://github.com/Clear-Bible/macula-greek" target="_blank" rel="noopener noreferrer">원출처</a></p><p>JudeBible에서의 가공: Column subset, re-keyed by (book, chapter, verse, token_index) onto SBLGNT tokens, dictionary-encoded; 677 tokens excluded (EXCLUDED_PROVENANCE_HOLD). The MACULA text column is not used.</p></li><li><strong>Open Scriptures Hebrew Lexicon</strong> <span>(2019-09-02)</span><p>Open Scriptures Hebrew Lexicon, https://github.com/openscriptures/HebrewLexicon, licensed CC BY 4.0 (credit: Open Scriptures Hebrew Bible Project)</p><p>라이선스: CC BY 4.0 (stated in readme.md; GitHub shows no LICENSE file). Strong&#39;s Hebrew Dictionary and BDB text themselves remain public domain. · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">이용 조건</a> · <a href="https://github.com/openscriptures/HebrewLexicon" target="_blank" rel="noopener noreferrer">원출처</a></p><p>JudeBible에서의 가공: Only AugIndex.xml + LexicalIndex.xml are used for OSHB augmented-lemma to lexical-id binding; only Korean glosses marked VERIFIED in the local review gate are emitted. BDB/TWOT/Strong definitions are not shipped.</p></li><li><strong>Dodson Greek-English Lexicon</strong> <span>(2018-01-11)</span><p>Dodson Greek-English Lexicon (public domain / CC0), https://github.com/biblicalhumanities/Dodson-Greek-Lexicon</p><p>라이선스: CC0 1.0 Universal (repository LICENSE); README states the lexicon is in the public domain in all its forms. Derived from Jeffrey Dodson&#39;s public-domain Greek NT lexicon; XML conversion by Ulrik Sandborg-Petersen / Jonathan Robie. · <a href="https://creativecommons.org/publicdomain/zero/1.0/" target="_blank" rel="noopener noreferrer">이용 조건</a> · <a href="https://github.com/biblicalhumanities/Dodson-Greek-Lexicon" target="_blank" rel="noopener noreferrer">원출처</a></p><p>JudeBible에서의 가공: Only dodson.xml headword + brief gloss are used for lemma binding; only Korean glosses marked VERIFIED in the local review gate are emitted.</p></li><li><strong>STEPBible Data — Tyndale Brief Lexicon of Extended Strongs (TBESH / TBESG)</strong> <span>(commit 1f3423d4)</span><p>Data created by www.STEPBible.org based on work at Tyndale House Cambridge, licensed under CC BY 4.0 (https://github.com/STEPBible/STEPBible-Data).</p><p>라이선스: CC BY 4.0 — data created by www.STEPBible.org based on work at Tyndale House Cambridge · <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">이용 조건</a> · <a href="https://github.com/STEPBible/STEPBible-Data" target="_blank" rel="noopener noreferrer">원출처</a></p><p>JudeBible에서의 가공: Only the Gloss column is used; the Meaning column (TBESH: Online Bible abridged BDB, permission required; TBESG: Abbott-Smith) is not read or shipped. Entries are keyed by dStrong, bound to OSHB/MACULA lemmas, and re-encoded as [dStrong, gloss, reviewCodes]; gloss text is unchanged.</p></li></ol></details></section><aside style="padding:12px 18px;text-align:center"><a href="open-reference/index.html" style="font-weight:700">공개 지도·Tyndale·unfoldingWord 원문 참고자료 열기</a></aside><p class="helper" style="padding:8px 20px;font-size:12px;text-align:center">지도 배경: <a href="https://openfreemap.org/" target="_blank" rel="noopener noreferrer">OpenFreeMap</a> · © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a> · <a href="https://openmaptiles.org/" target="_blank" rel="noopener noreferrer">OpenMapTiles</a> · 실시간 타일 서비스 인터넷 연결 필요</p><footer id="notice" class="helper"></footer>
+<div id="media-lightbox" class="media-lightbox" role="dialog" aria-modal="true" aria-labelledby="media-lightbox-caption" hidden>
+  <button type="button" class="media-lightbox-backdrop" data-media-lightbox-close aria-label="이미지 닫기"></button>
+  <figure class="media-lightbox-card"><button type="button" class="media-lightbox-close" data-media-lightbox-close aria-label="닫기">×</button><div id="media-lightbox-body"></div></figure>
+</div>
+<script src="assets/app.bundle.js?v=20261009-fixes4"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script defer src="tyndale-research-panel.js?v=fixes2"></script><script defer src="internal-era-overlay-controls.js?v=info1"></script>
+<style>
+#jbc-epoch-overlay-status{position:fixed;right:16px;bottom:16px;z-index:900;max-width:min(420px,80vw);background:rgba(24,36,43,.91);color:#fdf7e6;border:1px solid rgba(224,190,126,.7);border-radius:12px;box-shadow:0 10px 28px rgba(0,0,0,.25);padding:9px 12px;font-size:12px;line-height:1.4;pointer-events:auto}
+#jbc-epoch-overlay-status button{margin:0 0 0 8px;background:#f1deb0;color:#2f3537;border:0;border-radius:7px;padding:5px 9px;cursor:pointer;font-weight:700}
+#jbc-epoch-overlay-status strong{color:#f6d9a0}
+#jbc-epoch-overlay-status[hidden]{display:none!important}
+#jbc-epoch-overlay-status{display:flex;align-items:center;gap:6px;max-width:none;padding:5px 8px;border-radius:999px}
+#jbc-epoch-overlay-status button.jbc-epoch-info{flex:none;margin:0;width:20px;height:20px;padding:0;border-radius:50%;background:transparent;color:#f6d9a0;border:1px solid rgba(246,217,160,.8);font:italic 700 12px/18px Georgia,serif;text-align:center}
+#jbc-epoch-overlay-status .jbc-epoch-tip{position:absolute;right:0;bottom:calc(100% + 8px);width:max-content;max-width:min(320px,80vw);background:rgba(24,36,43,.96);border:1px solid rgba(224,190,126,.7);border-radius:10px;padding:8px 10px;box-shadow:0 10px 28px rgba(0,0,0,.25)}
+#jbc-epoch-overlay-status .jbc-epoch-tip[hidden]{display:none}
+</style>
+</body>
+</html>

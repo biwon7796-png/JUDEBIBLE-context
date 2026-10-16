@@ -1,0 +1,11 @@
+{
+  "status": "ISOLATED_INTEGRATED_REFERENCE_CANDIDATE",
+  "tyndale_books": 66,
+  "tyndale_items": 16923,
+  "unfoldingword_books": 59,
+  "unfoldingword_items": 87514,
+  "map_raster_sha": "082710fe22de2ee2e50fca52855bbc99b7d93f1999524ece8b4b41cd4f90f8ed",
+  "research_internal_included": false,
+  "external_release_authorized": false,
+  "output": "F:\\projects\\웹앱\\tools\\pipeline\\out\\public-open-reference-map-onepass-20261015"
+}

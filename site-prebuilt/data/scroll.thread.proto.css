@@ -1,0 +1,265 @@
+/* PROTOTYPE (local only; assets are "concept assets", rights not cleared):
+   granite page, parchment sheet, sewn selection block with torn edges + tri-colour cord with gold caps.
+   Excluded from the public Pages artifact by tools/release/build-pages-dist.js. */
+:root {
+  --ps-marble: url("scroll-proto/marble.webp");
+  --ps-lime: url("scroll-proto/limestone.webp");
+  --ps-card-veil: linear-gradient(rgba(255,251,238,.60),rgba(255,251,238,.60)); --ps-card-line: rgba(150,115,62,.38); --ps-card-btn: rgba(255,250,236,.72);
+  --ps-page-veil: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));
+  --ps-veil: linear-gradient(rgba(255,252,240,.46),rgba(255,252,240,.46)); --ps-sheen-veil: linear-gradient(rgba(255,252,240,.10),rgba(255,252,240,.10));
+  --ps-granite: url("scroll-proto/granite.webp"); --ps-center: url("scroll-proto/paper-center.webp"); --ps-original: url("scroll-proto/paper-original.webp");
+  --ps-etop: url("scroll-proto/edge-top.webp"); --ps-ebot: url("scroll-proto/edge-bottom.webp"); --ps-eleft: url("scroll-proto/edge-left.webp"); --ps-eright: url("scroll-proto/edge-right.webp");
+  --ps-rope: url("scroll-proto/cord2-tile.webp"); --ps-captop: url("scroll-proto/cord2-cap-top.webp"); --ps-capbot: url("scroll-proto/cord2-cap-bottom.webp");
+}
+:root[data-theme="dark"] {
+  --ps-marble: url("scroll-proto/marble-dark.webp");
+  --ps-lime: url("scroll-proto/limestone-dark.webp");
+  --ps-card-veil: linear-gradient(rgba(255,238,200,.07),rgba(255,238,200,.07)); --ps-card-line: rgba(210,180,120,.30); --ps-card-btn: rgba(255,238,200,.10);
+  --ps-page-veil: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));
+  --ps-veil: linear-gradient(rgba(255,244,214,.10),rgba(255,244,214,.10)); --ps-sheen-veil: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));
+  --ps-granite: url("scroll-proto/granite-dark.webp"); --ps-center: url("scroll-proto/paper-center-dark.webp"); --ps-original: url("scroll-proto/paper-original-dark.webp");
+  --ps-etop: url("scroll-proto/edge-top-dark.webp"); --ps-ebot: url("scroll-proto/edge-bottom-dark.webp"); --ps-eleft: url("scroll-proto/edge-left-dark.webp"); --ps-eright: url("scroll-proto/edge-right-dark.webp");
+  --ps-rope: url("scroll-proto/cord2-tile-dark.webp"); --ps-captop: url("scroll-proto/cord2-cap-top-dark.webp"); --ps-capbot: url("scroll-proto/cord2-cap-bottom-dark.webp");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ps-marble: url("scroll-proto/marble-dark.webp");
+    --ps-lime: url("scroll-proto/limestone-dark.webp");
+    --ps-card-veil: linear-gradient(rgba(255,238,200,.07),rgba(255,238,200,.07)); --ps-card-line: rgba(210,180,120,.30); --ps-card-btn: rgba(255,238,200,.10);
+    --ps-page-veil: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));
+    --ps-veil: linear-gradient(rgba(255,244,214,.10),rgba(255,244,214,.10)); --ps-sheen-veil: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));
+    --ps-granite: url("scroll-proto/granite-dark.webp"); --ps-center: url("scroll-proto/paper-center-dark.webp"); --ps-original: url("scroll-proto/paper-original-dark.webp");
+    --ps-etop: url("scroll-proto/edge-top-dark.webp"); --ps-ebot: url("scroll-proto/edge-bottom-dark.webp"); --ps-eleft: url("scroll-proto/edge-left-dark.webp"); --ps-eright: url("scroll-proto/edge-right-dark.webp");
+    --ps-rope: url("scroll-proto/cord2-tile-dark.webp"); --ps-captop: url("scroll-proto/cord2-cap-top-dark.webp"); --ps-capbot: url("scroll-proto/cord2-cap-bottom-dark.webp");
+  }
+}
+/* outermost page: granite */
+:root:not([data-ns3]) body,
+:root:not([data-ns3]) body > header.top,
+:root:not([data-ns3]) body[data-view="timeline"] #timeline-pane {
+  background: var(--ps-page-veil), var(--ps-granite) 0 0 / 420px 420px repeat fixed;
+}
+/* the scroll sheet */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses.scripture-scroll-area {
+  background: var(--ps-sheen-veil), var(--ps-center) 0 0 / 640px 640px repeat;
+  box-shadow: inset 0 0 22px rgba(90,60,20,.22), 0 3px 12px rgba(30,20,8,.30);
+  border-radius: 6px;
+}
+/* selected block (middle pieces): original-language paper + left cord + torn side strips */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses .verse.sel,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body {
+  border-radius: 0;
+  background:
+    var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
+    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
+    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+  box-shadow: 0 0 14px var(--scr-glow);
+}
+/* first piece of a group: gold cap + torn top edge */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse.sel:not(.sel + .sel):not(.ol-body + .sel) {
+  border-top-left-radius: 6px; border-top-right-radius: 6px; padding-top: 24px;
+  background:
+    var(--ps-captop) 1px 0 / 18px 68px no-repeat,
+    var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
+    var(--ps-etop) 0 0 / 100% 18px no-repeat,
+    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
+    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+}
+/* last piece of a group: torn bottom edge + gold cap */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse.sel:not(:has(+ .sel)):not(:has(+ .ol-body)),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body:not(:has(+ .sel)) {
+  border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; padding-bottom: 30px;
+  background:
+    var(--ps-capbot) 1px 100% / 18px 58px no-repeat,
+    var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
+    var(--ps-ebot) 0 100% / 100% 18px no-repeat,
+    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
+    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+}
+/* a lone selected verse (no original below, no neighbour): both ends */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse.sel:not(.sel + .sel):not(.ol-body + .sel):not(:has(+ .sel)):not(:has(+ .ol-body)) {
+  padding-top: 24px; padding-bottom: 30px;
+  background:
+    var(--ps-captop) 1px 0 / 18px 68px no-repeat,
+    var(--ps-capbot) 1px 100% / 18px 58px no-repeat,
+    var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
+    var(--ps-etop) 0 0 / 100% 18px no-repeat,
+    var(--ps-ebot) 0 100% / 100% 18px no-repeat,
+    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
+    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+}
+
+/* readability: only SMALL / FAINT text that sits directly on the granite gets an outline (white in light, dark in dark).
+   Bold dark headings and the logo are left as they were. */
+:root { --ps-outline: #ffffff; --ps-small-ink: #0b0907; }
+:root[data-theme="dark"] { --ps-outline: #0f0e0d; --ps-small-ink: #efe6d4; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --ps-outline: #0f0e0d; --ps-small-ink: #efe6d4; } }
+:root:not([data-ns3]) body > header.top .brand span:last-child,
+:root:not([data-ns3]) body > header.top .brand small,
+:root:not([data-ns3]) body[data-view="timeline"] #timeline-pane .tl-page-head .tl-head-title p,
+:root:not([data-ns3]) body[data-view="timeline"] #timeline-pane .tl-event-head h3 small,
+:root:not([data-ns3]) body[data-view="timeline"] #timeline-pane .tl-event-head > div button:not(.is-on),
+:root:not([data-ns3]) body[data-view="timeline"] #timeline-pane .tl-event-tick {
+  color: var(--ps-small-ink); font-weight: 600; -webkit-text-stroke: 2px var(--ps-outline); paint-order: stroke fill; text-shadow: none;
+}
+
+/* word / research cards opened under the original text: bright ivory parchment instead of pure white */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body .ol-card,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body .rp-panel {
+  background: var(--ps-card-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+  border: 1px solid var(--ps-card-line); box-shadow: 0 1px 6px rgba(90,60,20,.14);
+}
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body .ol-card button,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body .rp-panel button { background: var(--ps-card-btn); border-color: var(--ps-card-line); }
+
+/* timeline page only: finer-grained limestone instead of granite (the study view keeps the granite) */
+:root:not([data-ns3]):not([data-ns4]) body[data-view="timeline"],
+:root:not([data-ns3]):not([data-ns4]) body[data-view="timeline"] > header.top,
+:root:not([data-ns3]):not([data-ns4]) body[data-view="timeline"] #timeline-pane {
+  background: var(--ps-page-veil), var(--ps-lime) 0 0 / 420px 420px repeat fixed;
+}
+:root {
+  --jg-panel-bg: linear-gradient(145deg, rgba(255,253,248,.88), rgba(248,242,231,.70));
+  --jg-card-bg: linear-gradient(145deg, rgba(255,253,248,.80), rgba(248,242,231,.62));
+  --jg-border: rgba(255,255,255,.65); --jg-card-border: rgba(255,255,255,.60);
+  --jg-shadow: 0 3px 12px rgba(75,60,40,.09), inset 0 1px 0 rgba(255,255,255,.55);
+  --jg-card-shadow: 0 2px 8px rgba(75,60,40,.07), inset 0 1px 0 rgba(255,255,255,.50);
+}
+:root[data-theme="dark"] {
+  --jg-panel-bg: linear-gradient(145deg, rgba(46,42,38,.82), rgba(30,27,24,.66));
+  --jg-card-bg: linear-gradient(145deg, rgba(58,53,48,.66), rgba(36,33,29,.50));
+  --jg-border: rgba(255,255,255,.10); --jg-card-border: rgba(255,255,255,.08);
+  --jg-shadow: 0 3px 14px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.07);
+  --jg-card-shadow: 0 2px 8px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.05);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --jg-panel-bg: linear-gradient(145deg, rgba(46,42,38,.82), rgba(30,27,24,.66));
+    --jg-card-bg: linear-gradient(145deg, rgba(58,53,48,.66), rgba(36,33,29,.50));
+    --jg-border: rgba(255,255,255,.10); --jg-card-border: rgba(255,255,255,.08);
+    --jg-shadow: 0 3px 14px rgba(0,0,0,.32), inset 0 1px 0 rgba(255,255,255,.07);
+    --jg-card-shadow: 0 2px 8px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.05);
+  }
+}
+
+/* --- translucent glass panels (user spec: gradient + blur(12px) + white hairline + soft shadow), all panels --- */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #rail, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #map-pane, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #guide-pane,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body[data-view="study"] #side-pane,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body[data-view="study"] #text-pane {
+  background: var(--jg-panel-bg);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border: 1px solid var(--jg-border); border-radius: 16px;
+  box-shadow: var(--jg-shadow);
+}
+/* --- cards sitting on the panels: same glass, a little lighter (their own border colours are kept) --- */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #panel .rp-reader-section, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #panel .rp-central, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #panel .rp-lex-card, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #panel details.rp-canonical, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #panel details.ov, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #guide-pane .jnav-current, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #guide-pane .jnav-timeline, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #map-pane .mp-head, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #map-pane .map-note.route-note, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body .rs-switch {
+  background: var(--jg-card-bg) !important;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border-radius: 12px !important;
+  box-shadow: var(--jg-card-shadow) !important;
+}
+
+/* --- top bar: search box, passage box and tool group get the same glass (pill shape) --- */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #qs-input,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #ref-input,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #ann-tools {
+  background: var(--jg-panel-bg);
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: var(--jg-shadow);
+}
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #qs-input:not(:focus),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #ref-input:not(:focus),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #ann-tools { border: 1px solid var(--jg-border); }
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #qs-input, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #ref-input { border-radius: 18px; }
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #ann-tools { border-radius: 16px; }
+
+/* research-panel cards: the app's own rules use ids + !important, so match their path to win */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #side-pane #panel .rp-panel.rp-editorial-reader :is(.rp-reader-section, .rp-lex-card, .rp-central, .rp-overview, .rp-cautions) {
+  background: var(--jg-card-bg) !important;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border-radius: 12px !important;
+  box-shadow: var(--jg-card-shadow) !important;
+}
+
+/* scripture (study) page: marble instead of granite */
+:root:not([data-ns3]):not([data-ns4]):not([data-ns6]) body[data-view="study"],
+:root:not([data-ns3]):not([data-ns4]):not([data-ns6]) body[data-view="study"] > header.top {
+  background: var(--ps-page-veil), var(--ps-marble) 0 0 / 420px 420px repeat fixed;
+}
+
+/* --- timeline page: panels and cards get the same translucent glass --- */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-detail,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-era-summary,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-chrono-all,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-civ-sec {
+  background: var(--jg-panel-bg) !important;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border: 1px solid var(--jg-border) !important; border-radius: 16px !important;
+  box-shadow: var(--jg-shadow) !important;
+}
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-era-card:not(.is-on),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-event-card:not(.is-on),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-civ-era:not(.is-on),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-civ-item:not(.is-on),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-civ-tab:not(.is-on) {
+  background: var(--jg-card-bg) !important;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: var(--jg-card-shadow) !important;
+}
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-era-card:not(.is-on),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-event-card:not(.is-on),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-civ-era:not(.is-on),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-civ-item:not(.is-on) { border-color: var(--jg-card-border) !important; border-radius: 12px !important; }
+/* the selected card keeps its warm tint, just translucent */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-era-card.is-on,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-event-card.is-on {
+  background: linear-gradient(145deg, rgba(249,228,216,.88), rgba(246,222,208,.70)) !important;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  box-shadow: var(--jg-card-shadow) !important; border-radius: 12px !important;
+}
+:root[data-theme="dark"]:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-era-card.is-on,
+:root[data-theme="dark"]:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-event-card.is-on {
+  background: linear-gradient(145deg, rgba(120,70,52,.55), rgba(84,52,40,.45)) !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-era-card.is-on,
+  :root:not([data-theme="light"]):not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns7]) body[data-view="timeline"] #timeline-pane .tl-event-card.is-on {
+    background: linear-gradient(145deg, rgba(120,70,52,.55), rgba(84,52,40,.45)) !important;
+  }
+}
+
+/* --- search page: panels, cards and controls get the same glass --- */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] .sw-nav,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] .sw-main {
+  background: var(--jg-panel-bg) !important;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border: 1px solid var(--jg-border) !important; border-radius: 16px !important;
+  box-shadow: var(--jg-shadow) !important;
+}
+/* result cards (hundreds of them): glass tint without blur to keep scrolling smooth */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] .ee-card:not(.is-selected),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] .sw-mode, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] .sw-choice, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] .sw-view,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] #sw-clear {
+  background: var(--jg-card-bg) !important;
+  border-color: var(--jg-card-border) !important;
+  box-shadow: var(--jg-card-shadow) !important;
+}
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] .ee-card:not(.is-selected) { border-radius: 14px !important; }
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] #sw-query {
+  background: var(--jg-panel-bg) !important;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border: 1px solid var(--jg-border); border-radius: 18px !important;
+  box-shadow: var(--jg-shadow);
+}
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] #sw-period, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] #sw-story, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] #sw-journey, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] #sw-region, :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]):not([data-ns8]) body[data-view="explore"] #sw-sort {
+  background: var(--jg-card-bg) !important; border: 1px solid var(--jg-card-border); border-radius: 12px !important;
+}
+
+/* A backdrop-filter makes an element the containing block of its position:fixed descendants. #map-pane hosts the
+   fixed detail panel (#side-pane) in the search / explore layouts, so it must not blur (the map is opaque anyway). */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #map-pane { -webkit-backdrop-filter: none; backdrop-filter: none; }
+

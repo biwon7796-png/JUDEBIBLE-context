@@ -199,6 +199,14 @@ function main() {
     fs.rmSync(path.join(DIST, entry), { recursive: true, force: true, maxRetries: 10, retryDelay: 200 });
   }
 
+  const PREBUILT = path.join(ROOT, "site-prebuilt");
+  if (fs.existsSync(path.join(PREBUILT, "index.html"))) {
+    fs.cpSync(PREBUILT, DIST, { recursive: true });
+    fs.writeFileSync(outputPath(".nojekyll"), "", "utf8");
+    console.log(JSON.stringify({ status: "PASS", source: "site-prebuilt", files: walk(DIST).length }));
+    return;
+  }
+
   for (const file of PUBLIC_ROOT_FILES) copyFile(file);
   for (const file of PUBLIC_LAZY_FILES) copyFile(file);
   for (const file of PUBLIC_VENDOR_FILES) copyFile(file);

@@ -1,0 +1,1 @@
+JudeBible visual assets — concept assets only. Copy the judebible-visual-assets folder into F:\projects\웹앱\design-preview\ or the preferred static asset directory. Do not overwrite existing files. Transparent alpha is present in cord assets. Parchment border strips are raster artwork, not guaranteed mathematically seamless repeatable tiles. No app code modified.

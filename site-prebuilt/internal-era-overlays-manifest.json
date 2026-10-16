@@ -1,0 +1,20 @@
+{
+  "status": "INTERNAL_VISUAL_REVIEW_ONLY_NOT_PUBLIC_RIGHTS_CLEARED",
+  "copied_from": "F:\\projects\\웹앱\\tools\\pipeline\\out\\public-era-journey-numbered-20261016",
+  "schematic_files": [
+    "conquest.schematic.js",
+    "judges.schematic.js",
+    "united.monarchy.schematic.js",
+    "divided.kingdom.schematic.js",
+    "assyria.schematic.js",
+    "exile.schematic.js",
+    "persian.return.schematic.js",
+    "hellenistic.schematic.js"
+  ],
+  "era_regions": 8,
+  "rights_hold": "Holman-inspired source sketches; independent geometry provenance not established",
+  "authority": "PRESENTATION_ONLY_APPROXIMATE",
+  "historical_boundary_claim": false,
+  "original_mutation": false,
+  "external_release": false
+}

@@ -1,0 +1,19 @@
+{
+  "asset_id": "JBC_LOCAL_TERRAIN_LEVANT_NE2_50M_SR",
+  "role": "REFERENCE_BASEMAP_ONLY",
+  "source": "Natural Earth",
+  "dataset": "Natural Earth II with Shaded Relief",
+  "source_archive": "NE2_50M_SR.zip",
+  "source_url": "https://naturalearth.s3.amazonaws.com/50m_raster/NE2_50M_SR.zip",
+  "version": "3.2.0",
+  "license": "Public Domain",
+  "bounds_wgs84": {
+    "west": 18.0,
+    "east": 48.0,
+    "south": 15.0,
+    "north": 45.0
+  },
+  "projection": "Web Mercator prewarped for JudeBible SVG map space",
+  "labels": "NONE",
+  "sha256": "082710fe22de2ee2e50fca52855bbc99b7d93f1999524ece8b4b41cd4f90f8ed"
+}
