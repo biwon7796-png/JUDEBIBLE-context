@@ -11,6 +11,8 @@ const PUBLIC_ROOT_FILES = [
   "styles.css",
   "stone-surfaces-20261016.css",
   "stone-backgrounds-20261016.css",
+  "data/scroll.thread.proto.css",
+  "data/scroll.thread.proto.js",
   "mobile-one-flow-20261016.css",
   "favicon.ico",
   "favicon-32.png",
@@ -27,6 +29,7 @@ const PUBLIC_RUNTIME_DIRS = [
   "data/original-language",
   "data/terrain_baked",
   "data/terrain_tiles",
+  "data/scroll-proto",
   "stone-design"
 ];
 

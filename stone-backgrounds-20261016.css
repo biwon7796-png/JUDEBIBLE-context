@@ -1,15 +1,5 @@
 /* Public JudeBible stone backgrounds, 2026-10-16: scoped CSS only. Light theme; loaded after stone-surfaces-20261016.css.
    The parchment scroll (#verses), the stitched selection thread and the original-language popover are untouched. */
-:root:not([data-theme="dark"]) #text-pane {
-  background-color: #ece3d1 !important;
-  background-image: linear-gradient(145deg, rgba(255, 252, 244, .30), rgba(246, 236, 217, .18)), url("stone-design/rough-limestone.png") !important;
-  background-size: auto, cover !important;
-  background-position: center !important;
-  background-repeat: no-repeat !important;
-}
-:root:not([data-theme="dark"]) #text-pane .pane-head {
-  background-image: linear-gradient(115deg, rgba(255, 251, 244, .78), rgba(249, 238, 221, .64)) !important;
-}
 :root:not([data-theme="dark"]) #rail,
 :root:not([data-theme="dark"]) #guide-pane,
 :root:not([data-theme="dark"]) #map-pane {
