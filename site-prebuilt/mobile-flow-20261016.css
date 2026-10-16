@@ -161,3 +161,13 @@
   html body[data-mflow] #verses .verse .vnum::after { content: ""; position: absolute; inset: -6px; }
   html body[data-mflow] #verses .verse.sel .vnum, html body[data-mflow] #verses .verse.ol-default-active .vnum { top: 26px !important; }
 }
+@media (max-width: 760px) {
+  /* ---- timeline: the event detail card lives in the detail tab; the main tab is the flowing timeline ---- */
+  html body[data-mflow][data-view="timeline"][data-mtab="main"] #timeline-pane .tl-detail { display: none !important; }
+  html body[data-mflow][data-view="timeline"][data-mtab="detail"] #timeline-pane .tl-left { display: none !important; }
+  html body[data-mflow][data-view="timeline"][data-mtab="detail"] #timeline-pane .tl-detail { display: block !important; position: static !important; width: auto; max-height: none !important; }
+  /* the timeline pane stays visible in the detail tab (it holds the detail card); the side panel is not used on this page */
+  html body[data-mflow][data-view="timeline"][data-mtab="detail"] #timeline-pane { visibility: visible !important; }
+  html body[data-mflow][data-view="timeline"][data-mtab="detail"] #rail { visibility: visible !important; }
+  html body[data-mflow][data-view="timeline"][data-mtab="detail"] #side-pane { display: none !important; }
+}

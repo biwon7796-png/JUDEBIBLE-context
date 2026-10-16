@@ -36,9 +36,12 @@
   function refreshMap() { try { var m = window.BVC && BVC.mapRenderer && BVC.mapRenderer.map && BVC.mapRenderer.map(); if (m && m.resize) { m.resize(); } } catch (e) {} }
 
   function setTab(next) {
+    var tp = document.getElementById("timeline-pane");
+    if (tp && view() === "timeline") { if (next === "detail" && tab !== "detail") tp.dataset.mainScroll = String(tp.scrollTop); }
     tab = next; body.dataset.mtab = next; draw(); placeTop(); setTimeout(placeTop, 150);
-    if (next === "detail" && window.BVC && BVC.setPanel && body.dataset.panel !== "open") BVC.setPanel("open");
+    if (next === "detail" && view() !== "timeline" && window.BVC && BVC.setPanel && body.dataset.panel !== "open") BVC.setPanel("open");
     if (next === "map") { placeMap(); setTimeout(placeMap, 120); setTimeout(refreshMap, 60); setTimeout(refreshMap, 400); }
+    if (tp && view() === "timeline") { var keep = next === "main" ? Number(tp.dataset.mainScroll || 0) : 0; tp.scrollTop = keep; setTimeout(function () { tp.scrollTop = keep; }, 60); }
     window.scrollTo(0, 0);
   }
   function draw() {
@@ -56,7 +59,7 @@
     var v = view();
     if (v !== lastView) { lastView = v; tab = mainKey(); }
     // a collapsed panel can't be the visible tab; a tab that no longer exists falls back to the main one
-    if (tab === "detail" && body.dataset.panel !== "open") tab = mainKey();
+    if (tab === "detail" && v !== "timeline" && body.dataset.panel !== "open") tab = mainKey();
     if (!tabsFor().some(function (t) { return t[0] === tab; })) tab = mainKey();
     body.dataset.mtab = tab; draw(); placeTop();
   }
@@ -65,6 +68,11 @@
   document.addEventListener("click", function (ev) {
     if (!mq.matches || ev.target.closest("#m-flow-tabs")) return;
     var before = panelSig(), v = view();
+    // timeline: picking an event opens its detail card in the detail tab (the research button still goes to the study page)
+    if (v === "timeline" && !ev.target.closest("[data-tl-study]")) {
+      if (ev.target.closest("#timeline-pane .tl-event-card, #timeline-pane [data-tl-step]") && !ev.target.closest(".tl-pager")) setTimeout(function () { if (view() === "timeline") setTab("detail"); }, 120);
+      return;
+    }
     if (v === "study" && ctx() !== "entity" && !ev.target.closest("#guide-pane,#map-pane")) { /* verse clicks keep the text visible */ }
     setTimeout(function () {
       if (body.dataset.panel !== "open" || tab === "detail") return;
