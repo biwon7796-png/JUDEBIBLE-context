@@ -9,6 +9,7 @@ const DIST_PREFIX = DIST + path.sep;
 
 const PUBLIC_ROOT_FILES = [
   "styles.css",
+  "stone-surfaces-20261016.css",
   "favicon.ico",
   "favicon-32.png",
   "favicon-512.png",
@@ -23,7 +24,8 @@ const PUBLIC_LAZY_FILES = [
 const PUBLIC_RUNTIME_DIRS = [
   "data/original-language",
   "data/terrain_baked",
-  "data/terrain_tiles"
+  "data/terrain_tiles",
+  "stone-design"
 ];
 
 const PUBLIC_VENDOR_FILES = [

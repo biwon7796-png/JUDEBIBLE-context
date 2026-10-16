@@ -1,0 +1,17 @@
+/* Public JudeBible stone-surface design: scoped CSS only, 2026-10-16. */
+:root:not([data-theme="dark"]) body[data-view="timeline"] #timeline-pane {
+  background-color:#e8dcc8;
+  background-image:linear-gradient(110deg,rgba(255,249,231,.26),rgba(112,85,50,.08)),url("stone-design/limestone.png");
+  background-size:100% 100%,cover; background-position:center; background-attachment:fixed;
+}
+:root:not([data-theme="dark"]) body[data-view="study"] #side-pane .rp-panel,
+:root:not([data-theme="dark"]) body[data-view="study"] #side-pane .rp-editorial-reader {
+  background-image:linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),url("stone-design/marble.png");
+  background-size:auto,cover; background-position:center;
+}
+:root:not([data-theme="dark"]) body:has(#search-workspace:not([hidden])) #search-workspace {
+  background-color:#ebe5d9;
+  background-image:linear-gradient(rgba(249,247,242,.58),rgba(239,234,222,.62)),url("stone-design/granite.png");
+  background-size:auto,720px auto; background-repeat:repeat;
+}
+/* Do not override the scripture parchment and stitched selection. */
