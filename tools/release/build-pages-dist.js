@@ -10,6 +10,7 @@ const DIST_PREFIX = DIST + path.sep;
 const PUBLIC_ROOT_FILES = [
   "styles.css",
   "stone-surfaces-20261016.css",
+  "mobile-one-flow-20261016.css",
   "favicon.ico",
   "favicon-32.png",
   "favicon-512.png",
@@ -202,6 +203,9 @@ function main() {
   fs.writeFileSync(outputPath(".nojekyll"), "", "utf8");
 
   const bundledSources = buildHtmlAndBundle();
+  const publicHtml = fs.readFileSync(outputPath("index.html"), "utf8");
+  if (!publicHtml.includes("</head>")) throw new Error("preview head marker missing");
+  fs.writeFileSync(outputPath("mobile-preview.html"), publicHtml.replace("</head>", '<link rel="stylesheet" href="mobile-one-flow-20261016.css?v=1">\n</head>'), "utf8");
   const result = verifyArtifact();
   console.log(JSON.stringify({
     status: "PASS",
