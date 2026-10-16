@@ -88,6 +88,14 @@
     if (steps.length) html += "<h5>연표에서 이 장소가 걸린 사건</h5><ul class=\"pe-steps\">" + steps.slice(0, 8).map(function (s) {
       var mm = /^([1-3]?[a-z]+)-(\d+):(\d+)/i.exec(s.range) || []; var e = ERA[(/^era\.([a-z-]+)\./.exec(s.id) || [])[1]] || "";
       return "<li><a href=\"#" + esc((mm[1] || "") + "-" + (mm[2] || "") + ":" + (mm[3] || "")) + "\">" + esc(s.title) + "</a> <span>" + esc(e) + " · " + esc(s.range.replace(/^([1-3]?[a-z]+)-/i, function (_, b) { return bookName(b.toLowerCase()) + " "; }).replace("-", "–")) + "</span></li>"; }).join("") + "</ul>";
+    if (window.JBCResearch) refs.forEach(function (r) { if (window.JBCResearch.has(r.b) && !window.JBCResearch.loaded(r.b)) window.JBCResearch.ensure(r.b, function () { if (article.isConnected) { var o = article.querySelector(".pe-section"); if (o) o.remove(); article.removeAttribute("data-enriched"); enrich(article); } }); });
+    var wl = []; var seenW = {};
+    (window.BVC_PASSAGE_RESEARCH_CONTENT || []).forEach(function (d) {
+      var p = d && d.passage; if (!p) return;
+      var hit = refs.some(function (r) { if (r.b !== p.book) return false; var a1 = +p.chapter * 1000 + (+p.v1 || 1), z1 = +(p.chapterEnd || p.chapter) * 1000 + (+p.v2 || 999); return !(z1 < r.c1 * 1000 + r.v1 || a1 > r.c2 * 1000 + r.v2); });
+      var key = p.book + p.chapter + ":" + p.v1; if (hit && !seenW[key]) { seenW[key] = 1; wl.push(d); }
+    });
+    if (wl.length) html += "<h5>이 장소가 나오는 본문연구 <small>WORBS</small></h5><ul class=\"pe-worbs\">" + wl.slice(0, 4).map(function (d) { var p = d.passage; return "<li><a href=\"#" + p.book + "-" + p.chapter + ":" + (p.v1 || 1) + "\">" + esc(d.title || p.ref) + "</a> <span>" + esc(p.ref) + "</span></li>"; }).join("") + "</ul>";
     if (persons.length) html += "<h5>같은 본문에 이름이 나오는 인물 후보</h5><p class=\"pe-ppl\">" + esc(persons.slice(0, 10).join(", ")) + "</p>";
     if (!html && !rp) return;
     var sec = document.createElement("section"); sec.className = "d-sec pe-section"; sec.setAttribute("data-part", "auto-place");

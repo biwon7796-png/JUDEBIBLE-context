@@ -1,6 +1,7 @@
 /* Timeline detail card: adds an "이야기 흐름" section and "함께 읽기" links (JBC_TL_ENRICH, written for JudeBible) and
    an automatic excerpt of the Tyndale Open Study Notes (CC BY-SA 4.0, English) that overlap the step's passage. */
 (function () {
+  var w = window;
   var MAP = { gen: "Gen", exo: "Exod", lev: "Lev", num: "Num", deu: "Deut", jos: "Josh", jdg: "Judg", rut: "Ruth", "1sa": "ISam", "2sa": "IISam", "1ki": "IKgs", "2ki": "IIKgs", "1ch": "IChr", "2ch": "IIChr", ezr: "Ezra", neh: "Neh", est: "Esth", job: "Job", psa: "Ps", pro: "Pr", ecc: "Eccl", sng: "Song", isa: "Isa", jer: "Jer", lam: "Lam", ezk: "Ezek", dan: "Dan", hos: "Hos", jol: "Joel", amo: "Amos", oba: "Obad", jon: "Jon", mic: "Mic", nam: "Nah", hab: "Hab", zep: "Zeph", hag: "Hagg", zec: "Zech", mal: "Mal", mat: "Matt", mrk: "Mark", luk: "Luke", jhn: "John", act: "Acts", rom: "Rom", "1co": "ICor", "2co": "IICor", gal: "Gal", eph: "Eph", php: "Phil", col: "Col", "1th": "IThes", "2th": "IIThes", "1ti": "ITim", "2ti": "IITim", tit: "Titus", phm: "Phlm", heb: "Heb", jas: "Jas", "1pe": "IPet", "2pe": "IIPet", "1jn": "IJn", "2jn": "IIJn", "3jn": "IIIJn", jud: "Jude", rev: "Rev" };
   var cache = {}, stepIndex = null, busy = false;
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
@@ -43,10 +44,43 @@
     var cut = t.slice(0, n), i = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("; "));
     return (i > n * 0.5 ? cut.slice(0, i + 1) : cut.replace(/\s+\S*$/, "")) + " …";
   }
+  // WORBS reader research (BVC_PASSAGE_RESEARCH_CONTENT): the part of the research that overlaps the step's passage
+  function worbsFor(rg) {
+    var all = window.BVC_PASSAGE_RESEARCH_CONTENT || [], s = rg.c1 * 1000 + rg.v1, e = rg.c2 * 1000 + rg.v2, seen = {}, out = [];
+    all.forEach(function (d) {
+      var p = d && d.passage; if (!p || p.book !== rg.book) return;
+      var c1 = +p.chapter, c2 = +(p.chapterEnd || p.chapter), a = c1 * 1000 + (+p.v1 || 1), b = c2 * 1000 + (+p.v2 || 999);
+      if (b < s || a > e) return; var key = p.book + c1 + ":" + p.v1 + "-" + c2 + ":" + p.v2; if (seen[key]) return; seen[key] = 1;
+      var secs = (d.sections || []).filter(function (x) { var sc = +(x.chapter || x.c1 || c1), v1 = +x.v1, v2 = +x.v2, sc2 = +(x.chapterEnd || x.c2 || sc); return sc * 1000 + v1 <= e && sc2 * 1000 + v2 >= s; });
+      out.push({ d: d, secs: secs, pericope: c1 === c2 && (+p.v2 - +p.v1) < 60, key: key, approved: /^JBC_/.test(d.researchId || "") });
+    });
+    out.sort(function (x, y) { return (y.approved ? 1 : 0) - (x.approved ? 1 : 0); });
+    return out.slice(0, 2);
+  }
+  function worbsHtml(list, rg) {
+    if (!list.length) return "";
+    var h = '<h3>본문연구 <small>WORBS · 주드성경 본문연구 패널과 같은 연구</small></h3>';
+    list.forEach(function (r) {
+      h += '<article class="tl-worbs"><b>' + esc(r.d.title || r.d.passage.ref) + "</b>";
+      if (r.pericope && r.d.centralMessage) h += "<p>" + esc(clip(r.d.centralMessage, 420)) + "</p>";
+      else if (r.secs.length) r.secs.slice(0, 2).forEach(function (x) { h += "<p><strong>" + esc(x.title) + "</strong> " + esc(clip((x.paragraphs || [])[0] || "", 360)) + "</p>"; });
+      else if (r.d.overview && r.d.overview[0]) h += "<p>" + esc(clip(r.d.overview[0], 360)) + "</p>";
+      h += '<button type="button" class="tl-worbs-open" data-hash="' + esc(rg.book + "-" + rg.c1 + ":" + rg.v1) + '">본문연구 패널에서 전체 보기</button></article>';
+    });
+    return h + '<p class="tl-credit">본문연구는 Tyndale Open Study Notes·unfoldingWord Translation Notes(CC BY-SA 4.0)로 보강한 주드성경 연구입니다.</p>';
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest(".tl-worbs-open"); if (!b) return;
+    location.hash = "#" + b.getAttribute("data-hash"); setTimeout(function () { var o = document.querySelector(".jb-research-edge-open,#panel-open"); if (o && document.body.dataset.panel !== "open") o.click(); }, 700);
+  });
   function render(det, id) {
     var enr = window.JBC_TL_ENRICH && window.JBC_TL_ENRICH[id], step = buildIndex()[id], rg = step && parseRange(step.range);
     var box = document.createElement("section"); box.className = "tl-enrich"; box.setAttribute("data-for", id); var html = "";
-    if (enr && enr.flow) html += "<h3>이야기 흐름</h3>" + enr.flow.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
+    if (rg && w.JBCResearch && w.JBCResearch.has(rg.book) && !w.JBCResearch.loaded(rg.book)) {   // the book of this step is not loaded yet: load it, then draw again
+      w.JBCResearch.ensure(rg.book, function () { var cur = det.querySelector(".tl-enrich"); if (det.isConnected && cur && cur.getAttribute("data-for") === id) { cur.remove(); render(det, id); } });
+    }
+    var wl = rg ? worbsFor(rg) : []; html += worbsHtml(wl, rg || {});
+    if (enr && enr.flow && !wl.length) html += "<h3>이야기 흐름</h3>" + enr.flow.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("");
     if (enr && enr.read && enr.read.length) html += '<h3>함께 읽기</h3><ul class="tl-read">' + enr.read.map(function (r) {
       return "<li>" + (r.hash ? '<a href="#' + esc(r.hash) + '">' + esc(r.ref) + "</a>" : "<b>" + esc(r.ref) + "</b>") + " <span>" + esc(r.why) + "</span></li>";
     }).join("") + "</ul>";
