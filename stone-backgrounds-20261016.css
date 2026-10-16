@@ -1,0 +1,46 @@
+/* Public JudeBible stone backgrounds, 2026-10-16: scoped CSS only. Light theme; loaded after stone-surfaces-20261016.css.
+   The parchment scroll (#verses), the stitched selection thread and the original-language popover are untouched. */
+:root:not([data-theme="dark"]) #text-pane {
+  background-color: #ece3d1 !important;
+  background-image: linear-gradient(145deg, rgba(255, 252, 244, .30), rgba(246, 236, 217, .18)), url("stone-design/rough-limestone.png") !important;
+  background-size: auto, cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
+:root:not([data-theme="dark"]) #text-pane .pane-head {
+  background-image: linear-gradient(115deg, rgba(255, 251, 244, .78), rgba(249, 238, 221, .64)) !important;
+}
+:root:not([data-theme="dark"]) #rail,
+:root:not([data-theme="dark"]) #guide-pane,
+:root:not([data-theme="dark"]) #map-pane {
+  background-image: linear-gradient(145deg, rgba(255, 253, 248, .84), rgba(248, 242, 231, .70)), url("stone-design/cream-limestone.png") !important;
+  background-size: auto, cover !important;
+  background-position: center !important;
+}
+:root:not([data-theme="dark"]) body[data-view="timeline"] #timeline-pane {
+  background-color: #e8dcc8;
+  background-image: linear-gradient(110deg, rgba(255, 249, 231, .22), rgba(112, 85, 50, .06)), url("stone-design/rough-limestone.png");
+  background-size: 100% 100%, cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+:root:not([data-theme="dark"]) body[data-view="study"] #side-pane .rp-panel,
+:root:not([data-theme="dark"]) body[data-view="study"] #side-pane .rp-editorial-reader {
+  background-image: linear-gradient(rgba(255, 255, 255, .80), rgba(255, 255, 255, .80)), url("stone-design/cream-limestone.png");
+  background-size: auto, cover;
+  background-position: center;
+}
+:root:not([data-theme="dark"]) body:has(#search-workspace:not([hidden])) #search-workspace {
+  background-color: #ebe5d9 !important;
+  background-image: linear-gradient(rgba(249, 247, 242, .50), rgba(239, 234, 222, .54)), url("stone-design/granite-cream.png") !important;
+  background-size: auto, cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+:root:not([data-theme="dark"]) #topic-board {
+  background-color: #efe6d4 !important;
+  background-image: linear-gradient(rgba(255, 251, 242, .64), rgba(247, 238, 221, .66)), url("stone-design/cream-beige.png") !important;
+  background-size: auto, cover !important;
+  background-position: center !important;
+}

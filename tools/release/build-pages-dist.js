@@ -10,6 +10,7 @@ const DIST_PREFIX = DIST + path.sep;
 const PUBLIC_ROOT_FILES = [
   "styles.css",
   "stone-surfaces-20261016.css",
+  "stone-backgrounds-20261016.css",
   "mobile-one-flow-20261016.css",
   "favicon.ico",
   "favicon-32.png",
