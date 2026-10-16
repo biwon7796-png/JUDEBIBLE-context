@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 "use strict";
 var root=document.body,bar=document.getElementById("mobile-search-tabs");
 var cards=document.getElementById("mobile-search-cards"),detail=document.getElementById("mobile-search-detail");
@@ -48,4 +48,3 @@ new MutationObserver(function(){
  if(active==="detail"&&!panel.querySelector('article.detail,.full-place-profile,.person-research,[data-detail]'))view("cards",true);
 }).observe(panel,{childList:true,subtree:false});
 })();
-
