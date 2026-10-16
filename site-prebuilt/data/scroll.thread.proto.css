@@ -46,41 +46,41 @@
   border-radius: 6px;
 }
 /* selected block (middle pieces): original-language paper + left cord + torn side strips */
-:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses .verse.sel,
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses .verse:is(.sel,.ol-default-active),
 :root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body {
   border-radius: 0;
   background:
     var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
-    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
-    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
-    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+    var(--ps-eleft) 0 var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-eright) 100% var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 var(--paper-y,0px) / 640px 640px repeat;
   box-shadow: 0 0 14px var(--scr-glow);
 }
 /* first piece of a group: gold cap + torn top edge */
-:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse.sel:not(.sel + .sel):not(.ol-body + .sel) {
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse:is(.sel,.ol-default-active):not(:is(.sel,.ol-default-active) + :is(.sel,.ol-default-active)):not(.ol-body + :is(.sel,.ol-default-active)) {
   border-top-left-radius: 6px; border-top-right-radius: 6px; padding-top: 24px;
   background:
     var(--ps-captop) 1px 0 / 18px 68px no-repeat,
     var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
     var(--ps-etop) 0 0 / 100% 18px no-repeat,
-    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
-    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
-    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+    var(--ps-eleft) 0 var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-eright) 100% var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 var(--paper-y,0px) / 640px 640px repeat;
 }
 /* last piece of a group: torn bottom edge + gold cap */
-:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse.sel:not(:has(+ .sel)):not(:has(+ .ol-body)),
-:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body:not(:has(+ .sel)) {
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse.sel:not(:has(+ :is(.sel,.ol-default-active))):not(:has(+ .ol-body)),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body:not(:has(+ :is(.sel,.ol-default-active))) {
   border-bottom-left-radius: 6px; border-bottom-right-radius: 6px; padding-bottom: 30px;
   background:
     var(--ps-capbot) 1px 100% / 18px 58px no-repeat,
     var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
     var(--ps-ebot) 0 100% / 100% 18px no-repeat,
-    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
-    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
-    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+    var(--ps-eleft) 0 var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-eright) 100% var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 var(--paper-y,0px) / 640px 640px repeat;
 }
 /* a lone selected verse (no original below, no neighbour): both ends */
-:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse.sel:not(.sel + .sel):not(.ol-body + .sel):not(:has(+ .sel)):not(:has(+ .ol-body)) {
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse:is(.sel,.ol-default-active):not(:is(.sel,.ol-default-active) + :is(.sel,.ol-default-active)):not(.ol-body + :is(.sel,.ol-default-active)):not(:has(+ :is(.sel,.ol-default-active))):not(:has(+ .ol-body)) {
   padding-top: 24px; padding-bottom: 30px;
   background:
     var(--ps-captop) 1px 0 / 18px 68px no-repeat,
@@ -88,9 +88,9 @@
     var(--ps-rope) 1px var(--rope-y, 68px) / 18px 34px repeat-y,
     var(--ps-etop) 0 0 / 100% 18px no-repeat,
     var(--ps-ebot) 0 100% / 100% 18px no-repeat,
-    var(--ps-eleft) 0 0 / 18px 300px repeat-y,
-    var(--ps-eright) 100% 0 / 18px 300px repeat-y,
-    var(--ps-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+    var(--ps-eleft) 0 var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-eright) 100% var(--paper-y,0px) / 18px 300px repeat-y,
+    var(--ps-veil), var(--ps-original) 0 var(--paper-y,0px) / 640px 640px repeat;
 }
 
 /* readability: only SMALL / FAINT text that sits directly on the granite gets an outline (white in light, dark in dark).
@@ -110,7 +110,7 @@
 /* word / research cards opened under the original text: bright ivory parchment instead of pure white */
 :root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body .ol-card,
 :root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body .rp-panel {
-  background: var(--ps-card-veil), var(--ps-original) 0 0 / 640px 640px repeat;
+  background: var(--ps-card-veil), var(--ps-original) 0 var(--paper-y,0px) / 640px 640px repeat;
   border: 1px solid var(--ps-card-line); box-shadow: 0 1px 6px rgba(90,60,20,.14);
 }
 :root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body .ol-card button,
@@ -263,3 +263,7 @@
    fixed detail panel (#side-pane) in the search / explore layouts, so it must not blur (the map is opaque anyway). */
 :root:not([data-ns1]):not([data-ns2]):not([data-ns3]):not([data-ns5]) body #map-pane { -webkit-backdrop-filter: none; backdrop-filter: none; }
 
+
+/* pieces of one selected group touch each other: no gap, so cord and paper read as one sheet */
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .verse:is(.sel,.ol-default-active),
+:root:not([data-ns1]):not([data-ns2]):not([data-ns3]) body[data-view="study"] #text-pane #verses > .ol-body { margin-top: 0 !important; margin-bottom: 0 !important; }

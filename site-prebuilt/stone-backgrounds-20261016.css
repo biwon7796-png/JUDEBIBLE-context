@@ -45,3 +45,16 @@
   background-size: auto, cover !important;
   background-position: center !important;
 }
+
+/* timeline event pager "‹ 1–5 / 10 ›": dark and clear on the stone background (light mode, all widths) */
+:root:not([data-theme="dark"]) .tl-pager { display: inline-flex; align-items: center; gap: 6px; padding: 3px; border-radius: 999px; background: rgba(255, 252, 244, .92); border: 1px solid rgba(150, 115, 62, .45); }
+:root:not([data-theme="dark"]) .tl-pager .tl-page-ind { color: #3d2f23 !important; font-weight: 800; }
+:root:not([data-theme="dark"]) .tl-pager button { color: #3d2f23; background: #fffaf0; border: 1px solid rgba(150, 115, 62, .55); opacity: 1; }
+:root:not([data-theme="dark"]) .tl-pager button:disabled { opacity: .35; }
+
+/* search page on desktop: when the detail panel is collapsed the result panel uses the freed width instead of leaving a blank strip */
+@media (min-width: 761px) {
+  body[data-view="explore"][data-panel="collapsed"] #search-workspace { right: 16px !important; }
+}
+:root:not([data-theme="dark"]) .tl-pager button { color: #3d2f23 !important; background: #fffaf0 !important; border: 1px solid rgba(150, 115, 62, .55) !important; font-weight: 700; }
+:root:not([data-theme="dark"]) .tl-pager button:disabled { opacity: .35 !important; }

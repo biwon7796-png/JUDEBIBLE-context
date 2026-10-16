@@ -2300,7 +2300,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   function stableOf(kind, id) { var d = dictOf(kind), r = d && d[id]; return (r && r.stable_id) || id; }
   var TABS = [["context", "문맥"], ["people", "인물"], ["places", "장소"],
               ["photos", "사진"], ["crossref", "관련 본문"], ["resources", "외부 자료"], ["notes", "내 메모"]];
-  var state = { passage: "gen-22", verse: null, entity: null, tab: "context", resKind: "전체", preview: null, prevTab: null, panel: "collapsed", sheet: "half", view: "study" };   // Lock v1.1: 왼쪽 Detail 기본 CLOSED, 관점 기본 본문연구
+  var state = { passage: "gen-1", verse: 1, entity: null, tab: "context", resKind: "전체", preview: null, prevTab: null, panel: "collapsed", sheet: "half", view: "study" };   // Lock v1.1: 왼쪽 Detail 기본 CLOSED, 관점 기본 본문연구
   // ---- 지도 표시 설정(사용자 소유, 영구) ----
   // 시대·인물·장면·장소·경로·카메라가 바뀌어도 이 값은 그대로 둔다. 장면 탐색은 카메라와 활성 콘텐츠만 바꾼다.
   // 바뀌는 곳은 (1) 지도 설정 패널·경로 버튼의 사용자 조작, (2) "기본값으로" 버튼뿐이다. 이 기기 localStorage 에만 저장한다.
@@ -2553,7 +2553,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   }
   // 브랜드 제목은 앱의 "홈"이다. 사용자 레이아웃 선호(분할 비율)는 보존하고, 화면/선택/지도 맥락만 초기 상태로 되돌린다.
   function resetHome() {
-    state.passage = "gen-22"; state.verse = null; state.entity = null; state.tab = "context"; state.resKind = "전체"; state.preview = null; state.prevTab = null; state.panel = "collapsed"; state.sheet = "half"; state.view = "study";
+    state.passage = "gen-1"; state.verse = 1; state.entity = null; state.tab = "context"; state.resKind = "전체"; state.preview = null; state.prevTab = null; state.panel = "collapsed"; state.sheet = "half"; state.view = "study";
     ui.refTarget = null; ui.rpPerson = null; ui.mapOpen = false; ui.tiles = false; ui.navExplore = false; ui.ovOpen = {}; ui.cam = { x: 50, y: 50, k: 1 }; ui.gcam = null; ui.layers = { route: true, place: true }; ui.guideStep = null; navEnd(true); ui.nav.board = false;
     if (typeof swState !== "undefined" && swState) { swState.q = ""; swState.kind = "all"; swState.type = "all"; swState.testament = "all"; swState.period = "all"; swState.region = "all"; swState.sort = "label"; swState.limit = 30; swState.prevFocus = null; closeSearch(true); }
     if ($("sw-query")) $("sw-query").value = "";

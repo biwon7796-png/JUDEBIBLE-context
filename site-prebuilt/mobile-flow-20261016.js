@@ -19,10 +19,24 @@
     var r = document.getElementById("rail"); if (!r) return;
     var bottom = r.getBoundingClientRect().bottom; if (bottom > 0 && bottom < 400) body.style.setProperty("--m-map-top", Math.round(bottom + 8) + "px");
   }
+  function placeTop() {
+    var r = document.getElementById("rail"); if (!r) return;
+    var rb = r.getBoundingClientRect().bottom, h = document.querySelector("header.top"), hb = h ? h.getBoundingClientRect().bottom : 0;
+    var top = Math.max(rb, hb); if (top > 0 && top < 400) body.style.setProperty("--m-top", Math.round(top + 8) + "px");
+    var vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+    body.style.setProperty("--m-vh", Math.round(vh) + "px");
+  }
+
+  // shorter placeholders so both search boxes fit side by side
+  function placeholders() {
+    var q = document.getElementById("qs-input"), r = document.querySelector(".ref-input");
+    if (q) { if (!q.dataset.ph) q.dataset.ph = q.placeholder; q.placeholder = mq.matches ? "인물·장소 검색" : q.dataset.ph; }
+    if (r) { if (!r.dataset.ph) r.dataset.ph = r.placeholder; r.placeholder = mq.matches ? "본문 (창 22:2)" : r.dataset.ph; }
+  }
   function refreshMap() { try { var m = window.BVC && BVC.mapRenderer && BVC.mapRenderer.map && BVC.mapRenderer.map(); if (m && m.resize) { m.resize(); } } catch (e) {} }
 
   function setTab(next) {
-    tab = next; body.dataset.mtab = next; draw();
+    tab = next; body.dataset.mtab = next; draw(); placeTop(); setTimeout(placeTop, 150);
     if (next === "detail" && window.BVC && BVC.setPanel && body.dataset.panel !== "open") BVC.setPanel("open");
     if (next === "map") { placeMap(); setTimeout(placeMap, 120); setTimeout(refreshMap, 60); setTimeout(refreshMap, 400); }
     window.scrollTo(0, 0);
@@ -44,7 +58,7 @@
     // a collapsed panel can't be the visible tab; a tab that no longer exists falls back to the main one
     if (tab === "detail" && body.dataset.panel !== "open") tab = mainKey();
     if (!tabsFor().some(function (t) { return t[0] === tab; })) tab = mainKey();
-    body.dataset.mtab = tab; draw();
+    body.dataset.mtab = tab; draw(); placeTop();
   }
 
   // opening a place / person / passage detail from a card or a button moves to the detail tab
@@ -66,5 +80,9 @@
   window.addEventListener("hashchange", function () { setTimeout(sync, 60); });
   (mq.addEventListener ? mq.addEventListener("change", sync) : mq.addListener(sync));
   window.addEventListener("resize", function () { if (tab === "map") { placeMap(); refreshMap(); } });
+  window.addEventListener("resize", placeTop);
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", placeTop);
+  setTimeout(placeTop, 300);
+  placeholders(); mq.addEventListener && mq.addEventListener("change", placeholders);
   sync();
 })();

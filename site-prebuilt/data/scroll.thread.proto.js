@@ -8,10 +8,11 @@
     var groupTop = null, kids = box.children;
     for (var i = 0; i < kids.length; i++) {
       var el = kids[i];
-      if (el.matches(".verse.sel, .ol-body")) {
+      if (el.matches(".verse.sel, .verse.ol-default-active, .ol-body")) {
         if (groupTop === null) groupTop = el.offsetTop;
         var rel = el.offsetTop - groupTop, y = (((CAP - rel) % TILE) + TILE) % TILE;
         var v = y + "px"; if (el.style.getPropertyValue("--rope-y") !== v) el.style.setProperty("--rope-y", v);
+        var pv = (-rel) + "px"; if (el.style.getPropertyValue("--paper-y") !== pv) el.style.setProperty("--paper-y", pv);
       } else groupTop = null;
     }
   }
