@@ -1,4 +1,4 @@
-﻿@media (max-width:760px){
+@media (max-width:760px){
 html,body{overflow-x:clip}
 body[data-view="study"] #text-pane{background:linear-gradient(rgba(255,255,255,.88),rgba(255,255,255,.92)),url("stone-design/marble.png") center/640px repeat;border:1px solid #dfd3c2;border-radius:16px;box-shadow:0 4px 18px #55442218}
 body[data-view="study"] #stage,body[data-view="study"] #text-pane,body[data-view="study"] #side-pane{max-width:100%;min-width:0}
@@ -29,4 +29,40 @@ body[data-view="explore"] .sw-results>*{max-width:100%;min-width:0}
  body[data-view="study"][data-mobile-study-tab="place"] #map-pane{order:0;position:relative;display:flex;flex-direction:column;min-width:0;width:100%;height:auto;max-height:none;overflow:visible}
  body[data-view="study"][data-mobile-study-tab="place"] #side-pane{position:relative!important;inset:auto!important;width:100%!important;max-width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;display:flex!important;visibility:visible!important;pointer-events:auto!important}
  body[data-view="study"][data-mobile-study-tab="place"] #side-pane .panel-stack{overflow:visible;max-height:none}
+}
+
+/* Mobile search: one full-screen surface at a time; desktop unchanged. */
+.mobile-search-tabs{display:none}
+@media(max-width:760px){
+ body[data-view="explore"] #mobile-search-tabs{
+  display:grid!important;grid-template-columns:1fr 1fr;gap:5px;
+  position:fixed;left:8px;right:8px;top:calc(var(--hdr-h,0px) + 54px);z-index:36;
+  padding:5px;background:#f5ede1f5;border:1px solid #d1bfa4;border-radius:13px;
+  box-shadow:0 3px 13px #54412d27
+ }
+ #mobile-search-tabs button{min-height:42px;border:0;border-radius:9px;background:transparent;
+  color:var(--ink);font:inherit;font-weight:650;cursor:pointer}
+ #mobile-search-tabs button[aria-selected="true"]{background:#fffdf8;
+  border:1px solid #bea16e;color:#8a542a;box-shadow:0 2px 6px #55442218}
+ #mobile-search-tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+ body[data-view="explore"] #search-workspace.sw{top:calc(var(--hdr-h,0px) + 108px)!important;
+  left:8px!important;right:8px!important;bottom:8px!important;width:auto!important}
+ body[data-view="explore"][data-mobile-search-tab="cards"] #side-pane{display:none!important}
+ body[data-view="explore"][data-mobile-search-tab="detail"] #search-workspace{display:none!important}
+ body[data-view="explore"][data-mobile-search-tab="detail"] #stage{
+  visibility:visible!important;pointer-events:none!important
+ }
+ body[data-view="explore"][data-mobile-search-tab="detail"] #side-pane{
+  display:flex!important;position:fixed!important;z-index:30!important;
+  top:calc(var(--hdr-h,0px) + 108px)!important;bottom:8px!important;
+  left:8px!important;right:8px!important;width:auto!important;max-width:none!important;
+  height:auto!important;max-height:none!important;
+  flex-direction:column;visibility:visible!important;pointer-events:auto!important;
+  overflow-y:auto!important;overscroll-behavior:contain;
+  background:linear-gradient(#fffcf8ed,#fffcf8f5),url("stone-design/limestone.png") center/560px repeat;
+  border:4px ridge #d7c6aa;border-radius:16px;padding:4px
+ }
+ body[data-view="explore"][data-mobile-search-tab="detail"] #side-pane .panel-stack{
+  min-height:0;max-height:none;overflow:visible;flex:1 0 auto
+ }
 }
