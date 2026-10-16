@@ -249,7 +249,7 @@
     var lbref = ev.target && ev.target.closest && ev.target.closest('[data-levelb-ref]');
     if (lbref) { ev.preventDefault(); var m=/^([a-z0-9]+-\d+):(\d+)$/.exec(lbref.dataset.levelbRef||'');if(m&&D.passages[m[1]]&&hasVerse(m[1],+m[2])){levelBSelection=null;return openRelatedPassage(m[1],+m[2]);}return; }
     var lbopen = ev.target && ev.target.closest && ev.target.closest('[data-levelb-open]');
-    if (lbopen) { ev.preventDefault(); levelBSelection=lbopen.dataset.levelbOpen;atlas90Selection=null;atlasBcSelection=null;atlasExpansionSelection=null; if(state.view==='explore')ensureContextVisible();renderPanel();return; }
+    if (lbopen) { ev.preventDefault(); levelBSelection=lbopen.dataset.levelbOpen;atlas90Selection=null;atlasBcSelection=null;atlasExpansionSelection=null; ensureContextVisible();updateContextChrome();renderPanel();return; }
     var lbclose = ev.target && ev.target.closest && ev.target.closest('[data-levelb-close]');
     if (lbclose) { ev.preventDefault(); levelBSelection=null;renderPanel();return; }
     var atlasCitation = ev.target && ev.target.closest && ev.target.closest('[data-atlas90-citation]');
@@ -279,8 +279,7 @@
     if (open) {
       ev.preventDefault(); atlas90Selection = open.dataset.atlas90Open; levelBSelection=null;atlasBcSelection=null;atlasExpansionSelection=null;
       // Single click is a side-panel preview: keep Explore and its scroll position.
-      if (state.view === "explore") { ensureContextVisible(); renderPanel(); }
-      else renderPanel();
+      ensureContextVisible(); updateContextChrome(); renderPanel();
     } else if (close) { ev.preventDefault(); atlas90Selection = null; renderPanel(); }
   });
   var REFBIND = window.JBC_REFERENCE_BINDINGS || null;
@@ -920,7 +919,7 @@
     else { title = rsPassageLabel(); sub = key ? "관련 지명 · " + rsPlaceLabel(key) : ""; }
     var pOk = rsPlaceRelation(), tOk = rsTextRelation();
     var btn = function (m, label, ok, why) { return '<button type="button" class="rs-seg' + (mode === m ? " is-on" : "") + '" data-rs-mode="' + m + '" aria-pressed="' + (mode === m) + '"' + (ok ? "" : ' disabled aria-disabled="true" title="' + why + '"') + ">" + label + "</button>"; };
-    return '<div class="rs-top"><span class="rs-eyebrow" data-part="rs-eyebrow">' + esc(eyebrow) + '</span><button type="button" class="btn ghost rs-memo-open" data-open-memo="1">메모장</button><button type="button" class="btn ghost rs-collapse" data-rs-collapse aria-controls="panel">접기</button></div>' +
+    return '<div class="rs-top"><span class="rs-eyebrow" data-part="rs-eyebrow">' + esc(eyebrow) + '</span><button type="button" class="btn ghost rs-collapse" data-rs-collapse aria-controls="panel">접기</button></div>' +
       '<h3 class="rs-title" data-part="rs-title">' + esc(title) + "</h3>" + (sub ? '<p class="rs-passage" data-part="rs-passage">' + esc(sub) + "</p>" : "") +
       '<div class="rs-switch" role="group" aria-label="연구 종류" data-part="rs-switch" data-mode="' + mode + '">' + btn("PLACE", "지명연구", pOk, "이 본문에 연결된 지명이 없습니다") + btn("TEXT", "본문연구", tOk, "이 지명에 연결된 본문이 없습니다") + "</div>";
   }
@@ -2881,7 +2880,7 @@
       }
     }
     // Entity research replaces overviewFlow; keep the chapter memo editor accessible.
-    if (state.view === "study" && html.indexOf('data-ov="notes"') < 0) {
+    if (state.view === "study" && detailContext().kind === "PASSAGE" && !localPersonOpen && html.indexOf('data-ov="notes"') < 0) {
       html += '<details class="ov study-memo-section" data-ov="notes"' + (ui.ovOpen.notes ? ' open' : '') +
         '><summary>내 메모</summary><div class="ov-body">' + PANELS.notes() + '</div></details>';
     }
@@ -2904,12 +2903,6 @@
       var sidePane = $("side-pane"), paneTitle = sidePane && sidePane.querySelector(".pane-title"), paneBar = sidePane && sidePane.querySelector(".pane-bar"), panelToggle = $("panel-toggle");
       if (sidePane) sidePane.classList.remove("has-entity-fixed-head");
       if (paneBar) [].slice.call(paneBar.querySelectorAll(".entity-top-action-button,.research-return-button,.study-memo-open")).forEach(function (x) { x.remove(); });
-      if (paneBar && panelToggle && state.view === "study") {
-        var memoButton = document.createElement("button");
-        memoButton.type = "button"; memoButton.className = "btn ghost study-memo-open";
-        memoButton.textContent = "메모장"; memoButton.setAttribute("data-open-memo", "1");
-        paneBar.insertBefore(memoButton, panelToggle);
-      }
       if (paneTitle) { paneTitle.hidden = false; paneTitle.textContent = localPersonOpen ? "인물 · 연구" : ((atlas90Selection || levelBSelection) ? "장소" : (state.view === "study" && !state.entity ? (ui.rpPerson ? "인물" : "본문연구") : "상세")); paneTitle.removeAttribute("data-entity-topbar"); }
       fixed.innerHTML = "";
       fixed.hidden = true;
@@ -4594,9 +4587,10 @@
         return;
       }
       atlas90Selection = aid;
+      ensureContextVisible();
       if (state.view === 'explore') closeSearch(true);
       else render();
-      ensureContextVisible(); renderPanel();
+      ensureContextVisible(); updateContextChrome(); renderPanel();
       return;
     }
     var el = e.target && e.target.closest && e.target.closest('#search-results [data-search="1"]'); if (!el) return;
@@ -4705,16 +4699,6 @@
     if ((el = t.closest("[data-goto]"))) { e.preventDefault(); var k = parseKey(el.dataset.goto); return go(k.passage, k.verse); }
     if ((el = t.closest("[data-reskind]"))) { state.resKind = el.dataset.reskind; return render(); }
     if ((el = t.closest(".pin, .item[data-id]"))) return selectEntity(el.dataset.kind, el.dataset.id);
-    if ((el = t.closest("[data-open-memo]"))) {
-      var memo = document.querySelector('#panel details[data-ov="notes"]');
-      if (memo) {
-        memo.open = true; ui.ovOpen.notes = true;
-        memo.scrollIntoView({ block: "start", behavior: "auto" });
-        var editor = memo.querySelector("#note-title");
-        if (editor) editor.focus({ preventScroll: true });
-      }
-      return;
-    }
     if (t.id === "note-save") {
       var v = $("note-text").value.trim(), title=$("note-title")?$("note-title").value.trim():""; if (!v) { $("note-status").textContent = "내용을 입력하세요"; $("note-status").dataset.state = "idle"; return; }
       createNoteRecord(v,title); renderPanel(); var ns=$("note-status"); if(ns){ns.textContent="저장됨";ns.dataset.state="saved";} return;
