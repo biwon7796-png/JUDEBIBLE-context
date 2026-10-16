@@ -1,0 +1,315 @@
+/* 본문 panel: carved limestone slab. A raised ledge ("턱") runs along the top (the chapter bar), a stone frame wraps the other three sides,
+   and the parchment scroll sits recessed inside. Light theme. */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane {
+  position: relative; isolation: isolate;
+  background-color: #ddd2ba !important;
+  background-image: linear-gradient(180deg, rgba(255, 251, 240, .22), rgba(255, 251, 240, 0) 120px),
+    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/10_매끄러운_아이보리_석회암_질감.png") !important;
+  background-size: auto, cover !important; background-position: center !important; background-repeat: no-repeat !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  border: 0 !important; border-radius: 22px !important;
+  padding: 0 15px 15px !important;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, .85), inset 0 -4px 0 rgba(105, 80, 45, .35),
+    inset 4px 0 0 rgba(255, 255, 255, .40), inset -4px 0 0 rgba(105, 80, 45, .28),
+    0 10px 24px rgba(55, 40, 20, .30), 0 2px 0 rgba(255, 255, 255, .45) !important;
+}
+/* the ledge: a slab that stands proud of the frame, its lower lip casting a shadow onto the recessed scroll */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane .pane-head {
+  position: relative; z-index: 2; margin: 0 -15px 14px !important; padding: 16px 28px 14px !important;
+  border-radius: 22px 22px 0 0;
+  background-color: #efe6d3 !important;
+  background-image: linear-gradient(180deg, rgba(255, 252, 244, .70), rgba(255, 249, 235, .30)),
+    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/01_따뜻한_크림색_석회암_텍스처.png") !important;
+  background-size: auto, cover !important; background-position: center top !important;
+  border-bottom: 4px solid rgba(120, 94, 58, .55) !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .9), inset 0 -2px 0 rgba(255, 255, 255, .55),
+    0 7px 10px -4px rgba(62, 42, 20, .55), 0 1px 0 rgba(255, 255, 255, .5) !important;
+}
+/* the parchment scroll is set back into the frame */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses {
+  border-radius: 12px !important;
+  box-shadow: inset 0 6px 14px rgba(70, 50, 25, .40), inset 0 0 0 1px rgba(120, 95, 60, .45), 0 1px 0 rgba(255, 255, 255, .75) !important;
+}
+@media (max-width: 760px) {
+  :root:not([data-theme="dark"]) body[data-view="study"] #text-pane { padding: 0 12px 12px !important; border-radius: 20px !important; }
+  :root:not([data-theme="dark"]) body[data-view="study"] #text-pane .pane-head { margin: 0 -12px 12px !important; padding: 12px 18px 12px !important; border-radius: 20px 20px 0 0; }
+}
+
+/* KRV scripture text: bold, crisp Gothic on every screen size (light theme) */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses .verse,
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses .verse * {
+  font-family: var(--font-ui) !important; font-weight: 600 !important; color: #1f1a15 !important; letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses .verse .vnum { font-weight: 800 !important; color: #6e3f17 !important; }
+
+/* 성경 세계 탐색 panel: same translucent stone ledge on top as the scripture panel, glass body below */
+:root:not([data-theme="dark"]) #guide-pane {
+  padding: 0 !important; border-radius: 22px !important; overflow: hidden;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .75), inset 0 -3px 0 rgba(105, 80, 45, .22), 0 10px 24px rgba(55, 40, 20, .22) !important;
+}
+:root:not([data-theme="dark"]) #guide-pane .g-body { background: transparent !important; padding: 0 14px 14px !important; border-radius: 0; box-shadow: none !important; }
+:root:not([data-theme="dark"]) #guide-pane .jnav-head {
+  position: relative; z-index: 2; margin: 0 -14px 14px !important; padding: 16px 20px 14px !important;
+  border-radius: 22px 22px 0 0;
+  background-color: rgba(239, 230, 211, .55) !important;
+  background-image: linear-gradient(180deg, rgba(255, 252, 244, .50), rgba(255, 249, 235, .20)),
+    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/01_따뜻한_크림색_석회암_텍스처.png") !important;
+  background-size: auto, cover !important; background-position: center top !important;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 4px solid rgba(120, 94, 58, .42) !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .85), inset 0 -2px 0 rgba(255, 255, 255, .45), 0 7px 10px -4px rgba(62, 42, 20, .38) !important;
+}
+@media (max-width: 760px) {
+  html body[data-mflow][data-view="study"][data-mtab="guide"] #guide-pane { padding: 0 !important; }
+  html body[data-mflow][data-view="study"][data-mtab="guide"] #guide-pane .g-body { padding: 0 12px 12px !important; }
+  :root:not([data-theme="dark"]) #guide-pane .jnav-head { margin: 0 -12px 12px !important; padding: 14px 18px 12px !important; }
+}
+
+/* guide panel top: title only, and the same height as the scripture panel's top ledge next to it */
+:root:not([data-theme="dark"]) #guide-pane .jnav-head > p { display: none !important; }
+:root:not([data-theme="dark"]) #guide-pane .jnav-head {
+  box-sizing: border-box; height: var(--ledge-h, 66px); display: flex !important; align-items: center; margin-bottom: 14px !important;
+}
+:root:not([data-theme="dark"]) #guide-pane .jnav-head .g-title { margin: 0 !important; }
+@media (max-width: 760px) {
+  :root:not([data-theme="dark"]) #guide-pane .jnav-head { height: var(--ledge-h-m, 64px); margin-bottom: 12px !important; }
+}
+:root:not([data-theme="dark"]) #guide-pane .jnav-head { margin-top: -1px !important; }
+
+/* ===== selected verses: parchment fills the whole width of the recess, no cord, tighter verse rhythm ===== */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > :is(.verse.sel, .verse.ol-default-active, .ol-body) {
+  margin-left: 0 !important; margin-right: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  padding-left: 52px !important; padding-right: 20px !important;
+  background: var(--ps-veil), var(--ps-original) 0 var(--paper-y, 0px) / 640px 640px repeat !important;
+}
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > :is(.verse.sel, .verse.ol-default-active) .vnum { left: 10px !important; }
+/* first piece of a group: torn top edge */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .verse:is(.sel, .ol-default-active):not(:is(.sel, .ol-default-active) + :is(.sel, .ol-default-active)):not(.ol-body + :is(.sel, .ol-default-active)) {
+  padding-top: 22px !important;
+  background: var(--ps-etop) 0 0 / 100% 18px no-repeat, var(--ps-veil), var(--ps-original) 0 var(--paper-y, 0px) / 640px 640px repeat !important;
+}
+/* last piece of a group: torn bottom edge */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .verse:is(.sel, .ol-default-active):not(:has(+ :is(.sel, .ol-default-active))):not(:has(+ .ol-body)),
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .ol-body:not(:has(+ :is(.sel, .ol-default-active))) {
+  padding-bottom: 26px !important;
+  background: var(--ps-ebot) 0 100% / 100% 18px no-repeat, var(--ps-veil), var(--ps-original) 0 var(--paper-y, 0px) / 640px 640px repeat !important;
+}
+/* a lone selected verse: both torn edges */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .verse:is(.sel, .ol-default-active):not(:is(.sel, .ol-default-active) + :is(.sel, .ol-default-active)):not(.ol-body + :is(.sel, .ol-default-active)):not(:has(+ :is(.sel, .ol-default-active))):not(:has(+ .ol-body)) {
+  padding-top: 22px !important; padding-bottom: 26px !important;
+  background: var(--ps-etop) 0 0 / 100% 18px no-repeat, var(--ps-ebot) 0 100% / 100% 18px no-repeat, var(--ps-veil), var(--ps-original) 0 var(--paper-y, 0px) / 640px 640px repeat !important;
+}
+/* verses sit closer together */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .verse:not(.sel):not(.ol-default-active) { padding-top: 9px !important; padding-bottom: 9px !important; line-height: 1.7 !important; }
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .verse { margin-top: 0 !important; margin-bottom: 0 !important; }
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .verse :is(.vtext, span, p) { line-height: 1.7; }
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > .verse:not(.sel):not(.ol-default-active) .vnum { top: 8px !important; }
+/* the selected block bleeds out over the scroll's own side padding, so the parchment reaches both ends; no outline of its own */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses > :is(.verse.sel, .verse.ol-default-active, .ol-body) {
+  margin-left: -14px !important; margin-right: -14px !important; border: 0 !important; outline: 0 !important;
+}
+
+/* ===== DARK THEME (generated) ===== */
+/* ---- dark: stone frame + ledge for the scripture panel ---- */
+:root[data-theme="dark"] body[data-view="study"] #text-pane {
+  position: relative; isolation: isolate;
+  background-color: #2a2621 !important;
+  background-image: linear-gradient(180deg, rgba(255, 240, 215, .06), rgba(255, 240, 215, 0) 120px), url("data/scroll-proto/limestone-dark.webp") !important;
+  background-size: auto, cover !important; background-position: center !important; background-repeat: no-repeat !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  border: 0 !important; border-radius: 22px !important; padding: 0 15px 15px !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .14), inset 0 -4px 0 rgba(0, 0, 0, .45), inset 4px 0 0 rgba(255, 255, 255, .06), inset -4px 0 0 rgba(0, 0, 0, .35), 0 10px 24px rgba(0, 0, 0, .5) !important;
+}
+:root[data-theme="dark"] body[data-view="study"] #text-pane .pane-head {
+  position: relative; z-index: 2; margin: 0 -15px 14px !important; padding: 16px 28px 14px !important; border-radius: 22px 22px 0 0;
+  background-color: #38332c !important;
+  background-image: linear-gradient(180deg, rgba(255, 240, 215, .10), rgba(255, 240, 215, .03)), url("data/scroll-proto/limestone-dark.webp") !important;
+  background-size: auto, cover !important; background-position: center top !important;
+  border-bottom: 4px solid rgba(0, 0, 0, .55) !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .16), inset 0 -2px 0 rgba(255, 255, 255, .06), 0 7px 10px -4px rgba(0, 0, 0, .65) !important;
+}
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses {
+  border-radius: 12px !important;
+  box-shadow: inset 0 6px 14px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .08), 0 1px 0 rgba(255, 255, 255, .08) !important;
+}
+/* selected verses: full-width translucent light band, no cord, no outline */
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses#verses > :is(.verse.sel, .verse.ol-default-active, .ol-body) {
+  margin-left: -14px !important; margin-right: -14px !important; border: 0 !important; outline: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  padding-left: 52px !important; padding-right: 20px !important;
+  background: rgba(255, 240, 215, .10) !important; background-image: none !important;
+}
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses > :is(.verse.sel, .verse.ol-default-active) .vnum { left: 10px !important; }
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses > .verse:not(.sel):not(.ol-default-active) { padding-top: 9px !important; padding-bottom: 9px !important; line-height: 1.7 !important; margin-top: 0 !important; margin-bottom: 0 !important; }
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses .verse,
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses .verse * {
+  font-family: var(--font-ui) !important; font-weight: 600 !important; color: #f3eadb !important; letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses .verse .vnum { font-weight: 800 !important; color: #f0c98a !important; }
+
+/* ---- dark: guide panel (성경 세계 탐색) with the same translucent ledge ---- */
+:root[data-theme="dark"] #guide-pane {
+  padding: 0 !important; border-radius: 22px !important; overflow: hidden;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .12), inset 0 -3px 0 rgba(0, 0, 0, .35), 0 10px 24px rgba(0, 0, 0, .45) !important;
+}
+:root[data-theme="dark"] #guide-pane .g-body { background: transparent !important; padding: 0 14px 14px !important; border-radius: 0; box-shadow: none !important; }
+:root[data-theme="dark"] #guide-pane .jnav-head {
+  position: relative; z-index: 2; margin: -1px -14px 14px !important; padding: 16px 20px 14px !important; border-radius: 22px 22px 0 0;
+  box-sizing: border-box; height: var(--ledge-h, 66px); display: flex !important; align-items: center;
+  background-color: rgba(56, 51, 44, .60) !important;
+  background-image: linear-gradient(180deg, rgba(255, 240, 215, .10), rgba(255, 240, 215, .03)), url("data/scroll-proto/limestone-dark.webp") !important;
+  background-size: auto, cover !important; background-position: center top !important;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 4px solid rgba(0, 0, 0, .45) !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .14), inset 0 -2px 0 rgba(255, 255, 255, .05), 0 7px 10px -4px rgba(0, 0, 0, .55) !important;
+}
+:root[data-theme="dark"] #guide-pane .jnav-head > p { display: none !important; }
+:root[data-theme="dark"] #guide-pane .jnav-head .g-title { margin: 0 !important; }
+@media (max-width: 760px) {
+  :root[data-theme="dark"] body[data-view="study"] #text-pane { padding: 0 12px 12px !important; border-radius: 20px !important; }
+  :root[data-theme="dark"] body[data-view="study"] #text-pane .pane-head { margin: 0 -12px 12px !important; padding: 12px 18px 12px !important; border-radius: 20px 20px 0 0; }
+  :root[data-theme="dark"] #guide-pane .jnav-head { margin: -1px -12px 12px !important; padding: 14px 18px 12px !important; height: var(--ledge-h-m, 64px); }
+}
+
+@media (prefers-color-scheme: dark) {
+/* ---- dark: stone frame + ledge for the scripture panel ---- */
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane {
+  position: relative; isolation: isolate;
+  background-color: #2a2621 !important;
+  background-image: linear-gradient(180deg, rgba(255, 240, 215, .06), rgba(255, 240, 215, 0) 120px), url("data/scroll-proto/limestone-dark.webp") !important;
+  background-size: auto, cover !important; background-position: center !important; background-repeat: no-repeat !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  border: 0 !important; border-radius: 22px !important; padding: 0 15px 15px !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .14), inset 0 -4px 0 rgba(0, 0, 0, .45), inset 4px 0 0 rgba(255, 255, 255, .06), inset -4px 0 0 rgba(0, 0, 0, .35), 0 10px 24px rgba(0, 0, 0, .5) !important;
+}
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane .pane-head {
+  position: relative; z-index: 2; margin: 0 -15px 14px !important; padding: 16px 28px 14px !important; border-radius: 22px 22px 0 0;
+  background-color: #38332c !important;
+  background-image: linear-gradient(180deg, rgba(255, 240, 215, .10), rgba(255, 240, 215, .03)), url("data/scroll-proto/limestone-dark.webp") !important;
+  background-size: auto, cover !important; background-position: center top !important;
+  border-bottom: 4px solid rgba(0, 0, 0, .55) !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .16), inset 0 -2px 0 rgba(255, 255, 255, .06), 0 7px 10px -4px rgba(0, 0, 0, .65) !important;
+}
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane #verses {
+  border-radius: 12px !important;
+  box-shadow: inset 0 6px 14px rgba(0, 0, 0, .55), inset 0 0 0 1px rgba(255, 255, 255, .08), 0 1px 0 rgba(255, 255, 255, .08) !important;
+}
+/* selected verses: full-width translucent light band, no cord, no outline */
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane #verses#verses > :is(.verse.sel, .verse.ol-default-active, .ol-body) {
+  margin-left: -14px !important; margin-right: -14px !important; border: 0 !important; outline: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  padding-left: 52px !important; padding-right: 20px !important;
+  background: rgba(255, 240, 215, .10) !important; background-image: none !important;
+}
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane #verses > :is(.verse.sel, .verse.ol-default-active) .vnum { left: 10px !important; }
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane #verses > .verse:not(.sel):not(.ol-default-active) { padding-top: 9px !important; padding-bottom: 9px !important; line-height: 1.7 !important; margin-top: 0 !important; margin-bottom: 0 !important; }
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane #verses .verse,
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane #verses .verse * {
+  font-family: var(--font-ui) !important; font-weight: 600 !important; color: #f3eadb !important; letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+}
+:root:not([data-theme="light"]) body[data-view="study"] #text-pane #verses .verse .vnum { font-weight: 800 !important; color: #f0c98a !important; }
+
+/* ---- dark: guide panel (성경 세계 탐색) with the same translucent ledge ---- */
+:root:not([data-theme="light"]) #guide-pane {
+  padding: 0 !important; border-radius: 22px !important; overflow: hidden;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .12), inset 0 -3px 0 rgba(0, 0, 0, .35), 0 10px 24px rgba(0, 0, 0, .45) !important;
+}
+:root:not([data-theme="light"]) #guide-pane .g-body { background: transparent !important; padding: 0 14px 14px !important; border-radius: 0; box-shadow: none !important; }
+:root:not([data-theme="light"]) #guide-pane .jnav-head {
+  position: relative; z-index: 2; margin: -1px -14px 14px !important; padding: 16px 20px 14px !important; border-radius: 22px 22px 0 0;
+  box-sizing: border-box; height: var(--ledge-h, 66px); display: flex !important; align-items: center;
+  background-color: rgba(56, 51, 44, .60) !important;
+  background-image: linear-gradient(180deg, rgba(255, 240, 215, .10), rgba(255, 240, 215, .03)), url("data/scroll-proto/limestone-dark.webp") !important;
+  background-size: auto, cover !important; background-position: center top !important;
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 4px solid rgba(0, 0, 0, .45) !important;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .14), inset 0 -2px 0 rgba(255, 255, 255, .05), 0 7px 10px -4px rgba(0, 0, 0, .55) !important;
+}
+:root:not([data-theme="light"]) #guide-pane .jnav-head > p { display: none !important; }
+:root:not([data-theme="light"]) #guide-pane .jnav-head .g-title { margin: 0 !important; }
+@media (max-width: 760px) {
+  :root:not([data-theme="light"]) body[data-view="study"] #text-pane { padding: 0 12px 12px !important; border-radius: 20px !important; }
+  :root:not([data-theme="light"]) body[data-view="study"] #text-pane .pane-head { margin: 0 -12px 12px !important; padding: 12px 18px 12px !important; border-radius: 20px 20px 0 0; }
+  :root:not([data-theme="light"]) #guide-pane .jnav-head { margin: -1px -12px 12px !important; padding: 14px 18px 12px !important; height: var(--ledge-h-m, 64px); }
+}
+
+}
+
+/* OpenBible reference-place popup and legend key */
+.jbc-ref-popup { position: absolute; z-index: 30; width: 270px; max-width: calc(100% - 16px); box-sizing: border-box; padding: 10px 28px 10px 12px; border-radius: 12px; font: 400 12.5px/1.5 var(--font-ui, sans-serif); color: #2b2118; background: #fffaf0; box-shadow: 0 6px 20px rgba(60, 40, 20, .3); }
+.jbc-ref-pop strong { display: block; font-size: 14px; } .jbc-ref-pop strong span { font-weight: 400; color: #7a6a58; font-size: 12px; }
+.jbc-ref-pop p { margin: 3px 0 0; } .jbc-ref-pop .jbc-ref-tag { color: #8a4b12; font-weight: 700; }
+.jbc-ref-pop .jbc-ref-src { color: #6b5a49; font-size: 11.5px; } .jbc-ref-pop a { color: #7a4a1e; text-decoration: underline; }
+.jbc-ref-key { display: inline-block; width: 11px; height: 11px; border-radius: 50%; background: #fffaf0; border: 2px solid #8a5a2b; margin-right: 6px; vertical-align: -1px; }
+
+.jbc-ref-popup .jbc-ref-close { position: absolute; right: 6px; top: 4px; width: 22px; height: 22px; border: 0; border-radius: 50%; background: transparent; color: #7a6a58; font-size: 18px; line-height: 1; cursor: pointer; }
+
+/* small (i) for the neighbouring-nation colour areas (source + licence) */
+#jbc-nbr-info { position: absolute; left: 10px; bottom: 36px; z-index: 25; width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 1px solid rgba(110, 80, 40, .55); background: rgba(255, 250, 240, .92); color: #6a4a2a; font: italic 700 14px/22px Georgia, serif; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(60, 40, 20, .25); }
+#jbc-nbr-info[hidden] { display: none; }
+#jbc-nbr-tip { position: absolute; left: 10px; bottom: 66px; z-index: 26; width: 260px; max-width: calc(100% - 20px); box-sizing: border-box; padding: 10px 12px; border-radius: 12px; background: #fffaf0; color: #2b2118; font: 400 12px/1.5 var(--font-ui, sans-serif); box-shadow: 0 6px 20px rgba(60, 40, 20, .3); }
+#jbc-nbr-tip[hidden] { display: none; }
+#jbc-nbr-tip strong { display: block; font-size: 13px; } #jbc-nbr-tip p { margin: 4px 0 0; } #jbc-nbr-tip a { color: #7a4a1e; text-decoration: underline; }
+
+/* (i) buttons of the era colour areas: right side, clear of the journey legend (i) on the left */
+#jbc-trb-info { position: absolute; right: 10px; bottom: 36px; z-index: 25; width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 1px solid rgba(110, 80, 40, .55); background: rgba(255, 250, 240, .92); color: #6a4a2a; font: italic 700 14px/22px Georgia, serif; text-align: center; cursor: pointer; box-shadow: 0 2px 6px rgba(60, 40, 20, .25); }
+#jbc-trb-info[hidden], #jbc-trb-tip[hidden] { display: none; }
+#jbc-trb-tip { position: absolute; right: 10px; bottom: 66px; z-index: 26; width: 270px; max-width: calc(100% - 20px); box-sizing: border-box; padding: 10px 12px; border-radius: 12px; background: #fffaf0; color: #2b2118; font: 400 12px/1.5 var(--font-ui, sans-serif); box-shadow: 0 6px 20px rgba(60, 40, 20, .3); }
+#jbc-trb-tip strong { display: block; font-size: 13px; } #jbc-trb-tip p { margin: 4px 0 0; } #jbc-trb-tip a { color: #7a4a1e; text-decoration: underline; }
+#jbc-nbr-info { left: auto !important; right: 10px; } #jbc-nbr-tip { left: auto !important; right: 10px; }
+
+/* map chip: place dots on/off */
+#jbc-dots-chip { position: absolute; right: 10px; top: 52px; z-index: 24; display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: 14px; border: 1px solid rgba(110, 80, 40, .45); background: rgba(255, 250, 240, .92); color: #4a2c12; font: 600 12px/1 var(--font-ui, sans-serif); cursor: pointer; box-shadow: 0 2px 6px rgba(60, 40, 20, .2); }
+#jbc-dots-chip i { width: 8px; height: 8px; border-radius: 50%; background: #b8692a; border: 1.5px solid #fffaf0; box-shadow: 0 0 0 1px rgba(110, 80, 40, .5); }
+#jbc-dots-chip b { font-weight: 700; color: #7a4a1e; }
+#jbc-dots-chip.is-off { color: #7a6a58; } #jbc-dots-chip.is-off i { background: transparent; border-color: #9a8a78; box-shadow: none; } #jbc-dots-chip.is-off b { color: #8a7a68; }
+/* the long source note scrolls inside the map instead of running off it; the card and the note never stack */
+#jbc-trb-tip { max-height: calc(100% - 96px); overflow-y: auto; overscroll-behavior: contain; }
+.jbc-trb-card { max-height: calc(100% - 24px); overflow-y: auto; }
+
+/* ===== journey/topic scene range (.ref-target): same quiet translucent band as the selection, not the old opaque cream cards with a gold bar ===== */
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses .verse.ref-target:not(.sel):not(.ol-default-active):not(.verse-selected) {
+  background: rgba(255, 251, 240, .2) !important; box-shadow: none !important; border-radius: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; border: 0 !important;
+}
+:root:not([data-theme="dark"]) body[data-view="study"] #text-pane #verses .verse.ref-target:not(.sel):not(.ol-default-active) .vnum { color: #6e3f17 !important; }
+:root[data-theme="dark"] body[data-view="study"] #text-pane #verses .verse.ref-target:not(.sel):not(.ol-default-active):not(.verse-selected) {
+  background: rgba(255, 236, 200, .07) !important; box-shadow: none !important; border-radius: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; border: 0 !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) body[data-view="study"] #text-pane #verses .verse.ref-target:not(.sel):not(.ol-default-active):not(.verse-selected) {
+    background: rgba(255, 236, 200, .07) !important; box-shadow: none !important; border-radius: 0 !important; margin-top: 0 !important; margin-bottom: 0 !important; border: 0 !important;
+  }
+}
+
+/* ===== phone: the long scroll made `cover` blow the stone up (a 359px sliver of a 2700px-tall copy). Tile it at the scale the desktop slab shows, so the stone looks the same on all four sides ===== */
+@media (max-width: 760px) {
+  :root:not([data-theme="dark"]) body[data-view="study"] #text-pane,
+  :root[data-theme="dark"] body[data-view="study"] #text-pane { background-size: auto, 800px 800px !important; background-repeat: no-repeat, repeat-y !important; background-position: top, center top !important; }
+}
+@media (max-width: 760px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body[data-view="study"] #text-pane { background-size: auto, 800px 800px !important; background-repeat: no-repeat, repeat-y !important; background-position: top, center top !important; }
+}
+
+/* light theme: slimmer top of the scripture panel and the 성경 세계 탐색 panel (thin lower edge, lower height) */
+:root[data-theme="light"] body[data-view="study"] #text-pane .pane-head { box-sizing: border-box; height: 54px !important; min-height: 54px !important; display: flex; align-items: center; border-bottom-width: 1px !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 12px !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .85), 0 3px 6px -3px rgba(62, 42, 20, .35) !important; }
+:root[data-theme="light"] #guide-pane .jnav-head { height: 54px !important; border-bottom-width: 1px !important; margin-bottom: 12px !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .85), 0 3px 6px -3px rgba(62, 42, 20, .35) !important; }
+:root[data-theme="light"] body[data-view="study"] #text-pane .pane-head h1, :root[data-theme="light"] body[data-view="study"] #text-pane .pane-head h2 { line-height: 1.25; }
+@media (prefers-color-scheme: light) {
+:root:not([data-theme]) body[data-view="study"] #text-pane .pane-head { box-sizing: border-box; height: 54px !important; min-height: 54px !important; display: flex; align-items: center; border-bottom-width: 1px !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 12px !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .85), 0 3px 6px -3px rgba(62, 42, 20, .35) !important; }
+:root:not([data-theme]) #guide-pane .jnav-head { height: 54px !important; border-bottom-width: 1px !important; margin-bottom: 12px !important;
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .85), 0 3px 6px -3px rgba(62, 42, 20, .35) !important; }
+:root:not([data-theme]) body[data-view="study"] #text-pane .pane-head h1, :root:not([data-theme]) body[data-view="study"] #text-pane .pane-head h2 { line-height: 1.25; }
+}
+
+/* dark theme: same slimmer top for the scripture panel and the 성경 세계 탐색 panel */
+:root[data-theme="dark"] body[data-view="study"] #text-pane .pane-head { box-sizing: border-box; height: 54px !important; min-height: 54px !important; display: flex; align-items: center; border-bottom-width: 1px !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 12px !important; }
+:root[data-theme="dark"] #guide-pane .jnav-head { height: 54px !important; min-height: 54px !important; border-bottom-width: 1px !important; margin-bottom: 12px !important; }
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme]) body[data-view="study"] #text-pane .pane-head { box-sizing: border-box; height: 54px !important; min-height: 54px !important; display: flex; align-items: center; border-bottom-width: 1px !important; padding-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 12px !important; }
+:root:not([data-theme]) #guide-pane .jnav-head { height: 54px !important; min-height: 54px !important; border-bottom-width: 1px !important; margin-bottom: 12px !important; }
+}

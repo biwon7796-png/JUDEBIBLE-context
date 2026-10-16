@@ -1,0 +1,11 @@
+/* Research panel: bolder, easier-to-read type. The "본문연구" edge tab on the left of the map is bold, and it grows slightly and returns when a verse is clicked. */
+html body #side-pane #panel, html body #side-pane #panel :is(p, li, dd, dt, td, th, span, div, a, em, blockquote):not(button):not(.hb):not(.gr) { font-weight: 600; }
+html body #side-pane #panel :is(h1, h2, h3, h4, strong, b, summary, .rp-title) { font-weight: 800; }
+html body #side-pane #panel :is(p, li, dd, dt, td) { color: #1f1710; }
+html[data-theme="dark"] body #side-pane #panel :is(p, li, dd, dt, td) { color: #f3ebdd; }
+@media (prefers-color-scheme: dark) { html:not([data-theme="light"]) body #side-pane #panel :is(p, li, dd, dt, td) { color: #f3ebdd; } }
+html body .jb-research-edge-open, html body .jb-research-edge-open span { font-weight: 800 !important; color: #5a2d0c; }
+html[data-theme="dark"] body .jb-research-edge-open, html[data-theme="dark"] body .jb-research-edge-open span { color: #ffe9c8; }
+@keyframes jbc-tag-pop { 0% { transform: scale(1); } 35% { transform: scale(1.04); box-shadow: 0 0 0 2px rgba(194, 120, 50, .35); } 100% { transform: scale(1); } }
+.jb-research-edge-open.jbc-pop { animation: jbc-tag-pop 520ms ease-out; transform-origin: left center; }
+@media (prefers-reduced-motion: reduce) { .jb-research-edge-open.jbc-pop { animation: none; } }

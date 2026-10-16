@@ -7,7 +7,7 @@
   var last="",infoOpen=false;
   function redraw(){
     var id=window.BVC&&BVC.ui&&BVC.ui.nav&&BVC.ui.nav.topic;
-    var show=!!map[id] && !!(window.BVC&&BVC.state&&BVC.state.view==="study");
+    var show=!!map[id] && !(window.JBC_OLD_ERA_OVERLAY_OFF&&window.JBC_OLD_ERA_OVERLAY_OFF[id]) && !!(window.BVC&&BVC.state&&BVC.state.view==="study");
     var next=show?id+"|"+String(window.JBC_REGION_OVERLAY_VISIBLE!==false):"none";
     if(next===last)return;last=next;box.hidden=!show;
     if(!show)return;
