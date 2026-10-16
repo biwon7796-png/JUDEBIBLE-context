@@ -1,0 +1,73 @@
+/* JudeBible mobile one-flow: every page shows ONE panel at a time; a bottom tab bar switches between panels.
+   study: 본문 | 본문연구(or 장소·인물) | 주제탐색 | 지도   ·   timeline: 연표 | 상세   ·   search: 검색 | 상세
+   Active only at phone width and only when mobile-flow-20261016.js has set body[data-mflow]. */
+#m-flow-tabs { display: none; }
+@media (max-width: 760px) {
+  body[data-mflow] { padding-bottom: 76px; }
+  body[data-mflow] #m-flow-tabs {
+    display: flex; position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 80; height: 56px; gap: 4px; padding: 5px;
+    border-radius: 18px; border: 1px solid rgba(150, 115, 62, .38);
+    background: linear-gradient(145deg, rgba(255, 253, 248, .92), rgba(248, 242, 231, .82));
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    box-shadow: 0 6px 20px rgba(60, 45, 20, .22);
+  }
+  body[data-mflow] #m-flow-tabs button {
+    flex: 1 1 0; min-width: 0; border: 0; border-radius: 13px; background: transparent; color: #6b5a49;
+    font: 700 13px/1.1 inherit; font-family: inherit; padding: 0 4px; cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  body[data-mflow] #m-flow-tabs button[aria-selected="true"] { background: #b5703c; color: #fffaf0; box-shadow: 0 2px 6px rgba(120, 70, 30, .35); }
+
+  /* ---- study page ---- */
+  body[data-mflow][data-view="study"]:not([data-mtab="text"]) #text-pane { display: none !important; }
+  body[data-mflow][data-view="study"]:not([data-mtab="guide"]) #guide-pane { display: none !important; }
+  body[data-mflow][data-view="study"][data-mtab="guide"] #guide-pane { width: auto; max-width: none; flex: 1 1 auto; }
+
+  /* ---- map-pane hosts the side panel; show it only for the map / detail tabs ---- */
+  body[data-mflow]:not([data-mtab="map"]):not([data-mtab="detail"]) #map-pane { display: none !important; }
+  body[data-mflow][data-mtab="detail"] #map-pane { display: block !important; position: static; width: 0; height: 0; min-height: 0; padding: 0; border: 0; background: none; box-shadow: none; overflow: visible; }
+  body[data-mflow][data-mtab="detail"] #map-pane > :not(#side-pane) { display: none !important; }
+  body[data-mflow][data-mtab="map"] #side-pane { display: none !important; }
+  body[data-mflow][data-mtab="map"] #map-pane {
+    display: block !important; position: relative; width: 100% !important; max-width: none !important; flex: 1 1 100%; grid-column: 1 / -1; margin: 0;
+    height: calc(100dvh - 200px); min-height: 360px; overflow: hidden;
+  }
+  body[data-mflow][data-mtab="map"] #map-pane #map-body { display: block !important; position: absolute; inset: 42px 0 0 0; height: auto !important; max-height: none; }
+  body[data-mflow][data-mtab="map"] #map-pane #map-body > * { max-height: none; }
+
+  /* ---- detail tab: the side panel fills the screen (no bottom-sheet) ---- */
+  body[data-mflow][data-mtab="detail"] #side-pane {
+    display: flex !important; position: fixed !important; z-index: 70; left: 0; right: 0; top: 48px; bottom: 76px;
+    width: auto; max-width: none; height: auto; max-height: none; transform: none !important; border-radius: 0; margin: 0;
+  }
+  body[data-mflow]:not([data-mtab="detail"]) #side-pane { display: none !important; }
+  body[data-mflow] #side-pane .rs-collapse, body[data-mflow] #side-pane #panel-toggle, body[data-mflow] #side-pane .sheet-grip { display: none !important; }
+
+  /* ---- timeline and search: main view or detail view ---- */
+  body[data-mflow][data-view="timeline"][data-mtab="detail"] #timeline-pane,
+  body[data-mflow][data-view="explore"][data-mtab="detail"] #search-workspace,
+  body[data-mflow][data-view="explore"][data-mtab="detail"] #topic-board { visibility: hidden; }
+  body[data-mflow][data-view="timeline"][data-mtab="detail"] #rail,
+  body[data-mflow][data-view="explore"][data-mtab="detail"] #rail { visibility: hidden; }
+
+  /* ---- timeline: one vertical flow (era list -> era detail -> events -> overview) ---- */
+  body[data-mflow][data-view="timeline"] #timeline-pane { padding: 12px 12px 90px; }
+  body[data-mflow][data-view="timeline"] .tl-page { display: flex !important; flex-direction: column; gap: 14px; }
+  body[data-mflow][data-view="timeline"] .tl-detail { position: static !important; max-height: none !important; width: auto; }
+}
+@media (max-width: 760px) {
+  html body[data-mflow][data-mtab="map"][data-map] #stage #map-pane,
+  html body[data-mflow][data-mtab="map"] #map-pane {
+    width: 100% !important; min-width: 0 !important; max-width: none !important; align-self: stretch !important;
+    height: calc(100dvh - 200px) !important; min-height: 360px !important; border-radius: 16px;
+  }
+}
+@media (max-width: 760px) {
+  /* the map fills the full screen width: its wrapper (#stage) was a narrow column */
+  html body[data-mflow][data-mtab="map"] #stage { width: 100% !important; max-width: none !important; min-width: 0 !important; align-self: stretch !important; flex: 1 1 auto !important; }
+  html body[data-mflow][data-mtab="map"] #workspace { padding-left: 8px; padding-right: 8px; }
+  html body[data-mflow][data-mtab="map"] #map-pane { height: calc(100dvh - 230px) !important; }
+}
+@media (max-width: 760px) {
+  html body[data-mflow][data-mtab="map"] #map-pane { height: calc(100vh - 240px) !important; min-height: 360px !important; }
+  html body[data-mflow][data-mtab="map"] #map-pane #map-body { inset: 42px 0 0 0 !important; }
+}
