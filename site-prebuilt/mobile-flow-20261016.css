@@ -71,3 +71,24 @@
   html body[data-mflow][data-mtab="map"] #map-pane { height: calc(100vh - 240px) !important; min-height: 360px !important; }
   html body[data-mflow][data-mtab="map"] #map-pane #map-body { inset: 42px 0 0 0 !important; }
 }
+@media (max-width: 760px) {
+  /* map tab: the map runs from just under the page tabs/tools down to the bottom tab bar */
+  html body[data-mflow][data-mtab="map"] #map-pane {
+    position: fixed !important; left: 8px; right: 8px; top: var(--m-map-top, 170px); bottom: 76px;
+    width: auto !important; height: auto !important; min-height: 0 !important; z-index: 20; margin: 0;
+  }
+}
+@media (max-width: 760px) {
+  html body[data-mflow][data-mtab="map"] #map-pane { width: calc(100vw - 16px) !important; right: auto; }
+}
+@media (max-width: 760px) {
+  /* search page: the result panel always runs down to the bottom tab bar (an open side sheet no longer shortens it) and scrolls inside */
+  html body[data-mflow][data-view="explore"] #search-workspace { bottom: 76px !important; height: auto !important; max-height: none !important; }
+  html body[data-mflow][data-view="explore"] #search-workspace .sw-shell { height: 100% !important; max-height: none !important; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+  html body[data-mflow][data-view="explore"] #topic-board { bottom: 76px !important; height: auto !important; max-height: none !important; }
+}
+@media (max-width: 760px) {
+  /* search page panel: rounded like the other panels, inset from the screen edges */
+  html body[data-mflow][data-view="explore"] #search-workspace { left: 8px !important; right: 8px !important; width: auto !important; border-radius: 20px !important; overflow: hidden !important; }
+  html body[data-mflow][data-view="explore"] #search-workspace .sw-shell { border-radius: 20px !important; }
+}

@@ -15,12 +15,16 @@
     return [["main", v === "timeline" ? "연표" : "검색"], ["detail", detail]];
   }
   function panelSig() { var p = document.getElementById("panel"); return p ? p.textContent.length + ":" + p.textContent.slice(0, 80) : ""; }
+  function placeMap() {
+    var r = document.getElementById("rail"); if (!r) return;
+    var bottom = r.getBoundingClientRect().bottom; if (bottom > 0 && bottom < 400) body.style.setProperty("--m-map-top", Math.round(bottom + 8) + "px");
+  }
   function refreshMap() { try { var m = window.BVC && BVC.mapRenderer && BVC.mapRenderer.map && BVC.mapRenderer.map(); if (m && m.resize) { m.resize(); } } catch (e) {} }
 
   function setTab(next) {
     tab = next; body.dataset.mtab = next; draw();
     if (next === "detail" && window.BVC && BVC.setPanel && body.dataset.panel !== "open") BVC.setPanel("open");
-    if (next === "map") { setTimeout(refreshMap, 60); setTimeout(refreshMap, 400); }
+    if (next === "map") { placeMap(); setTimeout(placeMap, 120); setTimeout(refreshMap, 60); setTimeout(refreshMap, 400); }
     window.scrollTo(0, 0);
   }
   function draw() {
@@ -61,5 +65,6 @@
   document.addEventListener("bvc:rendered", sync);
   window.addEventListener("hashchange", function () { setTimeout(sync, 60); });
   (mq.addEventListener ? mq.addEventListener("change", sync) : mq.addListener(sync));
+  window.addEventListener("resize", function () { if (tab === "map") { placeMap(); refreshMap(); } });
   sync();
 })();
