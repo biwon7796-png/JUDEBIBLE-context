@@ -4050,11 +4050,29 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     try { if (window.JBC_ANN) window.JBC_ANN.exportInto(cl); } catch (e) {}
     return mlCompose(cl).then(function (cv) {
       ML.lastExport = { w: cv.width, h: cv.height };
-      if (mode === "print") { mlPrintSheet(cv.toDataURL("image/png")); try { window.print(); } finally { setTimeout(mlPrintDone, 500); } return; }
+      if (mode === "print") { mlPrintPreview(cv.toDataURL("image/png")); return; }   // 바로 인쇄하지 않고 미리보기를 먼저 보여 준다
       cv.toBlob(function (b) { var a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "JudeBible-map-" + state.passage + ".png"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000); }, "image/png");
     });
   }
-  function mlPrintSheet(src) { var s = $("ml-print-sheet"); if (!s) { s = document.createElement("div"); s.id = "ml-print-sheet"; document.body.appendChild(s); } s.innerHTML = '<img alt="성경 지도" src="' + src + '">'; document.body.dataset.mlPrint = "1"; }
+  function mlPrintSheet(src) { var s = $("ml-print-sheet"); if (!s) { s = document.createElement("div"); s.id = "ml-print-sheet"; document.body.appendChild(s); } s.innerHTML = '<img alt="성경 지도" src="' + src + '"><p class="ml-print-credit">' + mlPrintCredit() + "</p>"; document.body.dataset.mlPrint = "1"; }
+  function mlPrintCredit() { var extra = ""; try { extra = (window.JBC_PRINT_CREDIT && window.JBC_PRINT_CREDIT()) || ""; } catch (e) {} return "지도: " + MAP_ATTRIBUTION_HTML + (extra ? "<br>" + extra : ""); }
+  function mlPrintPreview(src) {   // 인쇄 미리보기: 이미지와 출처를 한 장으로 보여 주고, [인쇄] 를 눌러야 인쇄 창을 연다
+    var old = $("ml-print-preview"); if (old) old.remove();
+    var d = document.createElement("div"); d.id = "ml-print-preview"; d.setAttribute("role", "dialog"); d.setAttribute("aria-modal", "true"); d.setAttribute("aria-label", "지도 인쇄 미리보기");
+    d.innerHTML = '<div class="mlpp-box"><div class="mlpp-head"><strong>인쇄 미리보기</strong><span>인쇄할 모양을 확인하세요. 화면에 보이는 지도 범위가 그대로 인쇄됩니다.</span></div>' +
+      '<div class="mlpp-page"><img alt="성경 지도 미리보기" src="' + src + '"><p class="mlpp-credit">' + mlPrintCredit() + '</p></div>' +
+      '<div class="mlpp-actions"><button type="button" class="btn ghost" data-mlpp="close">닫기</button><button type="button" class="btn primary" data-mlpp="print">인쇄</button></div></div>';
+    document.body.appendChild(d);
+    var close = function () { d.remove(); document.removeEventListener("keydown", onKey, true); };
+    var onKey = function (e) { if (e.key === "Escape") { e.stopPropagation(); close(); } };
+    document.addEventListener("keydown", onKey, true);
+    d.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("[data-mlpp]"); if (!b && e.target !== d) return;
+      if (!b || b.dataset.mlpp === "close") { close(); return; }
+      close(); mlPrintSheet(src); try { window.print(); } finally { setTimeout(mlPrintDone, 500); }
+    });
+    var pb = d.querySelector('[data-mlpp="print"]'); if (pb) pb.focus();
+  }
   function mlPrintDone() { var s = $("ml-print-sheet"); if (s) s.remove(); delete document.body.dataset.mlPrint; }
   try { var mlThemeObs = new MutationObserver(function () { if (mlActive() && ML.map) { mlApplyLook(); ML.dirty = true; mlOnRender(); } }); mlThemeObs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme", "data-map-theme", "class"] }); } catch (e) {}
   function renderGeoOnly() { if (mlActive()) { mlSyncFromGcam(); ML.dirty = true; mlOnRender(); return; } var sv = document.querySelector("#map-body svg.gmap"); if (sv) sv.outerHTML = geoSvg(); }

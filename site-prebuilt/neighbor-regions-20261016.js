@@ -37,8 +37,8 @@
       if (!m.getSource(SRC)) m.addSource(SRC, { type: "geojson", data: data });
       if (!m.getSource(LSRC)) m.addSource(LSRC, { type: "geojson", data: { type: "FeatureCollection", features: data.features.map(function (f) { return { type: "Feature", properties: { en: f.properties.en, ko: f.properties.ko }, geometry: { type: "Point", coordinates: bboxCenter(f.geometry) } }; }) } });
       var before = m.getLayer("jbc-ref-ob-circle") ? "jbc-ref-ob-circle" : (m.getLayer("jbc-place-dots-circle") ? "jbc-place-dots-circle" : undefined);
-      if (!m.getLayer(FILL)) m.addLayer({ id: FILL, type: "fill", source: SRC, paint: { "fill-color": colorExpr(), "fill-opacity": 0.035 }, filter: ["==", ["get", "en"], ""] }, before);
-      if (!m.getLayer(LINE)) m.addLayer({ id: LINE, type: "line", source: SRC, paint: { "line-color": colorExpr(), "line-width": 1.2, "line-opacity": 0.35, "line-dasharray": [3, 2] }, filter: ["==", ["get", "en"], ""] }, before);
+      if (!m.getLayer(FILL)) m.addLayer({ id: FILL, type: "fill", source: SRC, paint: { "fill-color": colorExpr(), "fill-opacity": ["match", ["get", "en"], ["Persia", "Media"], 0.11, 0.035] }, filter: ["==", ["get", "en"], ""] }, before);
+      if (!m.getLayer(LINE)) m.addLayer({ id: LINE, type: "line", source: SRC, paint: { "line-color": colorExpr(), "line-width": ["match", ["get", "en"], ["Persia", "Media"], 1.5, 1.2], "line-opacity": ["match", ["get", "en"], ["Persia", "Media"], 0.55, 0.35], "line-dasharray": [3, 2] }, filter: ["==", ["get", "en"], ""] }, before);
       if (!m.getLayer(LBL)) m.addLayer({ id: LBL, type: "symbol", source: LSRC, layout: { "text-field": ["get", "ko"], "text-font": labelFont(m), "text-size": 14, "text-letter-spacing": 0.12, "text-allow-overlap": false }, paint: { "text-color": "#3a2a1a", "text-halo-color": "rgba(255,250,240,.85)", "text-halo-width": 1.6, "text-opacity": 0.75 }, filter: ["==", ["get", "en"], ""] });
     } catch (e) { /* style still loading */ }
   }
