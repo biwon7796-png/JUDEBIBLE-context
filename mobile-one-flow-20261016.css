@@ -1,0 +1,16 @@
+﻿@media (max-width:760px){
+html,body{overflow-x:clip}
+body[data-view="study"] #text-pane{background:linear-gradient(rgba(255,255,255,.88),rgba(255,255,255,.92)),url("stone-design/marble.png") center/640px repeat;border:1px solid #dfd3c2;border-radius:16px;box-shadow:0 4px 18px #55442218}
+body[data-view="study"] #stage,body[data-view="study"] #text-pane,body[data-view="study"] #side-pane{max-width:100%;min-width:0}
+body[data-view="timeline"] #timeline-pane{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:linear-gradient(#faf5eddd,#faf5edee),url("stone-design/limestone.png") center/560px repeat}
+body[data-view="timeline"] #timeline-pane .tl-page,body[data-view="timeline"] #timeline-pane .tl-work,body[data-view="timeline"] #timeline-pane .tl-left,body[data-view="timeline"] #timeline-pane .tl-main{display:flex;flex-direction:column;width:100%;min-width:0;height:auto;max-height:none;overflow:visible;gap:12px}
+body[data-view="timeline"] #timeline-pane .tl-detail{position:static;display:block;width:100%;height:auto;max-height:none;overflow:visible;margin:0}
+body[data-view="timeline"] #timeline-pane .tl-event-rail{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+body[data-view="timeline"] #timeline-pane .tl-event-card,body[data-view="timeline"] #timeline-pane .tl-detail{background:#fffaf1e8;border-radius:14px;box-shadow:0 2px 9px #55442218}
+body[data-view="explore"] .sw{overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;background:linear-gradient(#fffcf6e8,#fffcf6ed),url("stone-design/limestone.png") center/560px repeat;border:5px ridge #d7c6aa;border-radius:17px;box-shadow:inset 0 0 0 2px #ffffffb3,0 5px 18px #4b3c2c22}
+body[data-view="explore"] .sw-shell{display:flex;flex-direction:column;height:auto;min-height:100%;max-height:none;overflow:visible;width:100%;min-width:0}
+body[data-view="explore"] .sw-nav,body[data-view="explore"] .sw-main{position:static;width:100%;min-width:0;height:auto;max-height:none;overflow:visible;flex:0 0 auto}
+body[data-view="explore"] .sw-nav-scroll{max-height:none;overflow:visible}
+body[data-view="explore"] .sw-results{display:grid;grid-template-columns:minmax(0,1fr)}
+body[data-view="explore"] .sw-results>*{max-width:100%;min-width:0}
+}
