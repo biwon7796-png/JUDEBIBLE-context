@@ -14,3 +14,12 @@
 :root[data-theme="dark"] .tl-note { background: rgba(255, 236, 200, .06); }
 :root[data-theme="dark"] .tl-enrich p, :root[data-theme="dark"] .tl-read li, :root[data-theme="dark"] .tl-read span, :root[data-theme="dark"] .tl-note p { color: #eadfcd; }
 :root[data-theme="dark"] .tl-enrich h3, :root[data-theme="dark"] .tl-enrich-notes h3, :root[data-theme="dark"] .tl-read a, :root[data-theme="dark"] .tl-note b, :root[data-theme="dark"] .tl-note summary { color: #f2cc8b; }
+
+/* research panel: Tyndale note translation */
+.jbc-tyndale-tr, .jbc-tyndale-trall { margin: 4px 0; padding: 4px 10px; border: 1px solid rgba(120, 94, 58, .5); border-radius: 999px; background: rgba(255, 250, 240, .7); color: var(--accent-ink, #7a3f14); font-size: 12px; font-weight: 700; cursor: pointer; }
+.jbc-tyndale-tr:disabled, .jbc-tyndale-trall:disabled { opacity: .6; cursor: default; }
+.jbc-tyndale-ko { margin-top: 6px; padding: 8px 10px; border-left: 3px solid rgba(60, 120, 90, .6); background: rgba(240, 250, 244, .55); border-radius: 0 8px 8px 0; }
+.jbc-tyndale-ko p { margin: 0 0 4px; font-weight: 600; }
+.jbc-tyndale-ko small, .jbc-tyndale-trnote { display: block; font-size: 11px; line-height: 1.5; color: var(--ink-3, #7a6f64); }
+:root[data-theme="dark"] .jbc-tyndale-tr, :root[data-theme="dark"] .jbc-tyndale-trall { background: rgba(255, 236, 200, .08); color: #f2cc8b; border-color: rgba(242, 204, 139, .4); }
+:root[data-theme="dark"] .jbc-tyndale-ko { background: rgba(120, 200, 160, .08); }
