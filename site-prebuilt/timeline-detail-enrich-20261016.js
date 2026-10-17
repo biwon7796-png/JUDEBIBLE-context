@@ -67,12 +67,16 @@
       else if (r.d.overview && r.d.overview[0]) h += "<p>" + esc(clip(r.d.overview[0], 360)) + "</p>";
       h += '<button type="button" class="tl-worbs-open" data-hash="' + esc(rg.book + "-" + rg.c1 + ":" + rg.v1) + '">본문연구 패널에서 전체 보기</button></article>';
     });
-    return h + '<p class="tl-credit">본문연구는 Tyndale Open Study Notes·unfoldingWord Translation Notes(CC BY-SA 4.0)로 보강한 주드성경 연구입니다.</p>';
+    return h + '<p class="tl-credit">이 연구는 공개 자료(Tyndale Open Study Notes, unfoldingWord Translation Notes · CC BY-SA 4.0)를 참고해 한국어 독자를 위해 선별·재구성·재서술한 것이며, 원출판사·기관이 승인한 번역이 아닙니다. 참고자료와 라이선스는 본문연구 패널 맨 아래 "연구 출처 및 저작권 안내"에 있습니다.</p>';
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest(".tl-worbs-open"); if (!b) return;
     location.hash = "#" + b.getAttribute("data-hash"); setTimeout(function () { var o = document.querySelector(".jb-research-edge-open,#panel-open"); if (o && document.body.dataset.panel !== "open") o.click(); }, 700);
   });
+  function refName(rg) {
+    var bs = window.BVC_KRV && window.BVC_KRV.books, b = bs && bs.filter(function (x) { return x.id === rg.book; })[0], nm = b ? b.name : rg.book;
+    return nm + " " + rg.c1 + (rg.c2 !== rg.c1 ? "–" + rg.c2 : "") + "장";
+  }
   function render(det, id) {
     var enr = window.JBC_TL_ENRICH && window.JBC_TL_ENRICH[id], step = buildIndex()[id], rg = step && parseRange(step.range);
     var box = document.createElement("section"); box.className = "tl-enrich"; box.setAttribute("data-for", id); var html = "";
@@ -92,7 +96,7 @@
         var full = String(n.text || "").trim(), short = clip(full, 340);
         return '<article class="tl-note"><b>' + esc((n.ref || "").replace(/\./g, " ").replace(/ (\d+) (\d+)/, " $1:$2")) + "</b><p>" + esc(short) + "</p>" +
           (full.length > short.length ? "<details><summary>전문 보기</summary><p>" + esc(full) + "</p></details>" : "") + "</article>";
-      }).join("") + '<p class="tl-credit">Tyndale Open Study Notes © Tyndale House Publishers, <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a> · 본문 범위와 겹치는 주석을 자동으로 골랐습니다.</p>';
+      }).join("") + '<div class="tl-credit tl-notice"><b>연구 출처 및 저작권 안내</b><br>Tyndale Open Study Notes — © 2022 Tyndale House Publishers. ' + esc(refName(rg)) + ' 관련 주석 발췌(일부 생략, 영어 원문). CC BY-SA 4.0.<br>The original work by Tyndale House Publishers is available for free at <a href="http://www.tyndaleopenresources.com" target="_blank" rel="noopener noreferrer">http://www.tyndaleopenresources.com</a>. 번역 버튼으로 보는 한국어는 브라우저의 기계 번역이며 원출판사가 승인한 번역이 아닙니다. 라이선스 전문: <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">https://creativecommons.org/licenses/by-sa/4.0/</a></div>';
       var sec = document.createElement("div"); sec.className = "tl-enrich-notes"; sec.innerHTML = h; box.appendChild(sec);
     });
   }
