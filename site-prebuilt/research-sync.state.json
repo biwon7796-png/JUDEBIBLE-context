@@ -2,13 +2,19 @@
  "note": "연구 동기화 상태. pinned: 이번 빌드의 파일이 원본과 다르게 유지되는 항목(원본이 바뀌면 경고).",
  "verseProjectionBaseSha": "d9c3838ae584587938a4437cf194d053266a8b880234b2b52ef8a0394a93ee1b",
  "pinned": {
-  "research.exo1-15-22.reader.js": {
-   "appSha": null,
-   "why": "드라이브 원고(1:15–22)를 변환해 이번 빌드에만 추가"
-  },
   "research.exo3-1-12.reader.js": {
    "appSha": "ee675b7c32046e5ee77b0631a45b0e79cbcc8cc8d874f542b03fa7d49e47c3b2",
    "why": "드라이브 승인본 v0.3(NONACTIVE 파일)로 교체"
+  }
+ },
+ "converted": {
+  "research.exo1-15-22.reader.js": {
+   "source": "EXODUS_01_15_22_WORBS_STORY_COMMENTARY_v0.2_READER_DRAFT_20261017.md",
+   "sha": "6253298e91eff1b73daa5a10c065bc371361702f7082d34762fde1d27b265013"
+  },
+  "research.1sa1-1-8.reader.js": {
+   "source": "1SA_01_01_08_WORBS_READER_DERIVATIVE_v0.1_20261017.md",
+   "sha": "439fbba733865477f11397723074a540f642f9b54b811324460dbb5e816f5eb5"
   }
  }
 }
