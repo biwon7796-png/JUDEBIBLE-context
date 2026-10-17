@@ -15,6 +15,26 @@
   "research.1sa1-1-8.reader.js": {
    "source": "1SA_01_01_08_WORBS_READER_DERIVATIVE_v0.1_20261017.md",
    "sha": "439fbba733865477f11397723074a540f642f9b54b811324460dbb5e816f5eb5"
+  },
+  "research.psa1-1-6.reader.js": {
+   "source": "PSA_001_001_006_WORBS_READER_DRAFT_20261017.md",
+   "sha": "2e67ce17704c8276b87a4ad8e5f96d65134e471684eca5b07e78ff565aa7260e"
+  },
+  "research.psa2-1-12.reader.js": {
+   "source": "PSA_002_001_012_WORBS_READER_DRAFT_20261017.md",
+   "sha": "d6c6743140b65a166b795735b2bb71b2be7d913a4876d79362eaca91fc3fc74c"
+  },
+  "research.jer1-1-10.reader.js": {
+   "source": "JER_001_001_010_WORBS_READER_DRAFT_20261017.md",
+   "sha": "229abadb623febed2f0bb3b886e30785336ab9fa5bf6f7704d8dff8be6b506a4"
+  },
+  "research.jer1-11-19.reader.js": {
+   "source": "JER_001_011_019_WORBS_READER_DRAFT_20261017.md",
+   "sha": "266a9adbe614a74a87d4f20ff067f65c3cc0cdfba3e1fb10609218d77ca7bd73"
+  },
+  "research.luk1-1-4.reader.js": {
+   "source": "LUK_001_001_004_WORBS_READER_DRAFT_20261017.md",
+   "sha": "abb021eaf96000e299215c2ddad7e3ec3649afe9cfb1a9c324ba1f4ab859479e"
   }
  }
 }

@@ -1,1 +1,1 @@
-window.JBC_RESEARCH_BOOKS = {"1sa":{"v":"3bacadf0","n":1,"bytes":13555},"exo":{"v":"ed7e70ae","n":13,"bytes":172996},"gen":{"v":"4e5488b3","n":12,"bytes":108521}};
+window.JBC_RESEARCH_BOOKS = {"1sa":{"v":"3bacadf0","n":1,"bytes":13555},"exo":{"v":"ed7e70ae","n":13,"bytes":172996},"gen":{"v":"4e5488b3","n":12,"bytes":108521},"jer":{"v":"5badac89","n":2,"bytes":43285},"luk":{"v":"9c511816","n":1,"bytes":17488},"psa":{"v":"b18f32c8","n":2,"bytes":44672}};
