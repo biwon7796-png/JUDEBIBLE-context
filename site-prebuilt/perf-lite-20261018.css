@@ -1,0 +1,12 @@
+/* Phone-only, opt-in. Removes the effects that are expensive to repaint while scrolling long lists:
+   - backdrop-filter blur on every layer (the search results panel is a ~18,000px tall blurred layer),
+   - fixed-attachment stone textures on the search page and timeline (forces a repaint each frame on most phones).
+   Colours, textures and layout stay the same; only the frosted-glass blur is dropped. */
+@media (max-width: 760px) {
+  html[data-perf="lite"] *, html[data-perf="lite"] *::before, html[data-perf="lite"] *::after {
+    -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+  }
+  html[data-perf="lite"]:root:not([data-theme="dark"]) body:has(#search-workspace:not([hidden])) #search-workspace,
+  html[data-perf="lite"] body #search-workspace#search-workspace, html[data-perf="lite"] body #timeline-pane#timeline-pane { background-attachment: scroll !important; }
+  html[data-perf="lite"] .sw-shell { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+}
