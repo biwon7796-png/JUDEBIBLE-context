@@ -1,0 +1,6 @@
+/* Phones: nothing below 12px. Only the labels that were measured under 12px on a 375px screen are raised;
+   everything else keeps its size. Revert by deleting this file's <link> in index.html. */
+@media (max-width: 760px) {
+  .tl-era-card strong, .tl-era-card small, .tl-mini-name, .tl-event-desc, .tl-event-card small, .tl-chrono-head span,
+  .sw-mode button, .sr-kind, .ee-count, .pc-photo-credit, .pc-photo-credit a, .ol-lang, .ol-ref { font-size: 12px; }
+}
