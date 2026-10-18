@@ -10,7 +10,7 @@
   function ctx() { return body.dataset.detailContext || "passage"; }
   function mainKey() { return view() === "study" ? "text" : "main"; }
   function tabsFor() {
-    var v = view(), detail = ctx() === "entity" ? "장소·인물" : (v === "study" ? "본문연구" : "상세");
+    var v = view(), detail = ctx() === "entity" ? "장소·인물" : (v === "study" ? "주석" : "상세");
     if (v === "study") return [["text", "본문"], ["detail", detail], ["guide", "주제탐색"], ["map", "지도"]];
     return [["main", v === "timeline" ? "연표" : "검색"], ["detail", detail]];
   }
