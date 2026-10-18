@@ -3083,8 +3083,10 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     return true;
   }
   function syncRefInput(force) {
+    var cur = D.passages[state.passage].ref + (state.verse != null ? " " + state.verse + "절" : ""), qh = $("qs-input");
+    if (qh) { qh.dataset.live = "1"; qh.placeholder = cur + " · 검색·이동"; }
     var el = $("ref-input"); if (!el || (!force && document.activeElement === el)) return;
-    el.value = D.passages[state.passage].ref + (state.verse != null ? " " + state.verse + "절" : "");
+    el.value = cur;
   }
   function renderText() {
     var P = D.passages[state.passage], remounted = mountPassage();
@@ -5606,7 +5608,8 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     }
     var tp = $("text-pane"); if (tp) { try { tp.inert = v !== "study"; } catch (e) {} tp.setAttribute("aria-hidden", v !== "study" ? "true" : "false"); }
     var tl = $("timeline-pane"); if (tl) tl.hidden = v !== "timeline";
-    var qb = $("quick-search"); if (qb) qb.hidden = v === "explore";
+    var qb = $("quick-search"); if (qb) qb.hidden = false;
+    var qh = $("qs-input"); if (qh) { if (v === "explore") { qh.dataset.sw = "1"; if (qh.value !== swState.q && document.activeElement !== qh) qh.value = swState.q; } else if (qh.dataset.sw) { delete qh.dataset.sw; qh.value = ""; qsClose(); } }
     if (v === "timeline") renderTimeline();
   }
   function timelineBindingMatches(b) {
@@ -7010,6 +7013,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     swState.open = true;
     var w = $("search-workspace"); if (w) { w.hidden = false; w.dataset.ready = "1"; }
     var sq = $("sw-query"); if (sq) { sq.value = swState.q; }
+    var qh2 = $("qs-input"); if (qh2) { qh2.dataset.sw = "1"; if (document.activeElement !== qh2) qh2.value = swState.q; }
     var hs = $("search"); if (hs && hs.value !== swState.q) hs.value = swState.q;
     renderSearch(); restoreExploreScroll();
     if (sq && document.activeElement !== sq) { try { sq.focus({ preventScroll: true }); } catch (e) { sq.focus(); } }
@@ -7430,7 +7434,8 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   }
   function qsRender() {
     var inp = $("qs-input"), ul = $("qs-list"); if (!inp || !ul) return;
-    var q = inp.value, nq = norm(q), m = quickSearchModel(q), html = "", last = "", total = 0;
+    var q = inp.value, nq = norm(q), m = quickSearchModel(q), html = "", last = "", total = 0, onSearch = state.view === "explore";
+    if (onSearch) { m = { rows: m.rows.filter(function (r) { return r.t === "ref"; }), counts: null }; }   // results are on the page itself; only "go to passage" stays in the list
     qs.q = q; qs.items = m.rows.slice();
     if (m.counts) SEARCH_GROUPS.forEach(function (g) { total += m.counts[g] || 0; });
     m.rows.forEach(function (r, i) {
@@ -7439,13 +7444,13 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
       else if (r.t === "verse") html += '<li role="option" id="qs-o' + i + '" class="qs-row qs-verse" data-qs-i="' + i + '" aria-selected="false"><span class="qs-name">' + esc(r.label) + '</span><span class="qs-snip">' + snippetHtml(r.text, q) + "</span></li>";
       else html += '<li role="option" id="qs-o' + i + '" class="qs-row' + (r.ext ? " is-ext" : "") + '" data-qs-i="' + i + '" aria-selected="false"><span class="qs-name">' + markedHtml(r.label, markRanges(r.label, q), 0, r.label.length) + '</span><span class="qs-sub">' + esc(r.sub) + "</span></li>";
     });
-    if (nq) {
+    if (nq && !onSearch) {
       var ci = qs.items.length; qs.items.push({ t: "all" });
       if (!m.rows.length) html += '<li class="qs-empty" role="presentation">' + (nq.replace(/\s+/g, "").length < 2 ? "두 글자 이상 입력하면 성경 본문 전체에서 찾습니다" : "일치하는 결과가 없습니다") + "</li>";
       html += '<li role="option" id="qs-o' + ci + '" class="qs-row qs-all" data-qs-i="' + ci + '" aria-selected="false"><span class="qs-name">전체 결과 보기</span><span class="qs-sub">' + (total ? "총 " + total + "건 · " : "") + "검색 탭</span></li>";
     }
     ul.innerHTML = html; qs.active = qs.items.length ? 0 : -1; qsMark();
-    ul.hidden = !html; inp.setAttribute("aria-expanded", String(!ul.hidden));
+    ul.hidden = !html; inp.setAttribute("aria-expanded", String(!ul.hidden || !!qn.open));
   }
   function qsMark() {
     var ul = $("qs-list"), inp = $("qs-input"); if (!ul) return;
@@ -7508,11 +7513,14 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     }
   }
   if ($("qs-input")) {
-    $("qs-input").addEventListener("input", qsRender);
+    $("qs-input").addEventListener("input", function () {
+      if (state.view === "explore" && $("sw-query") && $("qs-input").dataset.sw) { var v = $("qs-input").value; $("sw-query").value = v; swState.q = v; swState.limit = 30; if ($("search")) $("search").value = v; renderSearch(); }
+      qsRender();
+    });
     $("qs-input").addEventListener("focus", qsRender);
     $("qs-input").addEventListener("keydown", function (e) {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") { e.preventDefault(); if ($("qs-list").hidden) qsRender(); if (!qs.items.length) return; qs.active = (qs.active + (e.key === "ArrowDown" ? 1 : -1) + qs.items.length) % qs.items.length; qsMark(); }
-      else if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); if (qs.items[qs.active]) qsPick(qs.active); }
+      else if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); if (qs.items[qs.active]) qsPick(qs.active); else if (state.view === "explore" && $("sw-query")) { qsClose(); $("sw-query").dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true, cancelable: true })); } }
       else if (e.key === "Escape") { e.stopPropagation(); if (!$("qs-list").hidden) qsClose(); else this.value = ""; }
     });
     $("qs-list").addEventListener("mousedown", function (e) { var li = e.target.closest("[data-qs-i]"); if (li) { e.preventDefault(); qsPick(+li.dataset.qsI); } });
@@ -7550,7 +7558,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     return items.slice(0, 8);
   }
   function qnRender() {
-    var pop = $("ref-pop"); if (!pop) return; var q = $("ref-input").value, typed = !!norm(q).replace(/\s+/g, ""), html = "", rec = recentRefs();
+    var pop = $("ref-pop"); if (!pop) return; var q = $("qs-input").value, typed = !!norm(q).replace(/\s+/g, ""), html = "", rec = recentRefs();
     qn.items = typed ? qnSuggest(q) : [];
     if (qn.items.length) html += '<ul id="ref-suggest" class="qn-list" role="listbox" aria-label="자동완성">' + qn.items.map(function (it, i) { return '<li id="qn-opt-' + i + '" role="option" data-qn-i="' + i + '" aria-selected="' + (i === qn.active) + '" class="qn-opt' + (i === qn.active ? " on" : "") + '">' + esc(it.label) + (it.kind === "book" ? ' <span class="qn-hint">장 선택</span>' : "") + "</li>"; }).join("") + "</ul>";
     else if (typed) html += '<p class="qn-empty">일치하는 책이 없습니다. 예: 민2, 요3:16, 롬 8:28</p>';
@@ -7561,21 +7569,22 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
       var bk = BOOK[qn.book];
       html += '<div class="qn-sec"><p class="qn-h"><button type="button" class="qn-back" data-qn-back="1" aria-label="책 목록으로">‹</button> ' + esc(bk.name) + " · " + bk.chapters.length + chapterUnit(bk.id) + '</p><div class="qn-grid qn-chapters" role="group" aria-label="' + esc(bk.name) + ' 장 선택">' + bk.chapters.map(function (c, i) { return '<button type="button" class="qn-btn" data-qn-chapter="' + (i + 1) + '">' + (i + 1) + "</button>"; }).join("") + "</div></div>";
     } else html += '<div class="qn-grid qn-books" role="group" aria-label="책 선택">' + (qn.tab === "ot" ? ot : nt).map(function (bk) { return '<button type="button" class="qn-btn qn-book" data-qn-book="' + bk.id + '">' + esc(bk.name) + "</button>"; }).join("") + "</div>";
-    pop.innerHTML = html; var inp = $("ref-input"); inp.setAttribute("aria-expanded", "true"); if (qn.active >= 0) inp.setAttribute("aria-activedescendant", "qn-opt-" + qn.active); else inp.removeAttribute("aria-activedescendant");
+    pop.innerHTML = html;
   }
   function qnOpen() { var pop = $("ref-pop"); if (!pop) return; qn.open = true; pop.hidden = false; qnRender(); }
-  function qnClose(refocus) { var pop = $("ref-pop"); if (!pop || !qn.open) return; qn.open = false; qn.active = -1; qn.book = null; pop.hidden = true; var inp = $("ref-input"); inp.setAttribute("aria-expanded", "false"); inp.removeAttribute("aria-activedescendant"); if (refocus) inp.focus(); }
+  function qnClose(refocus) { var pop = $("ref-pop"); if (!pop || !qn.open) return; qn.open = false; qn.active = -1; qn.book = null; pop.hidden = true; var inp = $("qs-input"); if (refocus && inp) inp.focus(); }
   function qnChoose(it) {
     if (!it) return false;
     if (it.kind === "book") { qn.book = it.book; qn.tab = KRV.books.findIndex(function (b) { return b.id === it.book; }) < 39 ? "ot" : "nt"; qn.active = -1; qnRender(); var f = $("ref-pop").querySelector(".qn-chapters .qn-btn"); if (f) f.focus(); return true; }
     var ok = openReference(it.label, { keepView: true }); if (ok) qnClose(); else qnRender(); return ok;
   }
   function bindQuickNavigator() {
-    var inp = $("ref-input"), pop = $("ref-pop"), form = $("ref-form"); if (!inp || !pop || !form || !KRV.books.length) return;
-    inp.setAttribute("role", "combobox"); inp.setAttribute("aria-haspopup", "dialog"); inp.setAttribute("aria-controls", "ref-pop"); inp.setAttribute("aria-expanded", "false"); inp.setAttribute("aria-autocomplete", "list");
-    inp.addEventListener("focus", function () { if (!qn.open) { qn.active = -1; qnOpen(); } });
-    inp.addEventListener("click", function () { if (!qn.open) qnOpen(); });
-    inp.addEventListener("input", function () { qn.active = -1; qn.book = null; if (!qn.open) qnOpen(); else qnRender(); });
+    var inp = $("qs-input"), pop = $("ref-pop"), form = $("quick-search"); if (!inp || !pop || !form || !KRV.books.length) return;
+    form.appendChild(pop);   // one box: the book/chapter picker drops down from the quick-search input while it is empty
+    function qnEmpty() { return !norm(inp.value).replace(/\s+/g, ""); }
+    inp.addEventListener("focus", function () { if (qnEmpty() && !qn.open) { qn.active = -1; qnOpen(); } });
+    inp.addEventListener("click", function () { if (qnEmpty() && !qn.open) qnOpen(); });
+    inp.addEventListener("input", function () { qn.active = -1; qn.book = null; if (!qnEmpty()) { qnClose(); return; } if (!qn.open) qnOpen(); else qnRender(); });
     inp.addEventListener("keydown", function (e) {
       if (e.key === "ArrowDown" || e.key === "ArrowUp") {
         e.preventDefault(); if (!qn.open) qnOpen();
@@ -7583,7 +7592,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
         else if (e.key === "ArrowDown") { var f = pop.querySelector(".qn-rec, .qn-tab[aria-selected=true]"); if (f) f.focus(); }
         return;
       }
-      if (e.key === "Enter" && qn.open && qn.active >= 0 && qn.items[qn.active]) { e.preventDefault(); qnChoose(qn.items[qn.active]); }
+      if (e.key === "Enter" && qn.open && qn.active >= 0 && qn.items[qn.active]) { e.preventDefault(); e.stopImmediatePropagation(); qnChoose(qn.items[qn.active]); }
     });
     pop.addEventListener("click", function (e) {
       var el;

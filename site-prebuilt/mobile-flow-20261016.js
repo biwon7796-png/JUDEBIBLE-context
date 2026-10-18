@@ -30,7 +30,7 @@
   // shorter placeholders so both search boxes fit side by side
   function placeholders() {
     var q = document.getElementById("qs-input"), r = document.querySelector(".ref-input");
-    if (q) { if (!q.dataset.ph) q.dataset.ph = q.placeholder; q.placeholder = mq.matches ? "검색 · 이동 (요 3:16)" : q.dataset.ph; }
+    if (q && !q.dataset.live) { if (!q.dataset.ph) q.dataset.ph = q.placeholder; q.placeholder = mq.matches ? "검색 · 이동 (요 3:16)" : q.dataset.ph; }
     if (r) { if (!r.dataset.ph) r.dataset.ph = r.placeholder; r.placeholder = mq.matches ? "본문 (창 22:2)" : r.dataset.ph; }
   }
   function refreshMap() { try { var m = window.BVC && BVC.mapRenderer && BVC.mapRenderer.map && BVC.mapRenderer.map(); if (m && m.resize) { m.resize(); } } catch (e) {} }

@@ -35,3 +35,9 @@
   body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-primary.no-media .ee-card-extra { grid-column: 1; }
   .pc-credit-wrap { top: 6px; right: 6px; }
 }
+
+/* One search box: the header box does navigation + keyword search; the separate passage box and the in-page query box are folded into it. */
+.ref-form { display: none !important; }
+#search-workspace .sw-search { display: none !important; }
+.qs .ref-pop { left: auto; right: 0; width: min(420px, 94vw); }
+@media (min-width: 1100px) { .top .qs { width: max(var(--hdr-scripture-w, 320px), 360px); } }
