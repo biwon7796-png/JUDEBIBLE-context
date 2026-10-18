@@ -4,7 +4,7 @@
   background-color: #e8dcc8;
   background-image:
     linear-gradient(110deg, rgba(255,249,231,.26), rgba(112,85,50,.08)),
-    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/03_따뜻한_석회암_질감과_거친_가장자리.png");
+    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/03_따뜻한_석회암_질감과_거친_가장자리.webp");
   background-size: 100% 100%, cover;
   background-position: center;
   background-attachment: fixed;
@@ -13,7 +13,7 @@
 :root:not([data-theme="dark"]) body[data-view="study"] #side-pane .rp-editorial-reader {
   background-image:
     linear-gradient(rgba(255,255,255,.82),rgba(255,255,255,.82)),
-    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/08_부드러운_크림색_대리석_질감.png");
+    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/08_부드러운_크림색_대리석_질감.webp");
   background-size: auto, cover;
   background-position: center;
 }
@@ -21,7 +21,7 @@
   background-color: #ebe5d9;
   background-image:
     linear-gradient(rgba(249,247,242,.58),rgba(239,234,222,.62)),
-    url("design-preview/JudeBible_assets_20261012/judebible-visual-assets/stone/granite-cream.png");
+    url("design-preview/JudeBible_assets_20261012/judebible-visual-assets/stone/granite-cream.webp");
   background-size: auto, 720px auto;
   background-repeat: repeat;
 }

@@ -4,15 +4,15 @@
    Light theme only: the dark theme keeps its charcoal granite. The parchment scroll (#verses), the stitched selection
    thread and the original-language popover are deliberately untouched. Loaded after stone-surfaces-20261016.css. */
 :root:not([data-theme="dark"]) {
-  --ps-marble: url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/01_따뜻한_크림색_석회암_텍스처.png");        /* study page: cream limestone */
-  --ps-lime: url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/10_매끄러운_아이보리_석회암_질감.png");        /* timeline page: rough ivory limestone */
-  --ps-granite: url("design-preview/JudeBible_assets_20261012/judebible-visual-assets/stone/granite-cream.png");   /* search and other pages */
+  --ps-marble: url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/01_따뜻한_크림색_석회암_텍스처.webp");        /* study page: cream limestone */
+  --ps-lime: url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/10_매끄러운_아이보리_석회암_질감.webp");        /* timeline page: rough ivory limestone */
+  --ps-granite: url("design-preview/JudeBible_assets_20261012/judebible-visual-assets/stone/granite-cream.webp");   /* search and other pages */
 }
 
 /* scripture panel: carved limestone behind the scroll */
 :root:not([data-theme="dark"]) #text-pane {
   background-color: #ece3d1 !important;
-  background-image: linear-gradient(145deg, rgba(255, 252, 244, .30), rgba(246, 236, 217, .18)), url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/10_매끄러운_아이보리_석회암_질감.png") !important;
+  background-image: linear-gradient(145deg, rgba(255, 252, 244, .30), rgba(246, 236, 217, .18)), url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/10_매끄러운_아이보리_석회암_질감.webp") !important;
   background-size: auto, cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
@@ -25,7 +25,7 @@
 :root:not([data-theme="dark"]) #rail,
 :root:not([data-theme="dark"]) #guide-pane,
 :root:not([data-theme="dark"]) #map-pane {
-  background-image: linear-gradient(145deg, rgba(255, 253, 248, .84), rgba(248, 242, 231, .70)), url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/01_따뜻한_크림색_석회암_텍스처.png") !important;
+  background-image: linear-gradient(145deg, rgba(255, 253, 248, .84), rgba(248, 242, 231, .70)), url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/01_따뜻한_크림색_석회암_텍스처.webp") !important;
   background-size: auto, cover !important;
   background-position: center !important;
 }
@@ -33,7 +33,7 @@
 /* search page and topic board */
 :root:not([data-theme="dark"]) body:has(#search-workspace:not([hidden])) #search-workspace {
   background-color: #ebe5d9 !important;
-  background-image: linear-gradient(rgba(249, 247, 242, .50), rgba(239, 234, 222, .54)), url("design-preview/JudeBible_assets_20261012/judebible-visual-assets/stone/granite-cream.png") !important;
+  background-image: linear-gradient(rgba(249, 247, 242, .50), rgba(239, 234, 222, .54)), url("design-preview/JudeBible_assets_20261012/judebible-visual-assets/stone/granite-cream.webp") !important;
   background-size: auto, cover !important;
   background-position: center !important;
   background-repeat: no-repeat !important;
@@ -41,7 +41,7 @@
 }
 :root:not([data-theme="dark"]) #topic-board {
   background-color: #efe6d4 !important;
-  background-image: linear-gradient(rgba(255, 251, 242, .64), rgba(247, 238, 221, .66)), url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/09_크림_베이지_스톤_텍스처_배경.png") !important;
+  background-image: linear-gradient(rgba(255, 251, 242, .64), rgba(247, 238, 221, .66)), url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/09_크림_베이지_스톤_텍스처_배경.webp") !important;
   background-size: auto, cover !important;
   background-position: center !important;
 }
