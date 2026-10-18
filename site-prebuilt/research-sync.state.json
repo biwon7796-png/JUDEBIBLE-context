@@ -35,6 +35,18 @@
   "research.luk1-1-4.reader.js": {
    "source": "LUK_001_001_004_WORBS_READER_DRAFT_20261017.md",
    "sha": "abb021eaf96000e299215c2ddad7e3ec3649afe9cfb1a9c324ba1f4ab859479e"
+  },
+  "research.1sa1-9-20.reader.js": {
+   "source": "1SA_01_09_20_WORBS_READER_DRAFT_20261018.md",
+   "sha": "6c88c2f387bb95e9f6fb2a1af0434d0d7dda3b7614d2f07c0aff4582bb41cefc"
+  },
+  "research.psa3-1-8.reader.js": {
+   "source": "PSA_003_001_008_WORBS_READER_DRAFT_20261018.md",
+   "sha": "9ff3ef859bf89fa2b1b8a8fbff91a603d2084a35a80b6fcb6a58054697d4291a"
+  },
+  "research.psa4-1-8.reader.js": {
+   "source": "PSA_004_001_008_WORBS_READER_DRAFT_20261018.md",
+   "sha": "4ee6b383414dec89ed1b98889d32356af166164850e804c8805a0fb55f3fa88e"
   }
  }
 }
