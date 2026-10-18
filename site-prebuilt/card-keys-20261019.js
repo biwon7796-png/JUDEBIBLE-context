@@ -7,6 +7,7 @@
   "use strict";
   var CTX = [
     { sel: ".sr-row.ee-primary", scope: "#search-results", key: function (b) { return b.getAttribute("data-stable-id") || b.getAttribute("data-id") || b.getAttribute("data-levelb-open") || b.getAttribute("data-atlas90-open"); }, grid: true, kind: "search" },
+    { sel: ".tl-era-card[data-tl-era]:not(.is-planned)", scope: "#tl-body", key: function (b) { return b.getAttribute("data-tl-era"); }, kind: "era" },
     { sel: ".tl-event-card[data-tl-step]", scope: "#tl-body", key: function (b) { return b.getAttribute("data-tl-step"); }, kind: "timeline" },
     { sel: ".jn-step-btn[data-nav-step]", scope: "#side-pane, #guide-pane, body", key: function (b) { return b.getAttribute("data-nav-step"); }, kind: "nav" }
   ];
@@ -67,7 +68,7 @@
     if (e.detail === 0) return;   // keyboard / scripted clicks are handled in go()
     var hit = ctxOf(e.target); if (!hit) return;
     var key = hit.c.key(hit.btn); if (key == null) return;
-    setTimeout(function () { var a = document.activeElement; if (!a || a === document.body || !a.isConnected || !ctxOf(a)) pick(hit.c, key, 4, true); }, 90);
+    [90, 300, 700, 1400].forEach(function (ms) { setTimeout(function () { var a = document.activeElement; if (!a || a === document.body || !a.isConnected || !ctxOf(a)) pick(hit.c, key, 0, true); }, ms); });   // a render can happen more than once
   });
   // The journey / topic panel: after a click anywhere in it (even on text) the arrows move the journey step, not the Bible chapter.
   var inGuide = false;
@@ -81,7 +82,7 @@
     if (!hit && inGuide && !typing(e.target)) {
       var bare = !e.target || e.target === document.body || e.target === document.documentElement || (e.target.closest && e.target.closest("#guide-pane"));
       var stepBtn = bare && (document.querySelector("#guide-pane .jn-step-btn[aria-current=step]") || document.querySelector("#guide-pane .jn-step-btn"));
-      if (stepBtn && !e.target.closest("a, button, summary")) hit = { c: CTX[2], btn: stepBtn };
+      if (stepBtn && !e.target.closest("a, button, summary")) hit = { c: CTX[3], btn: stepBtn };
     }
     if (!hit) return;
     var lb = document.getElementById("media-lightbox"); if (lb && !lb.hidden) return;
