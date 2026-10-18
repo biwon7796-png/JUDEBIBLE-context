@@ -6767,6 +6767,75 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     var loc=$("sw-location"); if(loc){ var vals=["VERIFIED","LIKELY","PLAUSIBLE","VERIFY","DISPUTED","UNKNOWN"].filter(function(v){return all.some(function(e){return e.reader_location_status===v;});}), names={VERIFIED:"확인된 위치",LIKELY:"유력한 위치",PLAUSIBLE:"가능성 있는 위치",VERIFY:"추정지",DISPUTED:"여러 후보지",UNKNOWN:"위치 미상"}; loc.innerHTML='<option value="all">전체</option>'+vals.map(function(v){return '<option value="'+v+'">'+names[v]+'</option>';}).join(""); if(vals.indexOf(swState.location)<0) swState.location="all"; loc.value=swState.location; }
     if ($("sw-sort")) $("sw-sort").value = swState.sort;
   }
+  // ---------- Search help when nothing matches: English names -> the Korean (KRV) spelling, and one-letter typos ----------
+  // Only suggestions: the user taps a chip to search for it. Nothing is substituted automatically and no identity is inferred.
+  var SEARCH_NAME_ALIASES = {
+    "adam":"아담","eve":"하와","cain":"가인","abel":"아벨","seth":"셋","enoch":"에녹","noah":"노아","shem":"셈","ham":"함","japheth":"야벳",
+    "abraham":"아브라함","abram":"아브람","sarah":"사라","sarai":"사래","hagar":"하갈","ishmael":"이스마엘","isaac":"이삭","rebekah":"리브가","rebecca":"리브가",
+    "jacob":"야곱","esau":"에서","laban":"라반","leah":"레아","rachel":"라헬","judah":"유다","joseph":"요셉","benjamin":"베냐민","reuben":"르우벤","simeon":"시므온","levi":"레위",
+    "naphtali":"납달리","asher":"아셀","issachar":"잇사갈","zebulun":"스불론","ephraim":"에브라임","manasseh":"므낫세","lot":"롯","melchizedek":"멜기세덱",
+    "moses":"모세","aaron":"아론","miriam":"미리암","joshua":"여호수아","caleb":"갈렙","rahab":"라합","gideon":"기드온","samson":"삼손","deborah":"드보라",
+    "ruth":"룻","naomi":"나오미","boaz":"보아스","hannah":"한나","eli":"엘리","samuel":"사무엘","saul":"사울","david":"다윗","jonathan":"요나단","goliath":"골리앗",
+    "bathsheba":"밧세바","nathan":"나단","absalom":"압살롬","solomon":"솔로몬","elijah":"엘리야","elisha":"엘리사","ahab":"아합","jezebel":"이세벨","hezekiah":"히스기야",
+    "josiah":"요시야","isaiah":"이사야","jeremiah":"예레미야","ezekiel":"에스겔","daniel":"다니엘","hosea":"호세아","joel":"요엘","amos":"아모스","obadiah":"오바댜",
+    "jonah":"요나","micah":"미가","nahum":"나훔","habakkuk":"하박국","zephaniah":"스바냐","haggai":"학개","zechariah":"스가랴","malachi":"말라기","job":"욥",
+    "esther":"에스더","mordecai":"모르드개","ezra":"에스라","nehemiah":"느헤미야","nebuchadnezzar":"느부갓네살","cyrus":"고레스",
+    "jesus":"예수","christ":"그리스도","mary":"마리아","elizabeth":"엘리사벳","john":"요한","peter":"베드로","andrew":"안드레","james":"야고보","philip":"빌립",
+    "bartholomew":"바돌로매","thomas":"도마","matthew":"마태","thaddaeus":"다대오","simon":"시몬","judas":"유다","paul":"바울","barnabas":"바나바","silas":"실라",
+    "timothy":"디모데","titus":"디도","luke":"누가","mark":"마가","stephen":"스데반","lazarus":"나사로","martha":"마르다","nicodemus":"니고데모","pilate":"빌라도",
+    "herod":"헤롯","caiaphas":"가야바","zacchaeus":"삭개오","lydia":"루디아","priscilla":"브리스길라","aquila":"아굴라","apollos":"아볼로","philemon":"빌레몬",
+    "onesimus":"오네시모","cornelius":"고넬료","gamaliel":"가말리엘","felix":"벨릭스","festus":"베스도","agrippa":"아그립바",
+    "jerusalem":"예루살렘","bethlehem":"베들레헴","nazareth":"나사렛","capernaum":"가버나움","galilee":"갈릴리","jordan":"요단","jericho":"여리고","samaria":"사마리아",
+    "judea":"유대","egypt":"애굽","canaan":"가나안","babylon":"바벨론","assyria":"앗수르","nineveh":"니느웨","damascus":"다메섹","antioch":"안디옥","ephesus":"에베소",
+    "corinth":"고린도","rome":"로마","philippi":"빌립보","thessalonica":"데살로니가","athens":"아덴","galatia":"갈라디아","colossae":"골로새","sinai":"시내","hebron":"헤브론",
+    "bethel":"벧엘","shechem":"세겜","shiloh":"실로","gilgal":"길갈","carmel":"갈멜","zion":"시온","tyre":"두로","sidon":"시돈","gaza":"가사","ashdod":"아스돗",
+    "joppa":"욥바","jaffa":"욥바","caesarea":"가이사랴","emmaus":"엠마오","bethany":"베다니","bethsaida":"벳새다","cana":"가나","gethsemane":"겟세마네","golgotha":"골고다",
+    "patmos":"밧모","persia":"바사","greece":"헬라","ur":"우르","haran":"하란","moab":"모압","edom":"에돔","ammon":"암몬","philistia":"블레셋","philistines":"블레셋",
+    "eden":"에덴","ararat":"아라랏","babel":"바벨","sodom":"소돔","gomorrah":"고모라","red sea":"홍해","dead sea":"사해","mount of olives":"감람산","mount sinai":"시내",
+    "passover":"유월절","sabbath":"안식일","covenant":"언약","ark":"방주","temple":"성전","tabernacle":"성막","exodus":"출애굽","pentecost":"오순절","gospel":"복음",
+    "grace":"은혜","faith":"믿음","love":"사랑","resurrection":"부활","kingdom of god":"하나님 나라","holy spirit":"성령","angel":"천사","messiah":"메시야","baptism":"세례"
+  };
+  function levenshtein(a, b) {
+    if (a === b) return 0; var al = a.length, bl = b.length; if (!al) return bl; if (!bl) return al;
+    var prev = [], cur = [], i, j; for (j = 0; j <= bl; j++) prev[j] = j;
+    for (i = 1; i <= al; i++) { cur[0] = i; for (j = 1; j <= bl; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1)); var t = prev; prev = cur; cur = t; }
+    return prev[bl];
+  }
+  var suggestPool = null;
+  function suggestCandidates() {
+    if (suggestPool) return suggestPool;
+    var seen = {}, out = [], add = function (s) { s = String(s || "").trim(); var n = norm(s); if (!n || n.length < 2 || seen[n] || /[^가-힣 ]/.test(s)) return; seen[n] = 1; out.push({ label: s, n: n.replace(/\s+/g, "") }); };
+    Object.keys(SEARCH_NAME_ALIASES).forEach(function (k) { add(SEARCH_NAME_ALIASES[k]); });
+    try { STORE.list().forEach(function (e) { add(e.display_label); }); } catch (e) {}
+    try { placeIndex().list.forEach(function (p) { add(p.label); }); } catch (e) {}
+    return (suggestPool = out);
+  }
+  function searchSuggestions(q) {
+    var raw = String(q || "").trim(), n = norm(raw), out = [];
+    if (!n || n.length < 2) return out;
+    if (/^[a-z][a-z .'-]*$/.test(n)) {
+      var key = n.replace(/\s+/g, " ");
+      if (SEARCH_NAME_ALIASES[key]) return [SEARCH_NAME_ALIASES[key]];   // an exact English name needs no guesses
+      Object.keys(SEARCH_NAME_ALIASES).forEach(function (k) { if (out.length < 5 && k !== key && (k.indexOf(key) === 0 || (key.length >= 4 && levenshtein(k, key) <= 1)) && out.indexOf(SEARCH_NAME_ALIASES[k]) < 0) out.push(SEARCH_NAME_ALIASES[k]); });
+      return out.slice(0, 5);
+    }
+    // norm() splits Hangul into letters (jamo), so distance 1 here means a single wrong letter, e.g. 샙/셉, 램/렘
+    var c = n.replace(/\s+/g, ""), tol = c.length >= 12 ? 2 : (c.length >= 4 ? 1 : 0); if (!tol || !/^[가-힣 ]+$/.test(raw)) return out;
+    var scored = [];
+    suggestCandidates().forEach(function (x) { if (Math.abs(x.n.length - c.length) > tol) return; var d = levenshtein(c, x.n); if (d && d <= tol) scored.push([d, x.label]); });
+    scored.sort(function (a, b) { return a[0] - b[0] || a[1].localeCompare(b[1], "ko"); });
+    scored.forEach(function (s) { if (out.length < 5 && out.indexOf(s[1]) < 0) out.push(s[1]); });
+    return out;
+  }
+  function searchSuggestHtml(q) {
+    var s = searchSuggestions(q); if (!s.length) return "";
+    return '<p class="helper sw-suggest" data-part="search-suggest">혹시 이것을 찾으셨나요? ' + s.map(function (t) { return '<button type="button" class="pill" data-sw-suggest="' + esc(t) + '">' + esc(t) + "</button>"; }).join(" ") + "</p>";
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-sw-suggest]"); if (!b) return;
+    e.preventDefault(); var qi = $("sw-query"); if (!qi) return;
+    qi.value = b.getAttribute("data-sw-suggest"); qi.dispatchEvent(new Event("input", { bubbles: true })); try { qi.focus({ preventScroll: true }); } catch (x) {}
+  });
   function renderSearch() {
     if (swState.q && swState.q.trim() && eastonLoadState==="IDLE") ensureEastonCandidate();
     var el=$("search-results"), sum=$("sw-summary"), more=$("sw-more"), q=swState.q, mode=swState.mode, hasQ=!!norm(q), R, refErr=null, entList=[];
@@ -6886,6 +6955,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     if(!total && !refErr){
       var NOTE={event:"사건",route:"경로",research:"연구",verse:"본문",person:"인물",place:"장소",region:"지역"};
       html += '<p class="empty helper" data-sw-empty="'+mode+'">'+(!hasQ&&mode==="verse"?'검색어를 입력하면 KRV 전체 본문에서 찾습니다.':(mode==="event"||mode==="route")&&!hasQ?'아직 등록된 '+NOTE[mode]+' 데이터가 없습니다. 데이터가 추가되면 이곳에 표시됩니다.':hasQ?(mode==="all"?'“'+esc(q.trim())+'”에 대한 검색 결과가 없습니다.':'“'+esc(q.trim())+'”에 대한 '+NOTE[mode]+' 결과가 없습니다.'):'검색어를 입력하세요.')+'</p>';
+      html += searchSuggestHtml(q);
     }
     el.innerHTML=html;
     if(sum) sum.textContent=(hasQ?'“'+q.trim()+'” · ':"")+(mode==="all"?(parts.length?parts.join(" · "):"결과 0건"):(mode==="person"?total:(R.counts[mode]!=null?R.counts[mode]:0))+"건");
