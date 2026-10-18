@@ -84,7 +84,7 @@
     // new section
     var html = "";
     if (refs.length) html += "<h5>본문에서 이 장소가 나오는 곳 <small>개역한글</small></h5><ul class=\"pe-verses\">" + refs.slice(0, 6).map(function (r) {
-      var t = krv(r.b, r.c1, r.v1); return "<li><a href=\"#" + r.b + "-" + r.c1 + ":" + r.v1 + "\">" + esc(refLabel(r)) + "</a>" + (t ? " <span>" + esc(t) + "</span>" : "") + "</li>"; }).join("") + "</ul>";
+      var t = krv(r.b, r.c1, r.v1); return "<li><a href=\"#" + r.b + "-" + r.c1 + ":" + r.v1 + "\" data-pe-ref=\"" + r.b + "," + r.c1 + "," + r.v1 + "," + r.c2 + "," + r.v2 + "\" aria-expanded=\"false\">" + esc(refLabel(r)) + "</a>" + (t ? " <span>" + esc(t) + "</span>" : "") + "</li>"; }).join("") + "</ul>";
     if (steps.length) html += "<h5>연표에서 이 장소가 걸린 사건</h5><ul class=\"pe-steps\">" + steps.slice(0, 8).map(function (s) {
       var mm = /^([1-3]?[a-z]+)-(\d+):(\d+)/i.exec(s.range) || []; var e = ERA[(/^era\.([a-z-]+)\./.exec(s.id) || [])[1]] || "";
       return "<li><a href=\"#" + esc((mm[1] || "") + "-" + (mm[2] || "") + ":" + (mm[3] || "")) + "\">" + esc(s.title) + "</a> <span>" + esc(e) + " · " + esc(s.range.replace(/^([1-3]?[a-z]+)-/i, function (_, b) { return bookName(b.toLowerCase()) + " "; }).replace("-", "–")) + "</span></li>"; }).join("") + "</ul>";
@@ -108,4 +108,42 @@
   new MutationObserver(function () {
     clearTimeout(t); t = setTimeout(function () { document.querySelectorAll('article.detail[data-detail="l"]').forEach(function (a) { try { if (!a.querySelector(".pe-section")) { a.removeAttribute("data-enriched"); enrich(a); } } catch (e) {} }); }, 80);
   }).observe(document.body, { childList: true, subtree: true });
+
+  // Verse links under "성경 속 이 장소": open the passage text in place; a second link goes to the study page.
+  (function () {
+    var st = document.createElement("style");
+    st.textContent = ".pe-verse-open{margin:6px 0 4px;padding:8px 10px;border-left:3px solid var(--accent,#a8662f);background:var(--paper,#fffaf0);border-radius:6px;font-size:13px;line-height:1.65}.pe-verse-open p{margin:0 0 4px}.pe-verse-open sup{color:var(--accent,#a8662f);font-weight:700;margin-right:4px}.pe-verse-open .pe-open-study{display:inline-block;margin-top:4px;font-weight:700}.pe-verses a[aria-expanded=true]{text-decoration:underline}";
+    document.head.appendChild(st);
+    function rangeHtml(p) {
+      var b = p[0], c1 = +p[1], v1 = +p[2], c2 = +p[3], v2 = +p[4], bs = window.BVC_KRV && window.BVC_KRV.books, bk = bs && bs.filter(function (x) { return x.id === b; })[0], out = "";
+      if (!bk) return "";
+      for (var c = c1; c <= c2; c++) {
+        var ch = bk.chapters[c - 1]; if (!ch) break;
+        var from = c === c1 ? v1 : 1, to = c === c2 ? Math.min(v2, ch.length) : ch.length;
+        for (var v = from; v <= to; v++) out += "<p><sup>" + (c !== c1 && v === from || (c === c1 && v === from && c1 !== c2) ? c + ":" : "") + v + "</sup>" + esc(ch[v - 1] || "") + "</p>";
+      }
+      return out;
+    }
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest("a[data-pe-ref]"); if (!a) return;
+      ev.preventDefault(); ev.stopPropagation();
+      var li = a.closest("li"), open = li && li.querySelector(".pe-verse-open");
+      if (open) { open.remove(); a.setAttribute("aria-expanded", "false"); return; }
+      var p = a.getAttribute("data-pe-ref").split(","), html = rangeHtml(p); if (!html) return;
+      var box = document.createElement("div"); box.className = "pe-verse-open";
+      box.innerHTML = html + '<a class="pe-open-study" href="#' + p[0] + "-" + p[1] + ":" + p[2] + '" data-pe-study="' + p[0] + "-" + p[1] + ":" + p[2] + '">본문연구에서 보기 ›</a>';
+      li.appendChild(box); a.setAttribute("aria-expanded", "true");
+    }, true);
+    document.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest("a[data-pe-study]"); if (!a) return;
+      ev.preventDefault(); ev.stopPropagation();
+      var id = a.getAttribute("data-pe-study");
+      try { if (window.BVC && BVC.closeSearch) BVC.closeSearch(true); } catch (e) {}
+      location.hash = "#" + id;
+      setTimeout(function () {
+        if (document.body.dataset.view !== "study" && window.BVC && BVC.setView) { try { BVC.setView("study"); } catch (e) {} }
+        if (document.body.dataset.view !== "study") { var r = document.getElementById("rail-study"); if (r) r.click(); }
+      }, 250);
+    }, true);
+  })();
 })();
