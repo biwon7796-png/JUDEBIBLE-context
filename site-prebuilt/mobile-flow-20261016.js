@@ -83,6 +83,18 @@
     }, 220);
   }, true);
 
+  // Phones: the keyboard's search/enter key in the search box must only close the keyboard and show the results.
+  // (The app's own Enter handler opens the first result, which on a phone leaves the search tab - often straight to the study page.)
+  document.addEventListener("keydown", function (e) {
+    if (!mq.matches || e.key !== "Enter" || !e.target || e.target.id !== "sw-query") return;
+    e.preventDefault(); e.stopPropagation();
+    try { e.target.blur(); } catch (x) {}
+    setTimeout(function () {
+      var sh = document.querySelector(".sw-shell"), box = document.getElementById("search-results");
+      if (sh && box && box.getBoundingClientRect().height > 0) sh.scrollTop = Math.max(0, box.getBoundingClientRect().top - sh.getBoundingClientRect().top + sh.scrollTop - 8);
+    }, 200);
+  }, true);
+
   new MutationObserver(function () { requestAnimationFrame(sync); }).observe(body, { attributes: true, attributeFilter: ["data-view", "data-panel", "data-detail-context"] });
   document.addEventListener("bvc:rendered", sync);
   window.addEventListener("hashchange", function () { setTimeout(sync, 60); });
