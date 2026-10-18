@@ -32,7 +32,7 @@
   help.id = "jbc-keys"; help.hidden = true; help.setAttribute("role", "dialog"); help.setAttribute("aria-modal", "true"); help.setAttribute("aria-label", "키보드 단축키");
   help.innerHTML = '<div class="jbc-keys-box"><h2>키보드 단축키</h2>' +
     '<div><kbd>/</kbd> 검색 열기</div><div><kbd>[</kbd> 또는 <kbd>←</kbd> 이전 장</div><div><kbd>]</kbd> 또는 <kbd>→</kbd> 다음 장</div>' +
-    '<div><kbd>Esc</kbd> 열린 패널·안내 닫기</div><div><kbd>?</kbd> 이 목록 열기/닫기</div>' +
+    '<div><kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> 또는 <kbd>Space</kbd> 선택한 카드·단계 이동</div><div><kbd>Esc</kbd> 열린 패널·안내 닫기</div><div><kbd>?</kbd> 이 목록 열기/닫기</div>' +
     '<div style="font-size:12px;opacity:.75;margin-top:4px">← → 는 입력창이나 버튼에 포커스가 없을 때만 동작합니다.</div><button type="button">닫기</button></div>';
   document.body.appendChild(help);
   var closeBtn = help.querySelector("button");
