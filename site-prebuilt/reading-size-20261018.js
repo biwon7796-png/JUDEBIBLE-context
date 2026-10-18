@@ -21,11 +21,16 @@
     }
     b.addEventListener("click", function () {
       // keep the verse at the top of the screen in place while the text reflows
-      var keep = null, vs = document.querySelectorAll("#verses .verse"), i;
-      for (i = 0; i < vs.length; i++) { var r = vs[i].getBoundingClientRect(); if (r.bottom > 80) { keep = vs[i]; break; } }
+      var keep = null, keepTop = 0, vs = document.querySelectorAll("#verses .verse"), i;
+      for (i = 0; i < vs.length; i++) { var r = vs[i].getBoundingClientRect(); if (r.bottom > 80) { keep = vs[i]; keepTop = r.top; break; } }
       level = (level + 1) % 3; apply(); paint();
       try { localStorage.setItem(KEY, String(level)); } catch (e) {}
-      if (keep && keep.isConnected) { try { keep.scrollIntoView({ block: "start" }); } catch (e) {} }
+      // Only move the text column (or the page on phones) by the amount the verse shifted. scrollIntoView() would also scroll
+      // every ancestor, pushing the whole desktop layout up and exposing the footer/source area.
+      if (keep && keep.isConnected) {
+        var dy = keep.getBoundingClientRect().top - keepTop, sc = document.getElementById("verses");
+        if (dy) { if (sc && sc.scrollHeight > sc.clientHeight + 1) sc.scrollTop += dy; else window.scrollBy(0, dy); }
+      }
     });
     paint();
     head.insertBefore(b, anchor);
