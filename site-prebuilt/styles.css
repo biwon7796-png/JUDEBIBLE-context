@@ -1218,7 +1218,7 @@ body[data-view="study"] .ann-layer:not([hidden]) { display: block; }
 .ann-layer[data-active="1"][data-tool="eraser"] { cursor: none; }
 body[data-ann-drawing="1"] { user-select: none; }
 /* 헤더의 기존 빈 공간만 쓴다: 남는 자리만큼(내용 폭까지) 늘어나고, 모자라면 바 안에서 가로로 스크롤한다 → 헤더 높이·다른 요소 위치는 그대로 */
-body[data-view="study"] .top > .ann-tools { display: flex; flex: 1 1 0; min-width: 96px; max-width: max-content; align-items: center; gap: 1px; padding: 1px 4px; height: 34px; box-sizing: border-box; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
+body:is([data-view="study"],[data-view="timeline"],[data-view="explore"]) .top > .ann-tools { display: flex; flex: 1 1 0; min-width: 96px; max-width: max-content; align-items: center; gap: 1px; padding: 1px 4px; height: 34px; box-sizing: border-box; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }
 .ann-tools::-webkit-scrollbar { display: none; }
 .ann-tools > button { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: var(--ico, var(--ink-2)); cursor: pointer; }
 .ann-tools > button .ico { width: 17px; height: 17px; }
@@ -1238,7 +1238,7 @@ body[data-view="study"] .top > .ann-tools { display: flex; flex: 1 1 0; min-widt
 .ann-wd:hover { background: var(--accent-soft); }
 .ann-wd[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .ann-opts button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-@media (max-width: 760px) { body[data-view="study"] .top > .ann-tools { display: none; } #map-pane { position: relative; } }
+@media (max-width: 760px) { body:is([data-view="study"],[data-view="timeline"],[data-view="explore"]) .top > .ann-tools { display: none; } #map-pane { position: relative; } }
 @media print {
   .top > .ann-tools { display: none !important; }
   .ann-layer { display: block !important; left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; pointer-events: none !important; }
@@ -6390,3 +6390,38 @@ body[data-view="explore"] #place-fixed-head .place-meta-line .d-original{color:v
 .geo-attr-min a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 .geo-attr-min a:hover, .geo-attr-min a:focus-visible { color: var(--ink-2); }
 .map-settings-pop .set-fact { margin: .35rem 0 .25rem; font-size: .84rem; color: var(--ink-2); }
+
+/* Search detail resize — isolated from the study/map splitter and mobile bottom sheet. */
+@media (min-width:761px) {
+  body[data-view="explore"] { --explore-detail-width:300px; }
+  body[data-view="explore"] .sw,
+  body[data-view="explore"][data-panel="open"] .sw {
+    right:calc(var(--wx) + var(--explore-detail-width) + 16px);
+  }
+  body[data-view="explore"] #side-pane,
+  body[data-view="explore"][data-panel="open"] #side-pane {
+    width:var(--explore-detail-width);
+    min-width:0;
+    max-width:calc(100vw - var(--rail-w) - 340px);
+  }
+  #explore-detail-split { display:none; }
+  body[data-view="explore"][data-panel="open"] #explore-detail-split {
+    display:block;position:fixed;
+    top:calc(var(--hdr-h,0px) + 8px);bottom:8px;
+    right:calc(var(--wx) + var(--explore-detail-width) + 2px);
+    width:12px;z-index:12;touch-action:none;cursor:col-resize;
+    background:transparent;
+  }
+  body[data-view="explore"][data-panel="open"] #explore-detail-split::before {
+    content:"";position:absolute;top:14px;bottom:14px;left:4px;width:4px;
+    border-radius:4px;background:var(--line-strong);
+    transition:background .14s;
+  }
+  body[data-view="explore"][data-panel="open"] #explore-detail-split:is(:hover,:focus-visible)::before,
+  body[data-explore-resizing="1"] #explore-detail-split::before {
+    background:var(--accent);
+  }
+  #explore-detail-split:focus-visible{outline:2px solid var(--accent);outline-offset:-1px}
+  body[data-explore-resizing="1"]{cursor:col-resize;user-select:none}
+}
+@media (max-width:760px) { #explore-detail-split {display:none!important} }
