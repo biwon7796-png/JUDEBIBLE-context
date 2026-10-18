@@ -1,0 +1,7 @@
+/* 정경적 연결: reference buttons keep the rounded pill look (no inner button box); a click opens the verses right below the row. */
+.rp-canonical-row strong .rp-canonical-ref { appearance: none; -webkit-appearance: none; border: 0; background: transparent; margin: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+.rp-canonical-row strong .rp-canonical-ref:hover, .rp-canonical-row strong .rp-canonical-ref[aria-expanded="true"] { text-decoration: underline; text-underline-offset: 2px; }
+.rp-canonical-row strong .rp-canonical-ref:focus-visible { outline: 2px solid var(--accent, #a8662f); outline-offset: 2px; border-radius: 999px; }
+.rp-canonical-open { width: 100%; box-sizing: border-box; margin: 2px 0 4px; padding: 8px 10px; border-left: 3px solid var(--accent, #a8662f); border-radius: 6px; background: var(--paper, #fffaf0); font-size: .88rem; line-height: 1.65; }
+.rp-canonical-open p { margin: 0 0 4px; }
+.rp-canonical-open sup { margin-right: 4px; color: var(--accent, #a8662f); font-weight: 700; }
