@@ -7374,7 +7374,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   // 검색 로직은 검색 탭과 같은 unifiedSearch 를 쓰고, 여기서는 유형별 상위 결과만 드롭다운으로 보여 준다.
   var qs = { items: [], active: -1, q: "" };
   var QS_LIMIT = { person: 3, place: 3, event: 2, route: 2, research: 2, verse: 5 };
-  var QS_SECTION = { person: "인물", place: "장소", event: "사건", route: "경로", research: "연구", verse: "본문" };
+  var QS_SECTION = { ref: "이동", person: "인물", place: "장소", event: "사건", route: "경로", research: "연구", verse: "본문" };
   function qsRank(e, nq) { var l = norm(e.display_label); return l === nq ? 0 : l.indexOf(nq) === 0 ? 1 : l.indexOf(nq) >= 0 ? 2 : 3; }
   function quickSearchModel(q) {
     var nq = norm(q), compact = nq.replace(/\s+/g, ""), rows = [], more = null;
@@ -7382,6 +7382,8 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     var big = {}; Object.keys(QS_LIMIT).forEach(function (g) { big[g] = g === "verse" ? QS_LIMIT.verse : 60; });
     var R = unifiedSearch(q, { mode: "all", limit: big, minVerse: 2 });
     var seen = {};
+    var qsRef = null; try { qsRef = parseReference(q); } catch (e) {}
+    if (qsRef && !qsRef.error && qsRef.passage) rows.push({ t: "ref", g: "ref", label: qsRef.label || q, ref: qsRef });
     ["person", "place", "event", "route"].forEach(function (g) {
       var list = R.groups[g].slice().sort(function (a, b) { return qsRank(a, nq) - qsRank(b, nq) || a.display_label.localeCompare(b.display_label, "ko"); }).filter(function (e) { return !seen[e.stable_id] && (seen[e.stable_id] = 1); }).slice(0, QS_LIMIT[g]);
       list.forEach(function (e) { rows.push({ t: "ent", g: g, sid: e.stable_id, label: e.display_label, sub: entityMeta(e) || entityTypeLabel(e.entity_type) }); });
@@ -7401,7 +7403,8 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     if (m.counts) SEARCH_GROUPS.forEach(function (g) { total += m.counts[g] || 0; });
     m.rows.forEach(function (r, i) {
       if (r.g !== last) { last = r.g; html += '<li class="qs-sec" role="presentation">' + QS_SECTION[r.g] + (m.counts && m.counts[r.g] > QS_LIMIT[r.g] && r.g !== "person" && r.g !== "place" ? ' <span class="qs-sec-n">' + m.counts[r.g] + '건</span>' : m.counts && m.counts[r.g] ? ' <span class="qs-sec-n">' + m.counts[r.g] + '건</span>' : "") + "</li>"; }
-      if (r.t === "verse") html += '<li role="option" id="qs-o' + i + '" class="qs-row qs-verse" data-qs-i="' + i + '" aria-selected="false"><span class="qs-name">' + esc(r.label) + '</span><span class="qs-snip">' + snippetHtml(r.text, q) + "</span></li>";
+      if (r.t === "ref") html += '<li role="option" id="qs-o' + i + '" class="qs-row qs-ref" data-qs-i="' + i + '" aria-selected="false"><span class="qs-name">→ ' + esc(r.label) + '</span><span class="qs-sub">본문으로 이동</span></li>';
+      else if (r.t === "verse") html += '<li role="option" id="qs-o' + i + '" class="qs-row qs-verse" data-qs-i="' + i + '" aria-selected="false"><span class="qs-name">' + esc(r.label) + '</span><span class="qs-snip">' + snippetHtml(r.text, q) + "</span></li>";
       else html += '<li role="option" id="qs-o' + i + '" class="qs-row' + (r.ext ? " is-ext" : "") + '" data-qs-i="' + i + '" aria-selected="false"><span class="qs-name">' + markedHtml(r.label, markRanges(r.label, q), 0, r.label.length) + '</span><span class="qs-sub">' + esc(r.sub) + "</span></li>";
     });
     if (nq) {
@@ -7450,6 +7453,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     var r = qs.items[i], inp = $("qs-input"), q = inp ? inp.value : ""; if (!r) return; qsClose();
     if (r.t === "all") { openSearchFromQuick(q); return; }
     if (inp) inp.value = "";
+    if (r.t === "ref") { if (state.view !== "study") setView("study"); go(r.ref.passage, r.ref.verse == null ? null : r.ref.verse); return; }
     if (r.t === "verse") { if (state.view !== "study") setView("study"); go(r.pid, r.n); }
     else if (r.t === "research") { if (r.ref) { var ck = parseKey(r.ref); if (state.view !== "study") setView("study"); openRelatedPassage(ck.passage, ck.verse); } }
     else {
