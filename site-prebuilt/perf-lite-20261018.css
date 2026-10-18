@@ -9,4 +9,8 @@
   html[data-perf="lite"]:root:not([data-theme="dark"]) body:has(#search-workspace:not([hidden])) #search-workspace,
   html[data-perf="lite"] body #search-workspace#search-workspace, html[data-perf="lite"] body #timeline-pane#timeline-pane { background-attachment: scroll !important; }
   html[data-perf="lite"] .sw-shell { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+  /* Search page: only the results panel scrolls. The page behind it must not scroll, so the Android address bar does not
+     collapse/expand (which resizes the viewport and re-lays-out the fixed panel mid-gesture) and the gesture never chains to the page. */
+  html[data-perf="lite"]:has(body[data-view="explore"]), html[data-perf="lite"]:has(body[data-view="explore"]) body { overflow: hidden !important; overscroll-behavior: none; height: 100%; }
+  html[data-perf="lite"] body[data-view="explore"] .sw-shell { overscroll-behavior-y: contain; touch-action: pan-y; }
 }
