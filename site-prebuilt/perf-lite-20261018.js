@@ -60,8 +60,26 @@
           "innerH=" + innerHeight + " vvH=" + (vv ? Math.round(vv.height) : "-") + " resize=" + c.resize + " vv=" + c.vvResize + " skipped=" + (window.JBC_RESIZE_SKIPPED || 0) + "\n" +
           "touch s/m/prevented=" + c.tStart + "/" + c.tMove + "/" + c.tMovePrevented + "\n" +
           "dom mut=" + c.mut + " longtask max=" + c.longMs + "ms\n" +
-          "ovf html/body=" + getComputedStyle(d).overflowY + "/" + getComputedStyle(document.body).overflowY;
+          "ovf html/body=" + getComputedStyle(d).overflowY + "/" + getComputedStyle(document.body).overflowY + "\n" +
+          "perf=" + (d.dataset.perf || "-") + " kk=" + (d.dataset.kk || "-") + "\n" + ((navigator.userAgent.match(/(KAKAOTALK[^ ]*|Chrome\/[\d.]+|SamsungBrowser\/[\d.]+|; wv)/g) || []).join(" "));
       }, 500);
     });
+  } catch (e) {}
+})();
+
+/* ?kk=<letters> switches on isolation experiments for the KakaoTalk in-app browser (remembered; ?kk=off clears):
+     a  plain scrolling: drop touch-action / overscroll rules and the page lock on the search page
+     b  hide the pictures in search results
+     c  lay the result cards out lazily (content-visibility) so off-screen cards are not painted
+   Combine letters, e.g. ?kk=ab. Nothing changes unless the flag is set. */
+(function () {
+  "use strict";
+  try {
+    var m = /[?&]kk=([a-z]+|off)(?:&|$)/.exec(location.search);
+    if (m) { if (m[1] === "off") localStorage.removeItem("jbc.kk"); else localStorage.setItem("jbc.kk", m[1]); }
+    var v = m ? (m[1] === "off" ? "" : m[1]) : (localStorage.getItem("jbc.kk") || "");
+    if (!v) return;
+    document.documentElement.setAttribute("data-kk", v.split("").join(" "));
+    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "perf-kk-20261018.css?v=1"; document.head.appendChild(l);
   } catch (e) {}
 })();

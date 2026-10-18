@@ -1,0 +1,13 @@
+/* Isolation experiments, opt-in via ?kk=... (see perf-lite-20261018.js). Phone widths only. */
+@media (max-width: 760px) {
+  /* a: plain scrolling inside the results panel (what a stock WebView handles best) */
+  html[data-kk~="a"] body[data-view="explore"] .sw-shell,
+  html[data-kk~="a"][data-perf] body[data-view="explore"] .sw-shell { touch-action: auto !important; overscroll-behavior: auto !important; -webkit-overflow-scrolling: auto !important; }
+  html[data-kk~="a"][data-perf]:has(body[data-view="explore"]), html[data-kk~="a"][data-perf]:has(body[data-view="explore"]) body { overflow: visible !important; height: auto !important; overscroll-behavior: auto !important; }
+
+  /* b: no pictures in the results */
+  html[data-kk~="b"] #search-results img, html[data-kk~="b"] #search-results picture { display: none !important; }
+
+  /* c: paint only the cards near the viewport */
+  html[data-kk~="c"] #search-results .ee-item, html[data-kk~="c"] #search-results .ee-card, html[data-kk~="c"] #search-results .sr-row { content-visibility: auto; contain-intrinsic-size: auto 150px; }
+}
