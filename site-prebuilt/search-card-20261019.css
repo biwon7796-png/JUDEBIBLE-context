@@ -41,3 +41,5 @@
 #search-workspace .sw-search { display: none !important; }
 .qs .ref-pop { left: auto; right: 0; width: min(420px, 94vw); }
 @media (min-width: 1100px) { .top .qs { width: max(var(--hdr-scripture-w, 320px), 360px); } }
+/* The open passage picker / result list must sit above the panel-resize handles. */
+.top:has(.ref-pop:not([hidden])), .top:has(.qs-list:not([hidden])) { z-index: 60; }
