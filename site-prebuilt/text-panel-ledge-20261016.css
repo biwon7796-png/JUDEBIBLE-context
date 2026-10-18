@@ -4,8 +4,8 @@
   position: relative; isolation: isolate;
   background-color: #ddd2ba !important;
   background-image: linear-gradient(180deg, rgba(255, 251, 240, .22), rgba(255, 251, 240, 0) 120px),
-    url("design-preview/JudeBible_assets_20261012/JudeBible_stone_assets_20261012/10_매끄러운_아이보리_석회암_질감.webp") !important;
-  background-size: auto, cover !important; background-position: center !important; background-repeat: no-repeat !important;
+    url("stone-tiles/limestone-rough-512.webp") !important;
+  background-size: auto, 512px 512px !important; background-position: center !important; background-repeat: no-repeat, repeat !important;
   -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
   border: 0 !important; border-radius: 22px !important;
   padding: 0 15px 15px !important;
