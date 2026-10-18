@@ -383,6 +383,24 @@
     box.appendChild(sec);
   }
 
+  // "창세기 17:19–21; 21:1–5" -> one button per range; each opens that passage in the scripture panel
+  // (same data-open-range path the other in-panel verse buttons use). Unparseable text stays plain.
+  function canonicalRefEl(ref) {
+    var strong = el("strong", null, ""), books = window.BVC_KRV && window.BVC_KRV.books || [], bookId = null, made = 0;
+    String(ref || "").split(";").forEach(function (seg, i) {
+      seg = seg.trim(); if (!seg) return;
+      var m = /^(?:(\S+)\s+)?(\d+):(\d+)(?:\s*[–—-]\s*(\d+))?$/.exec(seg), id = null;
+      if (m && m[1]) { var b = books.filter(function (x) { return x.name === m[1]; })[0]; if (b) bookId = b.id; else bookId = null; }
+      if (m && bookId) id = bookId + "-" + m[2] + ":" + m[3] + "-" + (m[4] || m[3]);
+      if (i) strong.appendChild(document.createTextNode("; "));
+      if (!id) { strong.appendChild(document.createTextNode(seg)); return; }
+      var btn = el("button", "inline-ref rp-canonical-ref", seg);
+      btn.type = "button"; btn.setAttribute("data-open-range", id); btn.title = "본문 패널에서 보기";
+      strong.appendChild(btn); made++;
+    });
+    return strong;
+  }
+
   function renderCanonical(box, d) {
     if (!d.canonicalLinks || !d.canonicalLinks.length) return;
     var details = el("details", "rp-canonical");
@@ -390,7 +408,7 @@
     var list = el("div", "rp-canonical-list");
     d.canonicalLinks.forEach(function (x) {
       var row = el("div", "rp-canonical-row");
-      row.appendChild(el("strong", null, x.ref));
+      row.appendChild(canonicalRefEl(x.ref));
       row.appendChild(el("p", "rp-commentary-p", x.note));
       list.appendChild(row);
     });

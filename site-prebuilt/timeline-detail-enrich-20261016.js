@@ -111,4 +111,35 @@
   }
   var t = 0;
   new MutationObserver(function () { clearTimeout(t); t = setTimeout(scan, 60); }).observe(document.body, { childList: true, subtree: true });
+
+  // "함께 읽기": a verse link opens the passage text right below it; a second link continues to the study page.
+  (function () {
+    var st = document.createElement("style");
+    st.textContent = ".tl-read-open{margin:6px 0 6px;padding:8px 10px;border-left:3px solid var(--accent,#a8662f);background:var(--paper,#fffaf0);border-radius:6px;font-size:13px;line-height:1.65}.tl-read-open p{margin:0 0 4px}.tl-read-open sup{color:var(--accent,#a8662f);font-weight:700;margin-right:4px}.tl-read-open .tl-read-study{display:inline-block;margin-top:4px;font-weight:700;color:var(--accent-ink,#7a3f14);text-decoration:underline}.tl-read a[aria-expanded=true]{background:var(--accent-soft,rgba(168,102,47,.12))}";
+    document.head.appendChild(st);
+    function esc2(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest(".tl-read a[href^='#']"); if (!a) return;
+      var m = /^#([1-3]?[a-z]+)-(\d+):(\d+)$/.exec(a.getAttribute("href")); if (!m) return;
+      e.preventDefault(); e.stopPropagation();
+      var li = a.closest("li"), open = li.querySelector(".tl-read-open");
+      if (open) { open.remove(); a.setAttribute("aria-expanded", "false"); return; }
+      var bs = window.BVC_KRV && window.BVC_KRV.books, bk = bs && bs.filter(function (x) { return x.id === m[1]; })[0], ch = bk && bk.chapters[+m[2] - 1]; if (!ch) return;
+      var v1 = +m[3], rm = /:(\d+)\s*[–—-]\s*(\d+)\s*$/.exec(a.textContent), v2 = rm ? +rm[2] : v1, html = "";
+      v2 = Math.min(Math.max(v2, v1), ch.length);
+      for (var v = v1; v <= v2; v++) html += "<p><sup>" + v + "</sup>" + esc2(ch[v - 1]) + "</p>";
+      var box = document.createElement("div"); box.className = "tl-read-open";
+      box.innerHTML = html + '<a class="tl-read-study" href="' + a.getAttribute("href") + '" data-tl-read-study="' + m[1] + "-" + m[2] + ":" + m[3] + '">본문연구에서 보기 ›</a>';
+      li.appendChild(box); a.setAttribute("aria-expanded", "true");
+    }, true);
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest("a[data-tl-read-study]"); if (!a) return;
+      e.preventDefault(); e.stopPropagation();
+      location.hash = "#" + a.getAttribute("data-tl-read-study");
+      setTimeout(function () {
+        if (document.body.dataset.view !== "study" && window.BVC && BVC.setView) { try { BVC.setView("study"); } catch (x) {} }
+        if (document.body.dataset.view !== "study") { var r = document.getElementById("rail-study"); if (r) r.click(); }
+      }, 250);
+    }, true);
+  })();
 })();
