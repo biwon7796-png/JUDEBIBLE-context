@@ -69,11 +69,21 @@
     var key = hit.c.key(hit.btn); if (key == null) return;
     setTimeout(function () { var a = document.activeElement; if (!a || a === document.body || !a.isConnected || !ctxOf(a)) pick(hit.c, key, 4, true); }, 90);
   });
-  document.addEventListener("keydown", function (e) {
+  // The journey / topic panel: after a click anywhere in it (even on text) the arrows move the journey step, not the Bible chapter.
+  var inGuide = false;
+  document.addEventListener("pointerdown", function (e) { inGuide = !!(e.target.closest && e.target.closest("#guide-pane")); }, true);
+  function typing(t) { var g = t && t.tagName; return g === "INPUT" || g === "TEXTAREA" || g === "SELECT" || (t && t.isContentEditable); }
+  window.addEventListener("keydown", function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     var k = e.key, isSpace = k === " " || k === "Spacebar";
     if (!isSpace && ["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp", "Home", "End", "PageDown", "PageUp"].indexOf(k) < 0) return;
-    var hit = ctxOf(e.target); if (!hit) return;
+    var hit = ctxOf(e.target);
+    if (!hit && inGuide && !typing(e.target)) {
+      var bare = !e.target || e.target === document.body || e.target === document.documentElement || (e.target.closest && e.target.closest("#guide-pane"));
+      var stepBtn = bare && (document.querySelector("#guide-pane .jn-step-btn[aria-current=step]") || document.querySelector("#guide-pane .jn-step-btn"));
+      if (stepBtn && !e.target.closest("a, button, summary")) hit = { c: CTX[2], btn: stepBtn };
+    }
+    if (!hit) return;
     var lb = document.getElementById("media-lightbox"); if (lb && !lb.hidden) return;
     var c = hit.c, items = list(c, hit.btn), i = items.indexOf(hit.btn); if (i < 0) return;
     var next = null, fwd = k === "ArrowRight" || k === "ArrowDown" || k === "PageDown" || (isSpace && !e.shiftKey), more = null;
