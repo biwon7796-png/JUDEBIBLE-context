@@ -47,6 +47,18 @@
   "research.psa4-1-8.reader.js": {
    "source": "PSA_004_001_008_WORBS_READER_DRAFT_20261018.md",
    "sha": "4ee6b383414dec89ed1b98889d32356af166164850e804c8805a0fb55f3fa88e"
+  },
+  "research.jer2-1-13.reader.js": {
+   "source": "JER_002_001_013_WORBS_READER_DRAFT_20261018.md",
+   "sha": "d71546014e58fe13cf57e95bb84f66310db8ff02212788bc50c3cf6317e370c9"
+  },
+  "research.jer2-14-22.reader.js": {
+   "source": "JER_002_014_022_WORBS_READER_DRAFT_20261018.md",
+   "sha": "53a517c97d6c128880a2211b56dc0239862d537ff068ea7797261e9a33703f8a"
+  },
+  "research.luk1-5-25.reader.js": {
+   "source": "LUK_001_005_025_WORBS_READER_DRAFT_20261018.md",
+   "sha": "617d84df41e3fca94f74f9c2e2b7dd60b7ceafa41d69ad597c00df772a6c41a6"
   }
  }
 }
