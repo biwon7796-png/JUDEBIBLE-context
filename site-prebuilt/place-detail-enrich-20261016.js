@@ -104,6 +104,9 @@
     var anchor = article.querySelector('[data-part="facts"]'); if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor.nextSibling); else article.appendChild(sec);
     article.setAttribute("data-enriched", cid);
   }
+  window.addEventListener("jbc-krv-loaded", function () {
+    document.querySelectorAll('article.detail[data-detail="l"]').forEach(function (a) { var o = a.querySelector(".pe-section"); if (o) o.remove(); a.removeAttribute("data-enriched"); try { enrich(a); } catch (e) {} });
+  });
   var t = 0;
   new MutationObserver(function () {
     clearTimeout(t); t = setTimeout(function () { document.querySelectorAll('article.detail[data-detail="l"]').forEach(function (a) { try { if (!a.querySelector(".pe-section")) { a.removeAttribute("data-enriched"); enrich(a); } } catch (e) {} }); }, 80);
@@ -129,7 +132,7 @@
       ev.preventDefault(); ev.stopPropagation();
       var li = a.closest("li"), open = li && li.querySelector(".pe-verse-open");
       if (open) { open.remove(); a.setAttribute("aria-expanded", "false"); return; }
-      var p = a.getAttribute("data-pe-ref").split(","), html = rangeHtml(p); if (!html) return;
+      var p = a.getAttribute("data-pe-ref").split(","), KL = window.JBC_KRV_LAZY; if (KL && !KL.loaded(p[0])) { KL.ensure([p[0]]).then(function (ok) { if (ok) a.click(); }); return; } var html = rangeHtml(p); if (!html) return;
       var box = document.createElement("div"); box.className = "pe-verse-open";
       box.innerHTML = html + '<a class="pe-open-study" href="#' + p[0] + "-" + p[1] + ":" + p[2] + '" data-pe-study="' + p[0] + "-" + p[1] + ":" + p[2] + '">본문연구에서 보기 ›</a>';
       li.appendChild(box); a.setAttribute("aria-expanded", "true");

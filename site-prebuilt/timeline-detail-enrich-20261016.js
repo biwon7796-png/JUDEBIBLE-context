@@ -125,6 +125,7 @@
       var li = a.closest("li"), open = li.querySelector(".tl-read-open");
       if (open) { open.remove(); a.setAttribute("aria-expanded", "false"); return; }
       var bs = window.BVC_KRV && window.BVC_KRV.books, bk = bs && bs.filter(function (x) { return x.id === m[1]; })[0], ch = bk && bk.chapters[+m[2] - 1]; if (!ch) return;
+      var KLt = window.JBC_KRV_LAZY; if (KLt && !KLt.loaded(m[1])) { KLt.ensure([m[1]]).then(function (ok) { if (ok) a.click(); }); return; }
       var v1 = +m[3], rm = /:(\d+)\s*[–—-]\s*(\d+)\s*$/.exec(a.textContent), v2 = rm ? +rm[2] : v1, html = "";
       v2 = Math.min(Math.max(v2, v1), ch.length);
       for (var v = v1; v <= v2; v++) html += "<p><sup>" + v + "</sup>" + esc2(ch[v - 1]) + "</p>";

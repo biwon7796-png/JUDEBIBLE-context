@@ -49,7 +49,7 @@ function verifyDir(dir, K) {
   vm.createContext(sandbox);
   const run = (f) => vm.runInContext(fs.readFileSync(path.join(dir, f), "utf8"), sandbox, { filename: f });
   for (const [name, info] of Object.entries(manifest.files)) {
-    const got = sha(fs.readFileSync(path.join(dir, name)));
+    const got = sha(fs.readFileSync(path.join(dir, name), "utf8").replace(/\r\n/g, "\n")); // tolerate CRLF checkouts (autocrlf)
     if (got !== info.sha256) throw new Error("hash mismatch: " + name);
   }
   run("meta.js");

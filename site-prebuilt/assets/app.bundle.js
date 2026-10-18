@@ -2390,15 +2390,27 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     return o;
   }
   // KRV 는 "현재 결속된 작업본"(canonical_final: false, 미검증)이며 Viewer 는 읽기 전용으로만 쓴다.
-  var KRV = deepFreeze(window.BVC_KRV || { meta: { translation: {} }, books: [] });
+  var KRV = window.JBC_KRV_LAZY ? window.BVC_KRV : deepFreeze(window.BVC_KRV || { meta: { translation: {} }, books: [] });
   var BOOK = {}, BOOK_ORDER = [];
   KRV.books.forEach(function (bk) { BOOK[bk.id] = bk; BOOK_ORDER.push(bk.id); });
   var pcache = {};
   function chapterUnit(bookId) { return bookId === "psa" ? "편" : "장"; }
+  function krvCache(book, pid, obj) { if (!window.JBC_KRV_LAZY || window.JBC_KRV_LAZY.loaded(book)) pcache[pid] = obj; return obj; }
+  // Verse objects for a book whose text has not arrived: counts/labels work at once, and only reading .text starts the download.
+  function krvVerses(bk, c) {
+    var ch = bk.chapters[c - 1], KL = window.JBC_KRV_LAZY;
+    if (KL && !KL.loaded(bk.id)) {
+      var out = [];
+      for (var i = 0; i < ch.length; i++) (function (i) { out.push({ n: i + 1, get text() { var t = ch[i]; return typeof t === "string" ? t : ""; } }); })(i);
+      return out;
+    }
+    return ch.map(function (t, i) { return { n: i + 1, text: typeof t === "string" ? t : "" }; });
+  }
+  function krvBookOf(pid) { var m = /^([a-z0-9]+)-d+/.exec(String(pid || "")); return m && BOOK[m[1]] ? m[1] : null; }
   function buildPassage(pid) {
     var m = /^([a-z0-9]+)-(\d+)$/.exec(pid), bk = m && BOOK[m[1]], c = m && +m[2];
     if (!bk || c < 1 || c > bk.chapters.length) return undefined;
-    return pcache[pid] || (pcache[pid] = { ref: bk.name + " " + c + chapterUnit(bk.id), book: bk.id, chapter: c, verses: bk.chapters[c - 1].map(function (t, i) { return { n: i + 1, text: typeof t === "string" ? t : "" }; }) });
+    return pcache[pid] || krvCache(bk.id, pid, { ref: bk.name + " " + c + chapterUnit(bk.id), book: bk.id, chapter: c, verses: krvVerses(bk, c) });
   }
   // 본문은 표시 시점에 읽는다(수정 없음). Object.keys 는 featured(관계 데이터가 있는) 본문만 나열한다.
   D.passages = new Proxy({}, {
@@ -2518,6 +2530,8 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   // ---------- actions ----------
   var pendingScroll = null;
   function go(passage, verse, keepEntity, keepContext, keepView) {
+    var KLg = window.JBC_KRV_LAZY, bg = KLg && krvBookOf(passage);
+    if (bg && !KLg.loaded(bg)) { KLg.ensure([bg]).then(function () { go(passage, verse, keepEntity, keepContext, keepView); }); return true; }
     verse = verse == null ? null : verse; ui.refTarget = null; ui.rpPerson = null;
     if (!D.passages[passage] || (verse != null && !hasVerse(passage, verse))) { showRefError("유효하지 않은 참조: " + passage + (verse != null ? ":" + verse : "") + " — 현재 본문을 유지합니다."); return false; }
     showRefError("");
@@ -2532,6 +2546,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   }
   // 브랜드 제목은 앱의 "홈"이다. 사용자 레이아웃 선호(분할 비율)는 보존하고, 화면/선택/지도 맥락만 초기 상태로 되돌린다.
   function resetHome() {
+    var KLr = window.JBC_KRV_LAZY; if (KLr && !KLr.loaded("gen")) { KLr.ensure(["gen"]).then(resetHome); return; }
     state.passage = "gen-1"; state.verse = 1; state.entity = null; state.tab = "context"; state.resKind = "전체"; state.preview = null; state.prevTab = null; state.panel = "collapsed"; state.sheet = "half"; state.view = "study";
     ui.refTarget = null; ui.rpPerson = null; ui.mapOpen = false; ui.tiles = false; ui.navExplore = false; ui.ovOpen = {}; ui.cam = { x: 50, y: 50, k: 1 }; ui.gcam = null; ui.layers = { route: true, place: true }; ui.guideStep = null; navEnd(true); ui.nav.board = false;
     if (typeof swState !== "undefined" && swState) { swState.q = ""; swState.kind = "all"; swState.type = "all"; swState.testament = "all"; swState.period = "all"; swState.region = "all"; swState.sort = "label"; swState.limit = 30; swState.prevFocus = null; closeSearch(true); }
@@ -2872,6 +2887,8 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   }
   function applyHash() {
     var r = parseHash(location.hash);
+    var KLa = window.JBC_KRV_LAZY, ba = r && KLa && krvBookOf(r.passage);
+    if (ba && !KLa.loaded(ba)) { KLa.ensure([ba]).then(applyHash); return; }
     if (!r) { showRefError("유효하지 않은 참조: " + location.hash + " — 현재 본문을 유지합니다."); syncHash(true); return; }
     showRefError("");
     if (serialize() === location.hash.slice(1)) return;
@@ -6116,6 +6133,12 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   var VINDEX = null;
   function verseIndex() {
     if (VINDEX) return VINDEX;
+    var KL = window.JBC_KRV_LAZY;
+    if (KL && !KL.allLoaded()) {
+      showRefError("본문 전체 검색 색인을 준비하는 중입니다…");
+      KL.ensureAll().then(function () { VINDEX = null; showRefError(""); [$("sw-query"), $("qs-input")].forEach(function (i) { if (i && i.value) i.dispatchEvent(new Event("input", { bubbles: true })); }); });
+      return [];
+    }
     VINDEX = [];
     KRV.books.forEach(function (bk) { bk.chapters.forEach(function (ch, ci) { ch.forEach(function (tx, vi) { VINDEX.push({ pid: bk.id + "-" + (ci + 1), n: vi + 1, t: norm(tx) }); }); }); });
     return VINDEX;
@@ -7520,6 +7543,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   }   // 장소가 선택된 채로 열리면 지도도 함께 보여 준다
   booting = true; render(); booting = false;
   window.addEventListener("load", function () { var rp = RPJ(); if (rp && rp.ready()) { mounted.force = true; render(); } });   // 연구 투영 스크립트는 app.js 뒤에 로드되므로, 준비되면 본문을 한 번 다시 그려 인물 이름 단어를 붙인다
+  if (window.JBC_KRV_LAZY) { var krvT = 0; window.addEventListener("jbc-krv-loaded", function (e) { if (!e.detail || !e.detail.wasUsed) return; window.JBC_KRV_LAZY.clearUsed(e.detail.book); clearTimeout(krvT); krvT = setTimeout(function () { try { mounted.force = true; render(); } catch (x) {} }, 40); }); }
   window.BVC = { cardPassage: cardPassage, mapRenderer: { mode: function () { return mlActive() ? "maplibre" : "legacy"; }, ready: function () { return !!ML.ready; }, map: function () { return ML.map; }, failed: function () { return ML.failed ? ML.error || true : false; }, errors: function () { return ML.errors || []; }, compose: function () { var sv = document.querySelector("#ml-ovl svg.gmap"); return sv ? mlCompose(sv.cloneNode(true)) : Promise.reject(new Error("no overlay")); }, printSheet: function () { var sv = document.querySelector("#ml-ovl svg.gmap"); return mlCompose(sv.cloneNode(true)).then(function (cv) { mlPrintSheet(cv.toDataURL("image/png")); return cv.width; }); }, printDone: function () { mlPrintDone(); } }, placeIndex: placeIndex, placeCard: placeCardHtml, openPlace: openPlaceKey, placeIndexSet: placeIndexSet, mapScene: mapSceneState, journey: { build: navBuildChain, fitPoints: navFitPoints, layout: journeyLayout }, selectRpPerson: selectRpPerson, refSources: REFSRC, refFeatures: REF_FEATURES, authority: { qaFixture: QA_FIXTURE, fixturePool: FIXTURE_POOL }, gateRecord: gateRecord, boundRelations: boundRelations, relAdjacency: relAdjacency, readerVisible: readerVisible, refBindings: REFBIND, quickSearchItems: quickSearchItems, unifiedSearch: unifiedSearch, qsPick: qsPick, extBindings: extBindings, boundExternalLabels: boundExternalLabels, labelLevels: LABEL_LEVELS, refPriority: refPriority, refLabelList: refLabelList, detailContext: detailContext, DETAIL_MODEL: DETAIL_MODEL, openRelatedPassage: openRelatedPassage, geo: { GEO: GEO, LOC_LABEL: LOC_LABEL, LOC_MARKER: LOC_MARKER, markerSpec: markerSpec, markers: geoMarkers, visibleMarkers: visibleGeoMarkers, markerTier: markerTier, semanticTierLimit: semanticTierLimit, labelPx: labelPx, labelLevels: LABEL_LEVELS, markerLevel: markerLevel, refLevel: refLevel, splitDefault: SPLIT_DEFAULT, setMapTheme: setMapTheme, mapThemeNow: mapThemeNow, available: geoAvailable, mode: mapModeNow, fit: geoFit, cam: geoCam }, navigationCandidates: navigationCandidates, renderGuide: renderGuide, store: STORE, entityExplorer: { set: entitySet, select: selectEntityStable }, scriptureIndex: SEI, entitiesAt: entitiesAt, mediaSourceHtml: mediaSourceHtml, mediaGate: mediaGate, stableId: stableOf, resolveKey: resolveKey, projection: PJ, personProjection: PERSON_PJ, setView: setView, setCam: setCam, zoomBy: zoomBy, ui: ui, guideStep: guideStep, guideGo: guideGo, guideRoute: guideRoute, guideIndex: guideIndex, guideSteps: guideSteps, guideTopic: guideTopic, guide: G, setFrac: setFrac, anchors: anchors, openSearch: openSearch, closeSearch: closeSearch, searchState: swState, markRanges: markRanges, setPanel: setPanel, setSheet: setSheet, toggleContext: toggleContext, isMobile: isMobile, entryAnchors: entryAnchors, openReference: openReference, scrollAnchor: computeAnchor, remount: function () { mounted.force = true; render(); }, variantFor: variantFor, krv: KRV, stepPassage: stepPassage, parseReference: parseReference, render: render, panels: PANELS, state: state, go: go, selectVerse: selectVerse, selectEntity: selectEntity, setTab: setTab, entitiesIn: entitiesIn, versesWith: versesWith, data: D };
 })();
 
