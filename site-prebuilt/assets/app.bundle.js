@@ -3688,6 +3688,24 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   function geoCam() { if (ui.gcam && ui.gcam.__ml) return ui.gcam; return clampGeoCam(ui.gcam || geoInitialCam()); }   // MapLibre 에서 온 카메라는 이미 지도 제약을 따른다
   var LOCAL_BASEMAP = refGate("land") && window.JBC_LOCAL_BASEMAP || null, LOCAL_BASEMAP_META = window.JBC_LOCAL_BASEMAP_META || null;
   var LOCAL_BASEMAP_10M = refGate("land") && window.JBC_LOCAL_BASEMAP_10M || null, localLandPathCache = null, terrainLandPathsCache = null;
+  // The Natural Earth land/hydrology data (~2MB) is only drawn by the legacy SVG renderer (the default MapLibre style is the remote
+  // OpenFreeMap one), so it is fetched on demand instead of blocking every page load.
+  var basemapDataState = (window.JBC_LOCAL_BASEMAP_10M ? "ready" : "idle");
+  function ensureLocalBasemap() {
+    if (basemapDataState !== "idle") return;
+    basemapDataState = "loading";
+    var s = document.createElement("script");
+    s.src = new URL("assets/data-basemap.js?v=c7c644a4", document.baseURI).href;
+    s.onload = function () {
+      basemapDataState = "ready";
+      LOCAL_BASEMAP = refGate("land") && window.JBC_LOCAL_BASEMAP || null; LOCAL_BASEMAP_META = window.JBC_LOCAL_BASEMAP_META || null;
+      LOCAL_BASEMAP_10M = refGate("land") && window.JBC_LOCAL_BASEMAP_10M || null; HYDROLOGY = refGate("hydrology") && window.JBC_HYDROLOGY || null;
+      localLandPathCache = null; terrainLandPathsCache = null;
+      try { renderMapPane(); } catch (e) {}
+    };
+    s.onerror = function () { basemapDataState = "idle"; };
+    document.head.appendChild(s);
+  }
   function ringPath(ring) {
     var out = "";
     (ring || []).forEach(function (c, i) {
@@ -3877,7 +3895,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     var gc = geoCam(), mk = geoMarkers(), visibleLabels = {};
     visibleGeoMarkers(gc).forEach(function (m) { visibleLabels[m.id] = 1; });
     var w = gc.w, L = gc.x - w / 2, Rr = gc.x + w / 2, T = gc.y - w / 2, B = gc.y + w / 2, step = GEO.niceStep(w), gridFs = w * 0.0105, scaleFs = w * 0.0115, out = "", nf = function (v) { return Math.abs(v) >= 1 ? +v.toFixed(2) : +v.toFixed(3); };
-    var ML_ON = mlActive(), terrain = !ML_ON && ui.mapDisplay.terrain ? terrainBasemapSvg(gc) : "", basemapMode = ML_ON ? "maplibre" : (terrain ? "terrain" : (ui.mapDisplay.terrain ? "fallback" : "flat"));   // MapLibre 모드: 바탕(지형·바다/육지·수계)은 MapLibre 가 그리고 이 SVG 는 오버레이만
+    var ML_ON = mlActive(); if (!ML_ON) ensureLocalBasemap(); var terrain = !ML_ON && ui.mapDisplay.terrain ? terrainBasemapSvg(gc) : "", basemapMode = ML_ON ? "maplibre" : (terrain ? "terrain" : (ui.mapDisplay.terrain ? "fallback" : "flat"));   // MapLibre 모드: 바탕(지형·바다/육지·수계)은 MapLibre 가 그리고 이 SVG 는 오버레이만
     // 지형 음영 OFF: relief(hillshade)만 제거하고 육지색·바다색·해안선은 ON 과 같은 값으로 유지한다(Natural Earth 육지 윤곽 + 동일 색 토큰).
     if (!ML_ON) out += localBasemapSvg(L, T, w) + (terrain || "");
     if (!ML_ON && ui.mapDisplay.hydrology) out += hydrologySvg();
