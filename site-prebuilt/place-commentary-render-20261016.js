@@ -39,7 +39,7 @@
       if (P && ph) {
         var im = document.createElement("img"); im.className = "ee-thumb"; im.src = P.src; im.alt = P.caption || ""; im.loading = "lazy"; im.setAttribute("referrerpolicy", "no-referrer"); ph.replaceWith(im);
         var pr = c.querySelector(".ee-primary"); if (pr) pr.classList.add("has-media");
-        var ex = c.querySelector(".ee-card-extra"); if (ex) { var cr = document.createElement("span"); cr.className = "pc-card-credit"; cr.textContent = "사진: " + P.creator + " · " + P.license + " · Wikimedia Commons"; ex.appendChild(cr); }
+        if (!c.querySelector(".pc-credit-wrap")) { var cw = document.createElement("span"); cw.className = "pc-credit-wrap"; var cb = document.createElement("button"); cb.type = "button"; cb.className = "pc-credit-i"; cb.setAttribute("aria-label", "사진 출처 보기"); cb.setAttribute("aria-expanded", "false"); cb.textContent = "!"; var cp = document.createElement("div"); cp.className = "pc-photo-credit"; cp.textContent = "사진: " + P.creator + " · " + P.license + " · Wikimedia Commons"; cw.appendChild(cb); cw.appendChild(cp); c.appendChild(cw); }
       }
       c.setAttribute("data-pc-card", "1");
     });

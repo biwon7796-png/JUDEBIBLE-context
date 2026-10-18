@@ -1,0 +1,35 @@
+/* Search place/person cards: photo on top (desktop), photo on the left (mobile); photo credit lives behind a small "!" button. */
+.ee-card { position: relative; }
+.pc-credit-wrap { position: absolute; top: 8px; right: 8px; z-index: 3; }
+.pc-credit-i { width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 252, 245, .86); color: #6b4a2b; font: 700 13px/22px system-ui, sans-serif; text-align: center; cursor: pointer; box-shadow: 0 1px 4px rgba(0, 0, 0, .25); position: relative; }
+.pc-credit-i::after { content: ""; position: absolute; inset: -9px; }
+.pc-credit-i[aria-expanded="true"] { background: #6b4a2b; color: #fff; }
+.pc-credit-wrap .pc-photo-credit { display: none; position: absolute; top: 28px; right: 0; width: max-content; max-width: min(250px, 70vw); padding: 6px 9px; border: 1px solid var(--line, #d8cbb6); border-radius: 8px; background: var(--paper, #fffaf0); color: var(--ink, #2b2218); box-shadow: 0 6px 18px rgba(0, 0, 0, .2); font-size: 12px; line-height: 1.45; }
+.pc-credit-wrap.is-open .pc-photo-credit { display: block; }
+
+/* Desktop: photo on top, then title / type / summary / passage chip. */
+@media (min-width: 761px) {
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] { grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)); gap: 12px; align-items: start; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-card { min-height: 0; border-radius: 14px; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-primary,
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-primary.has-media { display: flex; flex-direction: column; align-items: stretch; gap: 8px; padding: 6px 6px 12px; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-thumb { width: 100%; height: auto; aspect-ratio: 3 / 1.15; border-radius: 10px; object-fit: cover; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-copy,
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-card-extra { padding: 0 10px; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .sr-ref { display: block; font-size: 1.06rem; font-weight: 800; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .sr-kind { display: block; margin: 3px 0 0; font-size: .8rem; font-weight: 500; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .sr-preview { font-size: .86rem; line-height: 1.55; -webkit-line-clamp: 3; line-clamp: 3; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-count { align-self: flex-start; padding: 4px 9px; border-radius: 8px; background: var(--tint); font-size: .78rem; }
+}
+
+/* Mobile: photo on the left, bold title and short text on the right. */
+@media (max-width: 760px) {
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] { grid-template-columns: 1fr; gap: 10px; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-card { border-radius: 16px; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-primary.has-media { grid-template-columns: clamp(92px, 31%, 124px) minmax(0, 1fr); gap: 12px; padding: 10px 40px 10px 10px; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-thumb { aspect-ratio: 4 / 5; border-radius: 12px; grid-row: 1 / span 2; align-self: start; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .sr-ref { font-size: 1.05rem; font-weight: 800; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .sr-preview { font-size: .9rem; line-height: 1.55; -webkit-line-clamp: 4; line-clamp: 4; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-card-extra { grid-column: 2; }
+  .pc-credit-wrap { top: 6px; right: 6px; }
+}
