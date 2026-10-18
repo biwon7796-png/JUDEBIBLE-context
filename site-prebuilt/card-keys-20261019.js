@@ -82,11 +82,22 @@
     if (!hit && inGuide && !typing(e.target)) {
       var bare = !e.target || e.target === document.body || e.target === document.documentElement || (e.target.closest && e.target.closest("#guide-pane"));
       var stepBtn = bare && (document.querySelector("#guide-pane .jn-step-btn[aria-current=step]") || document.querySelector("#guide-pane .jn-step-btn"));
-      if (stepBtn && !e.target.closest("a, button, summary")) hit = { c: CTX[3], btn: stepBtn };
+      if (stepBtn && !e.target.closest("a, summary, button:not(.jnav-track):not(.jn-step-btn)")) hit = { c: CTX[3], btn: stepBtn };
     }
     if (!hit) return;
     var lb = document.getElementById("media-lightbox"); if (lb && !lb.hidden) return;
     var c = hit.c, items = list(c, hit.btn), i = items.indexOf(hit.btn); if (i < 0) return;
+    if (c.kind === "nav" && (k === "ArrowLeft" || k === "ArrowRight")) {   // navigation panel: ← → switch the topic / event tab (story track), ↑ ↓ switch the journey number
+      var tabs = [].slice.call(document.querySelectorAll("#guide-pane .jnav-track")).filter(visible);
+      if (tabs.length < 2) tabs = [].slice.call(document.querySelectorAll(".tb [data-nav-tab]")).filter(visible);
+      if (tabs.length > 1) {
+        var ti = -1; tabs.forEach(function (t, n) { if (t.classList.contains("is-current") || t.getAttribute("aria-selected") === "true") ti = n; });
+        var nt = tabs[ti + (k === "ArrowRight" ? 1 : -1)];
+        e.preventDefault(); e.stopPropagation();
+        if (nt) { nt.click(); setTimeout(function () { var cur = document.querySelector("#guide-pane .jn-step-btn[aria-current=step]") || document.querySelector("#guide-pane .jn-step-btn"); if (cur) { try { cur.focus({ preventScroll: true }); } catch (x) { cur.focus(); } } }, 120); }
+        return;
+      }
+    }
     var next = null, fwd = k === "ArrowRight" || k === "ArrowDown" || k === "PageDown" || (isSpace && !e.shiftKey), more = null;
     if (k === "Home") next = items[0]; else if (k === "End") next = items[items.length - 1];
     else if (c.grid && (k === "ArrowDown" || k === "ArrowUp")) next = vertical(items, hit.btn, k === "ArrowDown" ? 1 : -1) || (k === "ArrowDown" ? items[i + 1] : items[i - 1]);
