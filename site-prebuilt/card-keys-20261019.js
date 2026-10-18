@@ -49,11 +49,11 @@
     });
     return best;
   }
-  function pick(c, key, tries) {
+  function pick(c, key, tries, noReveal) {
     var all = [].slice.call(document.querySelectorAll(c.sel)).filter(visible), i, f = null;
     for (i = 0; i < all.length; i++) if (c.key(all[i]) === key) { f = all[i]; break; }
-    if (f) { try { f.focus({ preventScroll: true }); } catch (e) { f.focus(); } reveal(f); }
-    else if (tries > 0) setTimeout(function () { pick(c, key, tries - 1); }, 80);
+    if (f) { try { f.focus({ preventScroll: true }); } catch (e) { f.focus(); } if (!noReveal) reveal(f); }
+    else if (tries > 0) setTimeout(function () { pick(c, key, tries - 1, noReveal); }, 80);
   }
   function go(c, target) {
     var key = c.key(target);
@@ -62,6 +62,13 @@
     reveal(target);
     if (key != null) setTimeout(function () { pick(c, key, 3); }, 60);   // the list may be re-rendered by the click; keep focus on the same card
   }
+  // A mouse click re-renders the list (timeline, search), which drops focus to <body>; put it back on the clicked card so the keys work right away.
+  document.addEventListener("click", function (e) {
+    if (e.detail === 0) return;   // keyboard / scripted clicks are handled in go()
+    var hit = ctxOf(e.target); if (!hit) return;
+    var key = hit.c.key(hit.btn); if (key == null) return;
+    setTimeout(function () { var a = document.activeElement; if (!a || a === document.body || !a.isConnected || !ctxOf(a)) pick(hit.c, key, 4, true); }, 90);
+  });
   document.addEventListener("keydown", function (e) {
     if (e.ctrlKey || e.metaKey || e.altKey) return;
     var k = e.key, isSpace = k === " " || k === "Spacebar";
