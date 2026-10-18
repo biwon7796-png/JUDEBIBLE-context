@@ -31,14 +31,14 @@
   } catch (e) {}
 })();
 
-/* ?dbg=1 shows a small on-screen scroll monitor (remembered on this device; ?dbg=0 hides it).
+/* ?dbg=1 shows a small on-screen scroll monitor (this page load only).
    For diagnosing phones where scrolling stalls. It only observes; it never changes behaviour. */
 (function () {
   "use strict";
   try {
     var m = /[?&]dbg=(0|1)(?:&|$)/.exec(location.search);
-    if (m) { if (m[1] === "1") localStorage.setItem("jbc.dbg", "1"); else localStorage.removeItem("jbc.dbg"); }
-    if (!(m ? m[1] === "1" : localStorage.getItem("jbc.dbg") === "1")) return;
+    localStorage.removeItem("jbc.dbg");   // earlier versions remembered this flag; it now applies only to the page load that asks for it
+    if (!(m && m[1] === "1")) return;
     var c = { shellScroll: 0, winScroll: 0, vvResize: 0, resize: 0, tStart: 0, tMove: 0, tMovePrevented: 0, mut: 0, longMs: 0 }, t0 = Date.now();
     window.addEventListener("touchstart", function () { c.tStart++; }, { passive: true, capture: true });
     window.addEventListener("touchmove", function (e) { c.tMove++; if (e.defaultPrevented) c.tMovePrevented++; }, { passive: true });
@@ -67,7 +67,7 @@
   } catch (e) {}
 })();
 
-/* ?kk=<letters> switches on isolation experiments for the KakaoTalk in-app browser (remembered; ?kk=off clears):
+/* ?kk=<letters> switches on isolation experiments for the KakaoTalk in-app browser (this page load only):
      a  plain scrolling: drop touch-action / overscroll rules and the page lock on the search page
      b  hide the pictures in search results
      d  let the page itself scroll (hide the study text behind the search panel, no nested scroller)
@@ -77,10 +77,10 @@
   "use strict";
   try {
     var m = /[?&]kk=([a-z]+|off)(?:&|$)/.exec(location.search);
-    if (m) { if (m[1] === "off") localStorage.removeItem("jbc.kk"); else localStorage.setItem("jbc.kk", m[1]); }
-    var v = m ? (m[1] === "off" ? "" : m[1]) : (localStorage.getItem("jbc.kk") || "");
+    localStorage.removeItem("jbc.kk");   // experiments are no longer remembered between visits
+    var v = m ? (m[1] === "off" ? "" : m[1]) : "";
     if (!v) return;
     document.documentElement.setAttribute("data-kk", v.split("").join(" "));
-    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "perf-kk-20261018.css?v=3"; document.head.appendChild(l);
+    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "perf-kk-20261018.css?v=4"; document.head.appendChild(l);
   } catch (e) {}
 })();

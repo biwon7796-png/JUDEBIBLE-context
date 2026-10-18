@@ -10,7 +10,7 @@
 
   /* d: let the PAGE scroll (WebView-native scrolling and fling) instead of a scroller nested in a fixed panel.
      Only the search panel is shown on the search page; the study text behind it is hidden so the page is exactly as tall as the results. */
-  html[data-kk~="d"] body[data-view="explore"] main#workspace > :not(nav#rail),
+  html[data-kk~="d"] body[data-view="explore"] main#workspace > :not(nav#rail):not(#side-pane),
   html[data-kk~="d"] body[data-view="explore"] > section#public-ol-attribution,
   html[data-kk~="d"] body[data-view="explore"] > aside,
   html[data-kk~="d"] body[data-view="explore"] > p.helper,
