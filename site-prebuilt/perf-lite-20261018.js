@@ -70,6 +70,7 @@
 /* ?kk=<letters> switches on isolation experiments for the KakaoTalk in-app browser (remembered; ?kk=off clears):
      a  plain scrolling: drop touch-action / overscroll rules and the page lock on the search page
      b  hide the pictures in search results
+     d  let the page itself scroll (hide the study text behind the search panel, no nested scroller)
      c  lay the result cards out lazily (content-visibility) so off-screen cards are not painted
    Combine letters, e.g. ?kk=ab. Nothing changes unless the flag is set. */
 (function () {
@@ -80,6 +81,6 @@
     var v = m ? (m[1] === "off" ? "" : m[1]) : (localStorage.getItem("jbc.kk") || "");
     if (!v) return;
     document.documentElement.setAttribute("data-kk", v.split("").join(" "));
-    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "perf-kk-20261018.css?v=1"; document.head.appendChild(l);
+    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "perf-kk-20261018.css?v=3"; document.head.appendChild(l);
   } catch (e) {}
 })();

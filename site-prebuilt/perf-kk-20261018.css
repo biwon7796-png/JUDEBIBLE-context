@@ -8,6 +8,21 @@
   /* b: no pictures in the results */
   html[data-kk~="b"] #search-results img, html[data-kk~="b"] #search-results picture { display: none !important; }
 
+  /* d: let the PAGE scroll (WebView-native scrolling and fling) instead of a scroller nested in a fixed panel.
+     Only the search panel is shown on the search page; the study text behind it is hidden so the page is exactly as tall as the results. */
+  html[data-kk~="d"] body[data-view="explore"] main#workspace > :not(nav#rail),
+  html[data-kk~="d"] body[data-view="explore"] > section#public-ol-attribution,
+  html[data-kk~="d"] body[data-view="explore"] > aside,
+  html[data-kk~="d"] body[data-view="explore"] > p.helper,
+  html[data-kk~="d"] body[data-view="explore"] > footer#notice { display: none !important; }
+  html[data-kk~="d"] body[data-view="explore"] #search-workspace#search-workspace {
+    position: relative !important; top: auto !important; left: auto !important; right: auto !important; bottom: auto !important;
+    height: auto !important; min-height: 0 !important; max-height: none !important; margin: 62px 8px 110px !important; z-index: auto !important; overflow: visible !important;
+    background-attachment: scroll !important; }
+  html[data-kk~="d"] body[data-view="explore"] main#workspace > nav#rail { position: fixed !important; top: 52px; left: 8px; right: 8px; z-index: 9; }
+  html[data-kk~="d"] body[data-view="explore"] #search-workspace .sw-shell { height: auto !important; min-height: 0 !important; overflow: visible !important; touch-action: auto !important; overscroll-behavior: auto !important; }
+  html[data-kk~="d"][data-perf]:has(body[data-view="explore"]), html[data-kk~="d"][data-perf]:has(body[data-view="explore"]) body { overflow: visible !important; height: auto !important; }
+
   /* c: paint only the cards near the viewport */
   html[data-kk~="c"] #search-results .ee-item, html[data-kk~="c"] #search-results .ee-card, html[data-kk~="c"] #search-results .sr-row { content-visibility: auto; contain-intrinsic-size: auto 150px; }
 }
