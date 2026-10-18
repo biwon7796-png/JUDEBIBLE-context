@@ -8,7 +8,26 @@
     var on = m ? m[1] === "lite" : localStorage.getItem("jbc.perf") === "lite";
     if (!on) return;
     document.documentElement.setAttribute("data-perf", "lite");
-    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "perf-lite-20261018.css?v=3"; document.head.appendChild(l);
+    var l = document.createElement("link"); l.rel = "stylesheet"; l.href = "perf-lite-20261018.css?v=4"; document.head.appendChild(l);
+
+    // Phone browsers resize the viewport (address/tool bars sliding in and out) many times while a finger is on the screen.
+    // Every resize makes the app re-measure and re-lay-out, which interrupts the scroll gesture. While a touch is active (and
+    // briefly after), height-only resizes are swallowed here, before the app's own listeners, and one resize is replayed afterwards.
+    var touching = false, quietUntil = 0, lastW = window.innerWidth, pending = false, timer = 0;
+    window.JBC_RESIZE_SKIPPED = 0;
+    var begin = function () { touching = true; };
+    var end = function () { touching = false; quietUntil = Date.now() + 700; clearTimeout(timer); timer = setTimeout(replay, 760); };
+    var replay = function () { if (pending && !touching) { pending = false; try { window.dispatchEvent(new Event("resize")); } catch (e) {} } };
+    window.addEventListener("touchstart", begin, { passive: true, capture: true });
+    window.addEventListener("touchend", end, { passive: true, capture: true });
+    window.addEventListener("touchcancel", end, { passive: true, capture: true });
+    var damp = function (e) {
+      var widthSame = Math.abs(window.innerWidth - lastW) < 2;
+      if (widthSame && (touching || Date.now() < quietUntil)) { pending = true; window.JBC_RESIZE_SKIPPED++; e.stopImmediatePropagation(); return; }
+      lastW = window.innerWidth;
+    };
+    window.addEventListener("resize", damp, true);
+    if (window.visualViewport) window.visualViewport.addEventListener("resize", damp, true);
   } catch (e) {}
 })();
 
@@ -38,7 +57,7 @@
         box.textContent = "t=" + Math.round((Date.now() - t0) / 1000) + "s view=" + document.body.dataset.view + "\n" +
           "shell top/h/ch=" + (sh ? Math.round(sh.scrollTop) + "/" + sh.scrollHeight + "/" + sh.clientHeight : "-") + " scrolls=" + c.shellScroll + "\n" +
           "win y=" + Math.round(window.scrollY) + " scrolls=" + c.winScroll + " docH=" + d.scrollHeight + "\n" +
-          "innerH=" + innerHeight + " vvH=" + (vv ? Math.round(vv.height) : "-") + " resize=" + c.resize + " vv=" + c.vvResize + "\n" +
+          "innerH=" + innerHeight + " vvH=" + (vv ? Math.round(vv.height) : "-") + " resize=" + c.resize + " vv=" + c.vvResize + " skipped=" + (window.JBC_RESIZE_SKIPPED || 0) + "\n" +
           "touch s/m/prevented=" + c.tStart + "/" + c.tMove + "/" + c.tMovePrevented + "\n" +
           "dom mut=" + c.mut + " longtask max=" + c.longMs + "ms\n" +
           "ovf html/body=" + getComputedStyle(d).overflowY + "/" + getComputedStyle(document.body).overflowY;

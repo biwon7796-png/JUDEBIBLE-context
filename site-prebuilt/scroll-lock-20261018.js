@@ -5,6 +5,7 @@
   "use strict";
   var raf = 0;
   function locked() {
+    if (window.innerWidth < 1100) return false;   // desktop-only lock; phones/tablets scroll normally (and lite mode locks the page on purpose)
     try { return getComputedStyle(document.body).overflowY === "hidden" && getComputedStyle(document.documentElement).overflowY === "hidden"; } catch (e) { return false; }
   }
   function pin() {
