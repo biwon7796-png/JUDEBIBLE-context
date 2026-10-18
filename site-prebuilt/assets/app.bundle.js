@@ -2503,7 +2503,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   function serialize() {
     var h = state.passage + (state.verse != null ? ":" + state.verse : "");
     if (state.tab !== "context") h += "&tab=" + state.tab;
-    if (state.entity) h += "&e=" + state.entity.kind + "." + state.entity.id;
+    if (state.entity && state.entity.kind && state.entity.id != null && state.entity.id !== "") h += "&e=" + state.entity.kind + "." + state.entity.id;   // kind/id 가 비면 해시에 e=undefined.undefined 가 들어가 "유효하지 않은 참조" 오류가 난다
     if (state.panel !== "collapsed") h += "&panel=" + state.panel;   // 왼쪽 Detail 상태(기본 collapsed 는 생략)
     if (state.view !== "study") h += "&view=" + state.view;         // 관점(기본 본문연구는 생략)
     if (state.sheet !== "half") h += "&sheet=" + state.sheet;     // 모바일 맥락 시트 상태(기본 half 는 생략)
@@ -2518,7 +2518,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
       if (kv[1] === "panel") { if (kv[2] !== "open" && kv[2] !== "collapsed") return null; r.panel = kv[2]; }
       else if (kv[1] === "view") { if (["study", "map", "timeline", "explore"].indexOf(kv[2]) < 0) return null; r.view = kv[2] === "map" ? "study" : kv[2]; }   // 별도 지도 관점은 본문연구 Workspace 로 통합됨(옛 view=map 링크는 본문연구로 연결)
       else if (kv[1] === "sheet") { if (["peek", "half", "full"].indexOf(kv[2]) < 0) return null; r.sheet = kv[2]; }
-      else if (kv[1] === "tab") r.tab = kv[2]; else { var em = /^([^.]+)\.(.+)$/.exec(kv[2]); if (!em) return null; r.entity = { kind: em[1], id: resolveKey(em[2]) }; }
+      else if (kv[1] === "tab") r.tab = kv[2]; else if (kv[2] === "undefined.undefined") { /* 옛 오류로 남은 링크: 빈 대상은 무시하고 본문을 연다 */ } else { var em = /^([^.]+)\.(.+)$/.exec(kv[2]); if (!em) return null; r.entity = { kind: em[1], id: resolveKey(em[2]) }; }
     }
     if (r.tab === "map") r.tab = "context";   // 지도 탭은 제거됨(옛 링크 호환)
     if (!D.passages[r.passage] || (r.verse != null && !hasVerse(r.passage, r.verse)) || !tabValid(r.tab) || (r.entity && !entityValid(r.entity))) return null;
