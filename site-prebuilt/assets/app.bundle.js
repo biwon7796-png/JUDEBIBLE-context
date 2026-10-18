@@ -3084,7 +3084,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   }
   function syncRefInput(force) {
     var cur = D.passages[state.passage].ref + (state.verse != null ? " " + state.verse + "절" : ""), qh = $("qs-input");
-    if (qh) { qh.dataset.live = "1"; qh.placeholder = cur + " · 검색·이동"; }
+    qsPlaceholder();
     var el = $("ref-input"); if (!el || (!force && document.activeElement === el)) return;
     el.value = cur;
   }
@@ -5608,7 +5608,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     }
     var tp = $("text-pane"); if (tp) { try { tp.inert = v !== "study"; } catch (e) {} tp.setAttribute("aria-hidden", v !== "study" ? "true" : "false"); }
     var tl = $("timeline-pane"); if (tl) tl.hidden = v !== "timeline";
-    var qb = $("quick-search"); if (qb) qb.hidden = false;
+    var qb = $("quick-search"); if (qb) qb.hidden = false; qsPlaceholder();
     var qh = $("qs-input"); if (qh) { if (v === "explore") { qh.dataset.sw = "1"; if (qh.value !== swState.q && document.activeElement !== qh) qh.value = swState.q; } else if (qh.dataset.sw) { delete qh.dataset.sw; qh.value = ""; qsClose(); } }
     if (v === "timeline") renderTimeline();
   }
@@ -7410,7 +7410,31 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   // 검색 로직은 검색 탭과 같은 unifiedSearch 를 쓰고, 여기서는 유형별 상위 결과만 드롭다운으로 보여 준다.
   var qs = { items: [], active: -1, q: "" };
   var QS_LIMIT = { person: 3, place: 3, event: 2, route: 2, research: 2, verse: 5 };
-  var QS_SECTION = { ref: "이동", person: "인물", place: "장소", event: "사건", route: "경로", research: "연구", verse: "본문" };
+  var QS_SECTION = { ref: "이동", person: "인물", place: "장소", event: "사건", route: "경로", research: "연구", verse: "본문", tl: "연표" };
+  // Search scope: on the passage page the box searches this chapter, on the timeline page the timeline; the search page searches everything.
+  function qsScope() { return state.view === "timeline" ? "timeline" : "all"; }
+  function qsScopeLabel() { return "연표 안에서"; }
+  function qsScopedModel(m, scope, q) {
+    var nq = norm(q), compact = nq.replace(/\s+/g, ""), out = m.rows.filter(function (r) { return r.t === "ref"; });
+    if (!compact) return { rows: out, counts: null };
+    if (scope === "timeline") {
+      var hits = [];
+      timelineEraTopics().forEach(function (tp) {
+        if (norm(tp.title).indexOf(nq) >= 0) hits.push({ rank: 0, row: { t: "tl", g: "tl", era: tp.id, step: null, track: null, label: tp.title, sub: "시대" } });
+        (tp.steps || []).forEach(function (s) {
+          var hay = norm((s.title || "") + " " + (s.summary || s.note || "") + " " + timelineStepRef(s));
+          if (hay.indexOf(nq) >= 0) hits.push({ rank: norm(s.title || "").indexOf(nq) === 0 ? 1 : norm(s.title || "").indexOf(nq) > 0 ? 2 : 3, row: { t: "tl", g: "tl", era: tp.id, step: s.id, track: s.track || null, label: s.title, sub: tp.title + " · " + timelineStepRef(s) } });
+        });
+      });
+      hits.sort(function (a, c) { return a.rank - c.rank; }).slice(0, 10).forEach(function (h) { out.push(h.row); });
+    }
+    return { rows: out, counts: null };
+  }
+  function qsPlaceholder() {
+    var qh = $("qs-input"); if (!qh) return; qh.dataset.live = "1";
+    var P = D.passages[state.passage], cur = P ? P.ref + (state.verse != null ? " " + state.verse + "절" : "") : "";
+    qh.placeholder = state.view === "timeline" ? "연표 안에서 검색 · 이동 (요 3:16)" : state.view === "explore" ? "전체 검색 · 이동 (요 3:16)" : cur + " · 검색·이동";
+  }
   function qsRank(e, nq) { var l = norm(e.display_label); return l === nq ? 0 : l.indexOf(nq) === 0 ? 1 : l.indexOf(nq) >= 0 ? 2 : 3; }
   function quickSearchModel(q) {
     var nq = norm(q), compact = nq.replace(/\s+/g, ""), rows = [], more = null;
@@ -7435,9 +7459,12 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   function qsRender() {
     var inp = $("qs-input"), ul = $("qs-list"); if (!inp || !ul) return;
     var q = inp.value, nq = norm(q), m = quickSearchModel(q), html = "", last = "", total = 0, onSearch = state.view === "explore";
+    var scope = qsScope();
     if (onSearch) { m = { rows: m.rows.filter(function (r) { return r.t === "ref"; }), counts: null }; }   // results are on the page itself; only "go to passage" stays in the list
+    else if (scope !== "all") m = qsScopedModel(m, scope, q);
     qs.q = q; qs.items = m.rows.slice();
     if (m.counts) SEARCH_GROUPS.forEach(function (g) { total += m.counts[g] || 0; });
+    if (nq && scope !== "all" && !onSearch) html += '<li class="qs-sec qs-scope" role="presentation">' + esc(qsScopeLabel(scope)) + "</li>";
     m.rows.forEach(function (r, i) {
       if (r.g !== last) { last = r.g; html += '<li class="qs-sec" role="presentation">' + QS_SECTION[r.g] + (m.counts && m.counts[r.g] > QS_LIMIT[r.g] && r.g !== "person" && r.g !== "place" ? ' <span class="qs-sec-n">' + m.counts[r.g] + '건</span>' : m.counts && m.counts[r.g] ? ' <span class="qs-sec-n">' + m.counts[r.g] + '건</span>' : "") + "</li>"; }
       if (r.t === "ref") html += '<li role="option" id="qs-o' + i + '" class="qs-row qs-ref" data-qs-i="' + i + '" aria-selected="false"><span class="qs-name">→ ' + esc(r.label) + '</span><span class="qs-sub">본문으로 이동</span></li>';
@@ -7446,8 +7473,9 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     });
     if (nq && !onSearch) {
       var ci = qs.items.length; qs.items.push({ t: "all" });
-      if (!m.rows.length) html += '<li class="qs-empty" role="presentation">' + (nq.replace(/\s+/g, "").length < 2 ? "두 글자 이상 입력하면 성경 본문 전체에서 찾습니다" : "일치하는 결과가 없습니다") + "</li>";
-      html += '<li role="option" id="qs-o' + ci + '" class="qs-row qs-all" data-qs-i="' + ci + '" aria-selected="false"><span class="qs-name">전체 결과 보기</span><span class="qs-sub">' + (total ? "총 " + total + "건 · " : "") + "검색 탭</span></li>";
+      if (!m.rows.length && scope !== "all") html += '<li class="qs-empty" role="presentation">' + "연표에서는 찾지 못했습니다" + "</li>";
+      else if (!m.rows.length) html += '<li class="qs-empty" role="presentation">' + (nq.replace(/\s+/g, "").length < 2 ? "두 글자 이상 입력하면 성경 본문 전체에서 찾습니다" : "일치하는 결과가 없습니다") + "</li>";
+      html += '<li role="option" id="qs-o' + ci + '" class="qs-row qs-all" data-qs-i="' + ci + '" aria-selected="false"><span class="qs-name">' + (scope !== "all" ? "전체에서 찾기" : "전체 결과 보기") + '</span><span class="qs-sub">' + (total ? "총 " + total + "건 · " : "") + "검색 탭</span></li>";
     }
     ul.innerHTML = html; qs.active = qs.items.length ? 0 : -1; qsMark();
     ul.hidden = !html; inp.setAttribute("aria-expanded", String(!ul.hidden || !!qn.open));
@@ -7491,6 +7519,11 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     if (r.t === "all") { openSearchFromQuick(q); return; }
     if (inp) inp.value = "";
     if (r.t === "ref") { if (state.view !== "study") setView("study"); go(r.ref.passage, r.ref.verse == null ? null : r.ref.verse); return; }
+    if (r.t === "tl") {   // timeline scope: stay on the timeline and select the event / era
+      ui.tlEra = r.era; ui.tlStep = r.step; ui.tlTrack = r.track || null; ui.tlPage = null; renderTimeline();
+      try { var tc = r.step && document.querySelector('[data-tl-step="' + String(r.step).replace(/"/g, '\\"') + '"]'); if (tc) tc.scrollIntoView({ block: "nearest" }); } catch (e) {}
+      return;
+    }
     if (r.t === "verse") { if (state.view !== "study") setView("study"); go(r.pid, r.n); }
     else if (r.t === "research") { if (r.ref) { var ck = parseKey(r.ref); if (state.view !== "study") setView("study"); openRelatedPassage(ck.passage, ck.verse); } }
     else {

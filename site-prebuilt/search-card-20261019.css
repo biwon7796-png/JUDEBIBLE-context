@@ -43,3 +43,5 @@
 @media (min-width: 1100px) { .top .qs { width: max(var(--hdr-scripture-w, 320px), 360px); } }
 /* The open passage picker / result list must sit above the panel-resize handles. */
 .top:has(.ref-pop:not([hidden])), .top:has(.qs-list:not([hidden])) { z-index: 60; }
+
+.qs-list .qs-scope { color: var(--accent-ink, #7a3f14); }
