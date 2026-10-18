@@ -404,6 +404,7 @@
   function renderCanonical(box, d) {
     if (!d.canonicalLinks || !d.canonicalLinks.length) return;
     var details = el("details", "rp-canonical");
+    details.open = true;   // 정경적 연결은 핵심 연구라 처음부터 펼쳐 둔다 (제목을 누르면 접을 수 있다)
     details.appendChild(el("summary", null, "정경적 연결"));
     var list = el("div", "rp-canonical-list");
     d.canonicalLinks.forEach(function (x) {
