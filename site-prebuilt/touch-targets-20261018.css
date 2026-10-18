@@ -1,0 +1,13 @@
+/* Bigger tap areas on phones WITHOUT changing how anything looks or where it sits.
+   - Invisible ::after layers (or padding cancelled by an equal negative margin) extend the clickable area to about 44px.
+   - Only elements that were found smaller than ~40px: original-language words, the search mode/view switches,
+     chapter prev/next, small inline links. Verse numbers already have their own extension (mobile-flow css). */
+@media (max-width: 760px) {
+  .ol-w.ol-tok, .sw-mode button, .sw-choice button, .sw-view button, .chapter-head-nav button, #ol-toggle, #sw-more { position: relative; }
+  .ol-w.ol-tok::after { content: ""; position: absolute; inset: -8px -2px; }
+  /* segmented switches sit side by side: extend vertically only so neighbours never overlap */
+  .sw-mode button::after, .sw-choice button::after, .sw-view button::after { content: ""; position: absolute; top: -6px; bottom: -6px; left: 0; right: 0; }
+  .chapter-head-nav button::after, #ol-toggle::after, #sw-more::after { content: ""; position: absolute; inset: -7px; }
+  /* inline text links: padding is part of the hit area but not of the line layout; the equal negative margin cancels it */
+  p a, li a, .helper a, .pc-photo-credit a { padding: 8px 2px; margin: -8px -2px; }
+}
