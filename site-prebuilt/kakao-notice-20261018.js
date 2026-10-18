@@ -1,6 +1,6 @@
 /* KakaoTalk in-app browser notice.
    Inside KakaoTalk's built-in browser some screens (long lists, search) scroll poorly. A normal phone browser does not have this
-   problem, so offer to open the same page there. Shown only in KakaoTalk (or with ?kakao=1 for testing), dismissible for 7 days. */
+   problem, so offer to open the same page there. Shown only in KakaoTalk (or with ?kakao=1 for testing), closing it hides it until the app is reopened. */
 (function () {
   "use strict";
   var KEY = "jbc.kakaoNotice.dismissedAt", DAYS = 7;
@@ -9,7 +9,7 @@
     var inKakao = /KAKAOTALK/i.test(navigator.userAgent) || (q && q[1] === "1");
     if (inKakao && !(q && q[1] === "0")) document.documentElement.setAttribute("data-inapp", "kakao");   // styles for this browser only (inapp-fixes css)
     if (!inKakao || (q && q[1] === "0")) return;
-    if (!q) { var at = Number(localStorage.getItem(KEY) || 0); if (at && Date.now() - at < DAYS * 86400000) return; }
+    if (!q) { if (sessionStorage.getItem(KEY)) return; }
   } catch (e) { return; }
 
   function build() {
@@ -49,7 +49,7 @@
     close.type = "button"; close.textContent = "닫기"; close.setAttribute("aria-label", "안내 닫기");
     close.style.cssText = "margin-left:auto;padding:7px 10px;border:0;background:transparent;color:inherit;font-size:13px;text-decoration:underline;cursor:pointer";
     close.addEventListener("click", function () {
-      try { localStorage.setItem(KEY, String(Date.now())); } catch (e) {}
+      try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
       bar.remove();
     });
 

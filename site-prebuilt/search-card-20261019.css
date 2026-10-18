@@ -30,6 +30,8 @@
   body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-thumb { aspect-ratio: 4 / 5; border-radius: 12px; grid-row: 1 / span 2; align-self: start; }
   body[data-view="explore"] .sw-results .ee-set[data-view="card"] .sr-ref { font-size: 1.05rem; font-weight: 800; }
   body[data-view="explore"] .sw-results .ee-set[data-view="card"] .sr-preview { font-size: .9rem; line-height: 1.55; -webkit-line-clamp: 4; line-clamp: 4; }
-  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-card-extra { grid-column: 2; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-primary.has-media .ee-card-extra { grid-column: 2; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-primary.no-media { grid-template-columns: minmax(0, 1fr); padding-right: 40px; }
+  body[data-view="explore"] .sw-results .ee-set[data-view="card"] .ee-primary.no-media .ee-card-extra { grid-column: 1; }
   .pc-credit-wrap { top: 6px; right: 6px; }
 }
