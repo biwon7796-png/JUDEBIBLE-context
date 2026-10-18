@@ -1,0 +1,17 @@
+/* KakaoTalk in-app browser only (<html data-inapp="kakao">, set by kakao-notice-20261018.js).
+   The phone stylesheet gives every search card `content-visibility:auto` + `contain` and puts the scroller on its own forced GPU layer.
+   Card heights differ from the assumed 250px, so the list height and scroll position are corrected while the user swipes,
+   which stalls touch scrolling in this WebView (the plain scroll tests, without those properties, scroll fine). Undo them here. */
+@media (max-width: 760px) {
+  html[data-inapp="kakao"] body[data-mflow] #search-results article.ee-card,
+  html[data-inapp="kakao"] body[data-mflow] #search-results .sr-row,
+  html[data-inapp="kakao"] body[data-mflow] #search-results .ee-item,
+  html[data-inapp="kakao"] body[data-mflow] #search-results img {
+    content-visibility: visible !important; contain: none !important; contain-intrinsic-size: auto !important;
+  }
+  html[data-inapp="kakao"] body[data-mflow] #search-workspace .sw-shell,
+  html[data-inapp="kakao"] body[data-mflow] #timeline-pane,
+  html[data-inapp="kakao"] body[data-mflow] #side-pane #panel {
+    transform: none !important; backface-visibility: visible !important;
+  }
+}
