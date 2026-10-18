@@ -6836,6 +6836,14 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     e.preventDefault(); var qi = $("sw-query"); if (!qi) return;
     qi.value = b.getAttribute("data-sw-suggest"); qi.dispatchEvent(new Event("input", { bubbles: true })); try { qi.focus({ preventScroll: true }); } catch (x) {}
   });
+  // Long result groups (e.g. the unfiltered list of 120+ places) render the first 30 cards and grow by 30 on "더 보기".
+  // Groups of 40 or fewer are untouched. The counter resets whenever the query or any filter changes.
+  var swEntLimits = { sig: "", n: {} };
+  function swEntCap(g, total) {
+    var sig = JSON.stringify([swState.q, swState.mode, swState.kind, swState.type, swState.testament, swState.period, swState.region, swState.story, swState.journey, swState.placeType, swState.role, swState.location, swState.photo, swState.archaeology, swState.sort]);
+    if (swEntLimits.sig !== sig) { swEntLimits.sig = sig; swEntLimits.n = {}; }
+    return total <= 40 ? total : Math.min(total, swEntLimits.n[g] || 30);
+  }
   function renderSearch() {
     if (swState.q && swState.q.trim() && eastonLoadState==="IDLE") ensureEastonCandidate();
     var el=$("search-results"), sum=$("sw-summary"), more=$("sw-more"), q=swState.q, mode=swState.mode, hasQ=!!norm(q), R, refErr=null, entList=[];
@@ -6936,8 +6944,8 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     ["person","place","region","event","route"].forEach(function(g){
       var list=R.groups[g], draftHtml=g==="person"&&(mode==="all"||mode==="person")?localPersonCardsHtml(q):"";
       var draftCount=(draftHtml.match(/data-local-person-research=/g)||[]).length;
-      entList=entList.concat(list); total+=list.length+draftCount; if(mode==="all"&&(list.length+draftCount)) parts.push(SEC[g]+" "+(list.length+draftCount));
-      if(list.length || draftCount) html += '<section class="sw-sec" data-sw-sec="'+g+'">' +(mode==="all"?'<h3 class="sec-h">'+SEC[g]+' <span class="sw-sec-n">'+(list.length+draftCount)+'</span></h3>':"")+listHead(g)+'<div class="ee-set" data-view="'+swState.view+'">'+list.map(function(e){return g==="place" && e.key.indexOf("levelb:")===0 ? levelBCard(LEVEL_B_87.filter(function(a){return "levelb:"+a.candidate_id===e.key;})[0],q) : g==="place" && e.key.indexOf("atlas90:")===0 ? atlas90SharedCard((window.JBC_ATLAS90_KOREAN_REFERENCE || []).filter(function(a){return "atlas90:" + a.place_id === e.key;})[0],q) : g==="place"?placeCardHtml(e,"search",{q:q}):entityItemHtml(e,q);}).join("")+draftHtml+'</div></section>';
+      var shownList=list.slice(0,swEntCap(g,list.length)); entList=entList.concat(shownList); total+=list.length+draftCount; if(mode==="all"&&(list.length+draftCount)) parts.push(SEC[g]+" "+(list.length+draftCount));
+      if(list.length || draftCount) html += '<section class="sw-sec" data-sw-sec="'+g+'">' +(mode==="all"?'<h3 class="sec-h">'+SEC[g]+' <span class="sw-sec-n">'+(list.length+draftCount)+'</span></h3>':"")+listHead(g)+'<div class="ee-set" data-view="'+swState.view+'">'+shownList.map(function(e){return g==="place" && e.key.indexOf("levelb:")===0 ? levelBCard(LEVEL_B_87.filter(function(a){return "levelb:"+a.candidate_id===e.key;})[0],q) : g==="place" && e.key.indexOf("atlas90:")===0 ? atlas90SharedCard((window.JBC_ATLAS90_KOREAN_REFERENCE || []).filter(function(a){return "atlas90:" + a.place_id === e.key;})[0],q) : g==="place"?placeCardHtml(e,"search",{q:q}):entityItemHtml(e,q);}).join("")+draftHtml+'</div>'+(shownList.length<list.length?'<button type="button" class="btn ghost sw-ent-more" style="display:block;margin:12px auto" data-sw-ent-more="'+g+'">더 보기 · 남은 '+(list.length-shownList.length)+'개</button>':'')+'</section>';
     });
     if(R.groups.research.length){ total+=R.groups.research.length; parts.push("연구 "+R.groups.research.length); html += '<section class="ctx-search-results sw-sec" data-sw-sec="research" data-part="contextual-research-search"><h3 class="sec-h">연결 연구'+(mode==="all"?' <span class="sw-sec-n">'+R.groups.research.length+'</span>':"")+'</h3><div class="ee-set">'+contextualSearchHtml(q)+'</div></section>'; }
     if(R.groups.verse.length){ total+=R.counts.verse; parts.unshift("본문 "+R.counts.verse); html += '<section class="sw-sec" data-sw-sec="verse">'+(mode==="all"?'<h3 class="sec-h">본문 <span class="sw-sec-n">'+R.counts.verse+'</span></h3>':"")+'<div class="sw-verses">'+R.groups.verse.map(function(x){return rowHtml(x,q);}).join("")+'</div></section>'; }
@@ -7211,6 +7219,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     if ((el = t.closest("[data-swmode]"))) return switchExploreMode(el.dataset.swmode);
     if (t.closest("#sw-clear")) { swState.testament="all"; swState.period="all"; swState.region="all"; swState.placeType="all"; swState.role="all"; swState.story="all"; swState.journey="all"; swState.location="all"; swState.photo=false; swState.archaeology=false; swState.q=""; if($("sw-query")) $("sw-query").value=""; if($("search")) $("search").value=""; renderSearch(); return; }
     if ((el = t.closest("[data-swfilter]"))) { var kv = el.dataset.swfilter.split(":"); swState[kv[0]] = kv[1]; swState.limit = 30; syncSwFilters(); renderSearch(); var q0 = $("sw-query"); if (q0) q0.focus(); return; }
+    var swEm = t.closest("[data-sw-ent-more]"); if (swEm) { var swg = swEm.getAttribute("data-sw-ent-more"); swEntLimits.n[swg] = (swEntLimits.n[swg] || 30) + 30; return renderSearch(); }
     if (t.closest("#sw-more")) { swState.limit += 30; return renderSearch(); }
     if (t.closest("#panel-toggle")) return toggleContext();
     if (t.closest("#panel-open, #panel-edge-open")) return setPanel("open");
