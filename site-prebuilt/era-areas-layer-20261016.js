@@ -142,5 +142,5 @@
     var tp = topic(); if (!/^era\./.test(tp) || document.body.dataset.view !== "study") return "";
     return "시대 색면·표시 지점은 참고용 개략 범위이며 실제 경계가 아닙니다. 위치: OpenBible.info Bible Geocoding Data (CC BY 4.0, 일부 OpenStreetMap 기반 ODbL 1.0). 영역 모양은 성경 구절의 성읍·경계 서술을 근거로 직접 그렸습니다.";
   };
-  setInterval(function () { var m = mapObj(); if (m) { bind(m); apply(m); } }, 500);
+  setInterval(function () { var mb = document.getElementById("map-body"), r = mb && mb.getBoundingClientRect(); if (!r || r.width < 1 || r.height < 1) return; var m = mapObj(); if (m) { bind(m); apply(m); } }, 500);
 })();

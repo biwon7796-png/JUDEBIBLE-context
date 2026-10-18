@@ -51,5 +51,5 @@
     ensure(m);
   }
   // the map is created lazily and can be re-created: keep looking for it
-  setInterval(function () { var m = mapObj(); if (m) { bind(m); ensure(m); } }, 1200);
+  setInterval(function () { var mb = document.getElementById("map-body"), r = mb && mb.getBoundingClientRect(); if (!r || r.width < 1 || r.height < 1) return; var m = mapObj(); if (m) { bind(m); ensure(m); } }, 1200);
 })();

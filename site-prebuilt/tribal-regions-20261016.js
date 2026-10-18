@@ -156,5 +156,5 @@
     m.on("mouseleave", FILL, function () { m.getCanvas().style.cursor = ""; });
     apply(m);
   }
-  setInterval(function () { var m = mapObj(); if (m) { bind(m); apply(m); } }, 500);
+  setInterval(function () { var mb = document.getElementById("map-body"), r = mb && mb.getBoundingClientRect(); if (!r || r.width < 1 || r.height < 1) return; var m = mapObj(); if (m) { bind(m); apply(m); } }, 500);
 })();

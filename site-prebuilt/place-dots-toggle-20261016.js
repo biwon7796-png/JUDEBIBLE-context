@@ -43,5 +43,5 @@
     var first = grp.querySelector("label"); grp.insertBefore(lab, first ? first : null);
   }
 
-  setInterval(function () { var m = mapObj(); if (m) { ensureChip(m); apply(m); } ensureSettings(); }, 600);
+  setInterval(function () { var mb = document.getElementById("map-body"), r = mb && mb.getBoundingClientRect(); if (!r || r.width < 1 || r.height < 1) return; var m = mapObj(); if (m) { ensureChip(m); apply(m); } ensureSettings(); }, 600);
 })();
