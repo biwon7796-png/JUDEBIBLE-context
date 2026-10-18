@@ -1,0 +1,10 @@
+/* Reading size for scripture text and the original-language lines. Off by default (no data-reading attribute = today's sizes).
+   Steps: 0 = as is, 1 = +3px, 2 = +6px. Set by the "가" button in the chapter bar (reading-size-20261018.js). */
+html[data-reading="1"] { --rd-step: 3px; }
+html[data-reading="2"] { --rd-step: 6px; }
+html[data-reading] body #verses .verse { font-size: calc(17px + var(--rd-step)) !important; line-height: 1.7 !important; }
+html[data-reading] body .ol-text, html[data-reading] body .ol-w { font-size: calc(17px + var(--rd-step)) !important; }
+html[data-reading] body .ol-krv, html[data-reading] body .ol-src { font-size: calc(16px + var(--rd-step)) !important; }
+@media (max-width: 760px) {
+  html[data-reading] body #verses .verse { font-size: calc(16px + var(--rd-step)) !important; line-height: 1.8 !important; }
+}
