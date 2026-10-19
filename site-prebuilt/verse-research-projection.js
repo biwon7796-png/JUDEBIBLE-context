@@ -226,10 +226,20 @@
     return d && p.verse == null ? { type: "PASSAGE_WORBS", ref: pid, researchId: d.researchId } : null;
   }
 
+  // Manuscript markdown that survived the conversion: **굵게** → <strong>, *기울임* → <em>; the asterisks themselves are never shown.
+  function richText(e, text) {
+    var s = String(text), re = /\*\*([^*]+?)\*\*|\*([^*\s][^*]*?)\*/g, last = 0, m, n;
+    while ((m = re.exec(s))) {
+      if (m.index > last) e.appendChild(document.createTextNode(s.slice(last, m.index)));
+      n = document.createElement(m[1] != null ? "strong" : "em"); n.textContent = m[1] != null ? m[1] : m[2]; e.appendChild(n);
+      last = m.index + m[0].length;
+    }
+    if (last < s.length) e.appendChild(document.createTextNode(s.slice(last)));
+  }
   function el(tag, cls, text) {
     var e = document.createElement(tag);
     if (cls) e.className = cls;
-    if (text != null) e.textContent = text;
+    if (text != null) { if (typeof text === "string" && text.indexOf("*") >= 0) richText(e, text); else e.textContent = text; }
     return e;
   }
 

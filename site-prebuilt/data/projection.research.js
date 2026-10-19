@@ -1101,7 +1101,7 @@ window.BVC_PROJECTION = {
           "identification_certainty": "LOW",
           "coordinate_source": "OpenBible",
           "equivalence_locked": false,
-          "note": "Heidelberg ODG는 지리·고고학적 조건이 일부 맞지만 오늘날 이 유적이 대체로 Ziklag 후보로 식별되는 점을 중요한 반론으로 기록한다."
+          "note": "Heidelberg ODG는 지리·고고학적 조건이 일부 맞지만 오늘날 이 유적이 대체로 Ziklag 후보로 식별되는 점을 중요한 반론으로 기록합니다."
         },
         {
           "id": null,
@@ -1200,129 +1200,129 @@ window.BVC_PROJECTION = {
       "claims": [
         {
           "id": "CLM-GR-01",
-          "statement": "그랄은 창 10:19에서 가사와 함께 가나안 경계의 지리 표지로 등장한다.",
+          "statement": "그랄은 창 10:19에서 가사와 함께 가나안 경계의 지리 표지로 등장합니다.",
           "class": "FACT",
           "locator": "Gen 10:19; ODG `Belege AT`",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-02",
-          "statement": "아브라함은 창 20장에서 그랄에 우거하고 그랄 왕 아비멜렉과 사라 사건을 겪는다.",
+          "statement": "아브라함은 창 20장에서 그랄에 우거하고 그랄 왕 아비멜렉과 사라 사건을 겪습니다.",
           "class": "FACT",
           "locator": "Gen 20:1–18; Drive `창세기 20장.txt`",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-03",
-          "statement": "창 20장의 핵심 흐름에서 하나님은 사라를 아비멜렉에게서 돌려보내게 하여 약속의 계보를 보존하신다.",
+          "statement": "창 20장의 핵심 흐름에서 하나님은 사라를 아비멜렉에게서 돌려보내게 하여 약속의 계보를 보존하십니다.",
           "class": "INTERPRETATION",
           "locator": "Gen 20 전체 + Genesis Book Profile covenant lens",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-04",
-          "statement": "이삭은 기근 때 그랄로 가고, 하나님은 그에게 땅·자손·복의 약속을 재확인한다.",
+          "statement": "이삭은 기근 때 그랄로 가고, 하나님은 그에게 땅·자손·복의 약속을 재확인합니다.",
           "class": "FACT/THEOLOGICAL_OBSERVATION",
           "locator": "Gen 26:1–6; Drive `창세기 26장.txt`",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-05",
-          "statement": "이삭의 그랄 번성은 지역 갈등과 우물 분쟁을 제거하지 않는다.",
+          "statement": "이삭의 그랄 번성은 지역 갈등과 우물 분쟁을 제거하지 않습니다.",
           "class": "TEXTUAL_OBSERVATION",
           "locator": "Gen 26:12–22",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-06",
-          "statement": "창 26의 공간 흐름은 그랄/그랄 골짜기에서 르호봇을 거쳐 브엘세바로 이어진다.",
+          "statement": "창 26의 공간 흐름은 그랄/그랄 골짜기에서 르호봇을 거쳐 브엘세바로 이어집니다.",
           "class": "NARRATIVE_GEOGRAPHY",
           "locator": "Gen 26:17–23",
           "confidence": "HIGH_NARRATIVE"
         },
         {
           "id": "CLM-GR-07",
-          "statement": "아비멜렉 일행은 그랄에서 이삭에게 와서, 브엘세바 맥락에서 평화의 약속을 제안한다.",
+          "statement": "아비멜렉 일행은 그랄에서 이삭에게 와서, 브엘세바 맥락에서 평화의 약속을 제안합니다.",
           "class": "FACT",
           "locator": "Gen 26:23, 26–31",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-08",
-          "statement": "그랄은 대하 14장에서 아사 전쟁 서사의 지리 표지와 주변 도시권으로 다시 등장한다.",
+          "statement": "그랄은 대하 14장에서 아사 전쟁 서사의 지리 표지와 주변 도시권으로 다시 등장합니다.",
           "class": "FACT",
           "locator": "2 Chr 14:13–15",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-09",
-          "statement": "성경의 그랄의 정확한 현대 좌표는 확정되지 않는다.",
+          "statement": "성경의 그랄의 정확한 현대 좌표는 확정되지 않습니다.",
           "class": "RESEARCH_BOUNDARY",
           "locator": "ODG multiple proposals; OpenBible multiple identifications",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-10",
-          "statement": "Tell Abū Ḥurēre/Tel Haror는 현재 중요한 선두 후보이다.",
+          "statement": "Tell Abū Ḥurēre/Tel Haror는 현재 중요한 선두 후보입니다.",
           "class": "IDENTIFICATION_HYPOTHESIS",
           "locator": "ODG Gerar; OpenBible Tel Haror",
           "confidence": "MEDIUM"
         },
         {
           "id": "CLM-GR-11",
-          "statement": "Tel Haror에는 대규모 중기 청동기 도시와 성역 증거가 있다.",
+          "statement": "Tel Haror에는 대규모 중기 청동기 도시와 성역 증거가 있습니다.",
           "class": "ARCHAEOLOGICAL_FACT",
           "locator": "PLoS/PMC archaeological context",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-12",
-          "statement": "Tel Haror의 고고학은 아브라함·이삭 사건 자체를 직접 입증하지 않는다.",
+          "statement": "Tel Haror의 고고학은 아브라함·이삭 사건 자체를 직접 입증하지 않습니다.",
           "class": "EVIDENCE_BOUNDARY",
           "locator": "archaeology/person-event gap",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-13",
-          "statement": "Tell esh-Sharia/Tel Sera, Tell Jemmeh, Tell el-Far'a South 등 경쟁 위치가 제안되었다.",
+          "statement": "Tell esh-Sharia/Tel Sera, Tell Jemmeh, Tell el-Far'a South 등 경쟁 위치가 제안되었습니다.",
           "class": "FACT_OF_SCHOLARLY_DISPUTE",
           "locator": "ODG `Lokalisierungsvorschläge`",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-14",
-          "statement": "Tell Jemmeh는 Petrie가 그랄로 식별했으나 후대에는 약화되었고, Na'aman 2019가 다시 그 동일시를 주장한다.",
+          "statement": "Tell Jemmeh는 Petrie가 그랄로 식별했으나 후대에는 약화되었고, Na'aman 2019가 다시 그 동일시를 주장합니다.",
           "class": "SCHOLARLY_HISTORY",
           "locator": "Open Research Europe §3.1; Na'aman 2019 abstract",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-15",
-          "statement": "Na'aman의 창 26 기원전 7세기 형성론은 하나의 학술 견해이며 이 자산의 결론이 아니다.",
+          "statement": "Na'aman의 창 26 기원전 7세기 형성론은 하나의 학술 견해이며 이 자산의 결론이 아닙니다.",
           "class": "INTERPRETIVE_BOUNDARY",
           "locator": "Na'aman 2019",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-16",
-          "statement": "창 20–21과 창 26의 두 아비멜렉을 동일 개인으로 자동 병합해서는 안 된다.",
+          "statement": "창 20–21과 창 26의 두 아비멜렉을 동일 개인으로 자동 병합해서는 안 됩니다.",
           "class": "IDENTITY_BOUNDARY",
           "locator": "separated narrative cycles; unresolved identity",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-GR-17",
-          "statement": "창세기의 “블레셋” 명칭과 족장 연대·고고학을 연결하는 문제는 별도 연구가 필요하다.",
+          "statement": "창세기의 “블레셋” 명칭과 족장 연대·고고학을 연결하는 문제는 별도 연구가 필요합니다.",
           "class": "HISTORICAL_BOUNDARY",
           "locator": "Gen 26:1 + archaeological chronology issue",
           "confidence": "HIGH"
         }
       ],
       "competing_views": [
-        "Tell Abū Ḥurēre / Tel Haror — 현재 자산의 leading hypothesis. Heidelberg ODG는 이 텔이 가사 남동쪽, 북서 네게브의 큰 정착지이며 제2천년기와 제1천년기에 요새화된 도시가 있었고, 중기 청동기 II의 성역과 후대 블레셋 관련 물질문화가 확인된다는 점을 들어 그랄 후보로 비교적 긍정적으로 평가한다.",
-        "Tell esh-Sharia / Tel Sera — Eusebius의 거리 정보와 일부 고고학 조건에 맞는다는 장점 때문에 제안되었으나, 오늘날 이 유적은 대체로 시글락(Ziklag) 후보로 더 많이 사용된다. 따라서 그랄 동일시는 낮은 확률의 경쟁 견해로 보존한다.",
-        "Tell Jemmeh — Flinders Petrie는 1920년대 Tell Jemmeh를 그랄로 식별했다. 현대의 한 연구는 Van Beek의 재평가를 따라 이 동일시가 더 이상 일반적으로 지지되지 않는다고 설명한다. 그러나 Nadav Na'aman은 2019년 논문에서 Tell Jemmeh를 그랄로 다시 제안하면서 창세기 26장의 형성 시기를 기원전 7세기 중엽의 역사 상황과 연결한다. 이 문학·연대 결론은 Na'aman의 견해이며 본 연구의 결론으로 승격하지 않는다.",
-        "Tell el-Far'a South — 성경 지리 문헌에서 제안된 다른 후보. 이번 자산에서는 후보 존재만 보존하며 좌표·동일성을 추가 확정하지 않는다."
+        "Tell Abū Ḥurēre / Tel Haror — 현재 자산의 leading hypothesis. Heidelberg ODG는 이 텔이 가사 남동쪽, 북서 네게브의 큰 정착지이며 제2천년기와 제1천년기에 요새화된 도시가 있었고, 중기 청동기 II의 성역과 후대 블레셋 관련 물질문화가 확인된다는 점을 들어 그랄 후보로 비교적 긍정적으로 평가합니다.",
+        "Tell esh-Sharia / Tel Sera — Eusebius의 거리 정보와 일부 고고학 조건에 맞는다는 장점 때문에 제안되었으나, 오늘날 이 유적은 대체로 시글락(Ziklag) 후보로 더 많이 사용됩니다. 따라서 그랄 동일시는 낮은 확률의 경쟁 견해로 보존합니다.",
+        "Tell Jemmeh — Flinders Petrie는 1920년대 Tell Jemmeh를 그랄로 식별했습니다. 현대의 한 연구는 Van Beek의 재평가를 따라 이 동일시가 더 이상 일반적으로 지지되지 않는다고 설명합니다. 그러나 Nadav Na'aman은 2019년 논문에서 Tell Jemmeh를 그랄로 다시 제안하면서 창세기 26장의 형성 시기를 기원전 7세기 중엽의 역사 상황과 연결합니다. 이 문학·연대 결론은 Na'aman의 견해이며 본 연구의 결론으로 승격하지 않습니다.",
+        "Tell el-Far'a South — 성경 지리 문헌에서 제안된 다른 후보. 이번 자산에서는 후보 존재만 보존하며 좌표·동일성을 추가 확정하지 않습니다."
       ],
       "relations": [
         {
@@ -1552,7 +1552,7 @@ window.BVC_PROJECTION = {
           "creator": "Aaadir",
           "license": "CC0_1.0",
           "role": "representative / archaeological_candidate",
-          "reader_caption": "그랄의 주요 위치 후보 가운데 하나인 텔 하로르. 성경의 그랄과 정확히 동일한 장소인지는 확정되지 않았다.",
+          "reader_caption": "그랄의 주요 위치 후보 가운데 하나인 텔 하로르. 성경의 그랄과 정확히 동일한 장소인지는 확정되지 않았습니다.",
           "attribution": "Aaadir, \"תל הרור1.jpg\", Wikimedia Commons, CC0 1.0.",
           "rights_note": "PUBLIC_DOMAIN_DEDICATION_CC0",
           "license_label": "CC0 1.0",
@@ -2201,7 +2201,7 @@ window.BVC_PROJECTION = {
       "stable_id": "JBC-CR-PLACE-ACHAIA-001",
       "display_label": "아가야",
       "label_en": "Achaia",
-      "semantic_note": "신약의 Ἀχαΐα는 고대 그리스의 북부 펠로폰네소스에 있던 좁은 의미의 아카이아 지방만을 가리키는 것으로 읽기 어렵다. 사도행전 18:12이 갈리오를 “아가야의 총독(프로콘술)”로 부르고, 바울 서신이 마게도냐와 아가야를 병렬적인 광역 단위로 사용하기 때문이다. 따라서 신약 핵심 시기의 아가야는 로마 행정상의 광역 province 의미가 중심이다.",
+      "semantic_note": "신약의 Ἀχαΐα는 고대 그리스의 북부 펠로폰네소스에 있던 좁은 의미의 아카이아 지방만을 가리키는 것으로 읽기 어렵습니다. 사도행전 18:12이 갈리오를 “아가야의 총독(프로콘술)”로 부르고, 바울 서신이 마게도냐와 아가야를 병렬적인 광역 단위로 사용하기 때문입니다. 따라서 신약 핵심 시기의 아가야는 로마 행정상의 광역 province 의미가 중심입니다.",
       "identity_binding": {
         "viewer_stable_id": "JBC-CR-PLACE-ACHAIA-001",
         "binding_role": "VIEWER_BINDING_ID_ONLY",
@@ -2430,84 +2430,84 @@ window.BVC_PROJECTION = {
       "claims": [
         {
           "id": "CLM-ACH-01",
-          "statement": "신약의 아가야는 핵심적으로 로마의 광역 province 의미로 사용된다.",
+          "statement": "신약의 아가야는 핵심적으로 로마의 광역 province 의미로 사용됩니다.",
           "evidence": "성경 본문 + 고전 지리",
           "locator": "행 18:12; 고후 1:1; 살전 1:7–8; Perseus ACHAIA §3",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-02",
-          "statement": "고린도는 로마 아가야의 행정 중심지였다.",
+          "statement": "고린도는 로마 아가야의 행정 중심지였습니다.",
           "evidence": "Acts + Perseus + ASCSA",
           "locator": "행 18:12; Corinth Site; Roman Corinth evidence",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-03",
-          "statement": "갈리오는 아가야의 proconsul로 본문에 명시된다.",
+          "statement": "갈리오는 아가야의 proconsul로 본문에 명시됩니다.",
           "evidence": "성경 본문",
           "locator": "행 18:12",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-04",
-          "statement": "아가야와 마게도냐는 바울의 사역·구제·교회 네트워크에서 반복적으로 병렬된다.",
+          "statement": "아가야와 마게도냐는 바울의 사역·구제·교회 네트워크에서 반복적으로 병렬됩니다.",
           "evidence": "성경 본문",
           "locator": "행 19:21; 롬 15:26; 고후 9:2; 살전 1:7–8",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-05",
-          "statement": "아가야의 그리스도인 네트워크는 고린도 한 교회만으로 축소되지 않는다.",
+          "statement": "아가야의 그리스도인 네트워크는 고린도 한 교회만으로 축소되지 않습니다.",
           "evidence": "성경 본문",
           "locator": "고후 1:1; 살전 1:7–8",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-06",
-          "statement": "아볼로는 아가야로 파송되고 이어 고린도에 있는 것으로 서술된다.",
+          "statement": "아볼로는 아가야로 파송되고 이어 고린도에 있는 것으로 서술됩니다.",
           "evidence": "성경 본문",
           "locator": "행 18:27; 19:1",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-07",
-          "statement": "스데바나의 집은 “아가야의 첫 열매”로 불린다.",
+          "statement": "스데바나의 집은 “아가야의 첫 열매”로 불립니다.",
           "evidence": "성경 본문",
           "locator": "고전 16:15",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-08",
-          "statement": "고전적 좁은 Achaia와 신약 시대 Roman Achaia를 같은 범위로 고정하면 안 된다.",
+          "statement": "고전적 좁은 Achaia와 신약 시대 Roman Achaia를 같은 범위로 고정하면 안 됩니다.",
           "evidence": "역사 지리 + NT 용례",
           "locator": "Perseus ACHAIA §2–3; 행 18:12",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-09",
-          "statement": "Roman Achaia의 정확한 경계는 시대에 따라 변하며 하나의 고정 polygon으로 확정하기 어렵다.",
+          "statement": "Roman Achaia의 정확한 경계는 시대에 따라 변하며 하나의 고정 polygon으로 확정하기 어렵습니다.",
           "evidence": "고전 지리",
           "locator": "Perseus ACHAIA §3 boundary discussion",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-10",
-          "statement": "Gallio의 총독 재임은 바울의 고린도 체류 연대 연구에서 중요한 외부 연대 기준이다.",
+          "statement": "Gallio의 총독 재임은 바울의 고린도 체류 연대 연구에서 중요한 외부 연대 기준입니다.",
           "evidence": "현대 NT 연구",
           "locator": "Cambridge NTS chronology discussion",
           "confidence": "HIGH_FOR_BROAD_WINDOW"
         },
         {
           "id": "CLM-ACH-11",
-          "statement": "고린도의 로마기 고고학은 아가야 행정 중심지 이해를 보강하지만 지역 전체 경계를 직접 확정하지는 않는다.",
+          "statement": "고린도의 로마기 고고학은 아가야 행정 중심지 이해를 보강하지만 지역 전체 경계를 직접 확정하지는 않습니다.",
           "evidence": "ASCSA Corinth excavation corpus",
           "locator": "Roman Corinth inscriptions / forum context",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-ACH-12",
-          "statement": "롬 16:5를 아가야의 직접 언급으로 추가하지 않는다.",
+          "statement": "롬 16:5를 아가야의 직접 언급으로 추가하지 않습니다.",
           "evidence": "승인 S066 + 본문비평 경계",
           "locator": "S066 direct set excludes Rom 16:5; older lexical traditions record variant",
           "confidence": "HIGH_FOR_CURRENT_ASSET_BOUNDARY"
@@ -3349,98 +3349,98 @@ window.BVC_PROJECTION = {
       "claims": [
         {
           "id": "CLM-AML-01",
-          "statement": "S066에서 Amalek은 LEVEL_A region으로 분류된다.",
+          "statement": "S066에서 Amalek은 LEVEL_A region으로 분류됩니다.",
           "evidence": "S066",
           "locator": "BAT01-PLACE-0059 / source line 60",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-02",
-          "statement": "성경은 아말렉을 네게브와 직접 연결한다.",
+          "statement": "성경은 아말렉을 네게브와 직접 연결합니다.",
           "evidence": "Biblical text",
           "locator": "Num 13:29",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-03",
-          "statement": "아말렉은 시나이 광야의 르비딤 전승과 연결된다.",
+          "statement": "아말렉은 시나이 광야의 르비딤 전승과 연결됩니다.",
           "evidence": "Biblical text",
           "locator": "Exod 17:8–16",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-04",
-          "statement": "아말렉의 기억은 이동 중 약자 공격과 연결된다.",
+          "statement": "아말렉의 기억은 이동 중 약자 공격과 연결됩니다.",
           "evidence": "Biblical text",
           "locator": "Deut 25:17–19",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-05",
-          "statement": "아말렉 활동은 하나의 고정 행정 경계보다 이동성 있는 남부 활동권으로 이해하는 것이 안전하다.",
+          "statement": "아말렉 활동은 하나의 고정 행정 경계보다 이동성 있는 남부 활동권으로 이해하는 것이 안전합니다.",
           "evidence": "Tebes + biblical distribution",
           "locator": "JHS 6; multiple passages",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-06",
-          "statement": "1 Sam 30의 아말렉 사건 지리는 southern Shephelah/Negev network와 강하게 연결된다.",
+          "statement": "1 Sam 30의 아말렉 사건 지리는 southern Shephelah/Negev network와 강하게 연결됩니다.",
           "evidence": "McKinny",
           "locator": "Routledge chapter, pp. 15–33",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-07",
-          "statement": "Judges의 북부 raid zones를 아말렉 핵심 homeland로 확장해서는 안 된다.",
+          "statement": "Judges의 북부 raid zones를 아말렉 핵심 homeland로 확장해서는 안 됩니다.",
           "evidence": "Biblical text + mobility model",
           "locator": "Judg 3; 6–7",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-08",
-          "statement": "아말렉에 대한 확실한 단일 고고학적 진단물 또는 수도는 확보되지 않았다.",
+          "statement": "아말렉에 대한 확실한 단일 고고학적 진단물 또는 수도는 확보되지 않았습니다.",
           "evidence": "scholarly debate",
           "locator": "Tebes; Na’aman; archaeology history",
           "confidence": "HIGH_WITH_VERIFY"
         },
         {
           "id": "CLM-AML-09",
-          "statement": "Tel Masos를 아말렉과 강하게 연결하는 최근 역사 재구성이 존재하지만 합의된 identity lock은 아니다.",
+          "statement": "Tel Masos를 아말렉과 강하게 연결하는 최근 역사 재구성이 존재하지만 합의된 identity lock은 아닙니다.",
           "evidence": "Na’aman 2025",
           "locator": "DOI 10.1080/00310328.2025.2558276",
           "confidence": "VERIFY"
         },
         {
           "id": "CLM-AML-10",
-          "statement": "OpenBible Amalek geometry는 exact border가 아니라 atlas aggregation isobands이다.",
+          "statement": "OpenBible Amalek geometry는 exact border가 아니라 atlas aggregation isobands입니다.",
           "evidence": "OpenBible dataset",
           "locator": "ab95484 / g3ccc7b",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-11",
-          "statement": "OpenBible representative point는 Ain el Qudeirat이며 Amalek centroid가 아니다.",
+          "statement": "OpenBible representative point는 Ain el Qudeirat이며 Amalek centroid가 아닙니다.",
           "evidence": "OpenBible dataset",
           "locator": "m6da23a",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-12",
-          "statement": "고정 Amalek polygon은 현재 연구 근거로 승인할 수 없다.",
+          "statement": "고정 Amalek polygon은 현재 연구 근거로 승인할 수 없습니다.",
           "evidence": "cumulative evidence",
           "locator": "this audit",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-13",
-          "statement": "Shasu를 Amalek과 직접 동일시하는 것은 안전하지 않다.",
+          "statement": "Shasu를 Amalek과 직접 동일시하는 것은 안전하지 않습니다.",
           "evidence": "Egyptian evidence interpretation",
           "locator": "Na’aman 2025",
           "confidence": "HIGH"
         },
         {
           "id": "CLM-AML-14",
-          "statement": "남부 Negev/Sinai 환경은 건조·wadi·oasis 의존성이 강하지만 하나의 동일 지형으로 환원할 수 없다.",
+          "statement": "남부 Negev/Sinai 환경은 건조·wadi·oasis 의존성이 강하지만 하나의 동일 지형으로 환원할 수 없습니다.",
           "evidence": "Geological / environmental studies",
           "locator": "GSI 2024; Negev Highlands study",
           "confidence": "HIGH"

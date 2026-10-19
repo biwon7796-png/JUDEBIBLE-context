@@ -6615,12 +6615,15 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
     if (!name) return null;
     return (window.JBC_PERSON_RESEARCH_20261009 || []).find(function(r){return r.name === String(name).trim();}) || null;
   }
+  // **굵게** / *기울임* left in manuscript text → <strong>/<em> (input is already HTML-escaped)
+  function mdInline(h) { return String(h).replace(/\*\*([^*]+?)\*\*/g, "<strong>$1</strong>").replace(/\*([^*\s][^*]*?)\*/g, "<em>$1</em>"); }
+  function stripMd(t) { return String(t == null ? "" : t).replace(/\*\*([^*]+?)\*\*/g, "$1").replace(/\*([^*\s][^*]*?)\*/g, "$1"); }
   function localPersonResearchHtml(r) {
     if (!r) return "";
     return '<section class="d-sec jbc-person-worbs" data-part="person-worbs-reader" data-professional-status="CANDIDATE_HOLD">' +
-      '<h4 class="d-h">인물연구</h4><h5 class="rp-subhead">훑어보기</h5><p class="d-body">'+esc(r.overview)+'</p>'+
-      '<h5 class="rp-subhead">살펴보기</h5>'+(r.commentary||[]).map(function(s,i){return '<div class="rp-unit"><strong class="rp-section-title">'+(i+1)+'. '+esc(s.heading)+'</strong><p class="d-body">'+esc(s.body)+'</p></div>';}).join("")+
-      '<h5 class="rp-subhead">깊게보기</h5>'+readerParas(r.deep).map(function(s){return '<p class="d-body">'+esc(s)+'</p>';}).join("")+'</section>';
+      '<h4 class="d-h">인물연구</h4><h5 class="rp-subhead">훑어보기</h5><p class="d-body">'+mdInline(esc(r.overview))+'</p>'+
+      '<h5 class="rp-subhead">살펴보기</h5>'+(r.commentary||[]).map(function(s,i){return '<div class="rp-unit"><strong class="rp-section-title">'+(i+1)+'. '+esc(s.heading)+'</strong><p class="d-body">'+mdInline(esc(s.body))+'</p></div>';}).join("")+
+      '<h5 class="rp-subhead">깊게보기</h5>'+readerParas(r.deep).map(function(s){return '<p class="d-body">'+mdInline(esc(s))+'</p>';}).join("")+'</section>';
   }
   var localPersonOpen = null;
   // Draft-only person cards retain their separate content/provenance, but follow
@@ -6662,7 +6665,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
       var m=META[x.name]||{passage:"",tags:[]}, tags=m.tags.concat(["연구 원고"]);
       if (swState.view !== "card") return '<article class="ee-item ee-list-row" data-origin="research-draft" data-research-id="'+esc(x.name)+'"><button type="button" class="sr-row ee-primary no-media" data-local-person-research="'+esc(x.name)+'">' +
         '<span class="ee-list-name ee-list-name-entity"><span class="ee-list-symbol" aria-hidden="true">♙</span><span class="ee-list-namecopy"><span class="sr-ref">'+esc(x.name)+'</span><span class="ee-list-class">인물</span></span></span>' +
-        '<span class="ee-list-desc">'+esc(snip(x.overview))+'</span>' +
+        '<span class="ee-list-desc">'+esc(snip(stripMd(x.overview)))+'</span>' +
         '<span class="ee-list-passage">'+esc(m.passage)+'</span>' +
         '<span class="ee-list-tags">'+tags.map(function(t){return '<span class="ee-tag">'+esc(t)+'</span>';}).join("")+'</span>' +
         '<span class="ee-list-chevron" aria-hidden="true">›</span></button></article>';
@@ -6670,7 +6673,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
         '<button type="button" class="sr-row ee-primary no-media" data-local-person-research="'+esc(x.name)+'">' +
         '<span class="ee-copy"><span class="sr-ref">'+esc(x.name)+'<span class="sr-kind">인물</span></span>' +
         '<span class="ee-meta">인물연구</span></span>' +
-        '<span class="ee-card-extra"><span class="sr-preview">'+esc(snip(x.overview))+'</span>'+(m.passage?'<span class="ee-count">'+esc(m.passage)+'</span>':'')+
+        '<span class="ee-card-extra"><span class="sr-preview">'+esc(snip(stripMd(x.overview)))+'</span>'+(m.passage?'<span class="ee-count">'+esc(m.passage)+'</span>':'')+
         '<span class="ee-tags">'+tags.map(function(t){return '<span class="ee-tag">'+esc(t)+'</span>';}).join("")+'</span></span></button></article>';
     }).join("");
   }
