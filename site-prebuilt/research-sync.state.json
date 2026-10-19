@@ -57,8 +57,24 @@
    "sha": "53a517c97d6c128880a2211b56dc0239862d537ff068ea7797261e9a33703f8a"
   },
   "research.luk1-5-25.reader.js": {
-   "source": "LUK_001_005_025_WORBS_READER_DRAFT_20261018.md",
-   "sha": "617d84df41e3fca94f74f9c2e2b7dd60b7ceafa41d69ad597c00df772a6c41a6"
+   "source": "LUK_001_005_025_WORBS_READER_DRAFT_v0.2_20261019.md",
+   "sha": "4984dea727de0c2bbb603ad50fba6afb97aa8ca23d1f61025c180a2e1faec254"
+  },
+  "research.psa5-1-12.reader.js": {
+   "source": "PSA_005_001_012_WORBS_READER_DRAFT_20261019.md",
+   "sha": "6b66c43fe118dc86ae84ff7f14cb2f97954df5bae5f42f2d7ff55b57880312f1"
+  },
+  "research.jer2-23-37.reader.js": {
+   "source": "JER_002_023_037_WORBS_READER_DRAFT_20261019.md",
+   "sha": "3f3e92388ba7729bf2e7bcabdea2cd4fce9de224e4920f1a3868dc884a3bd3b0"
+  },
+  "research.1sa1-21-28.reader.js": {
+   "source": "1SA_01_21_28_WORBS_STORY_COMMENTARY_v0.1_READER_DRAFT_20261019.md",
+   "sha": "89a4ea6a2d44b460d33e25321d27bca7c3610171a2e95a15675583244deaffb3"
+  },
+  "research.exo2-23-25.reader.js": {
+   "source": "EXODUS_02_23_25_WORBS_STORY_COMMENTARY_v0.2_READER_DRAFT_20261019.md",
+   "sha": "c6ccb350e46cbb6afbf12aca8a098c7d27b10a0b105c2808aad4e710d9c544d0"
   }
  }
 }
