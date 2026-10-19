@@ -4023,7 +4023,7 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
       ML.creating = false; if (!lib || ML.failed || !ML.el || !ML.el.isConnected) return;
       var g = ui.gcam && ui.gcam.__ml ? ui.gcam : geoCam();
       try {
-        ML.map = new lib.Map({ container: ML.el, style: mlStyle(), center: [g.x, GEO.latOf(g.y)], zoom: mlZoomFor(g.w), attributionControl: false, renderWorldCopies: false, dragRotate: false, pitchWithRotate: false, touchPitch: false, keyboard: false, fadeDuration: 0, canvasContextAttributes: { preserveDrawingBuffer: true } });
+        ML.map = new lib.Map({ container: ML.el, style: mlStyle(), center: [g.x, GEO.latOf(g.y)], zoom: mlZoomFor(g.w), attributionControl: false, renderWorldCopies: false, dragRotate: false, pitchWithRotate: false, touchPitch: false, keyboard: false, fadeDuration: 0, canvasContextAttributes: { preserveDrawingBuffer: !/[?&]glpb=0(?:&|$)/.test(location.search) } });   // ?glpb=0 : test switch for black-tile flicker (export still works: it copies the canvas inside the render event)
         ML.map.touchZoomRotate.disableRotation();
       } catch (e) { ML.failed = true; ML.error = "WebGL/map init: " + String(e && e.message || e); ML.map = null; renderMapPane(); return; }
       ML.map.on("render", mlOnRender); ML.map.on("move", mlOnRender); ML.map.on("resize", function () { mlLimits(); ML.dirty = true; mlOnRender(); });   // 이동·크기 변화 이벤트에서 바로 오버레이를 맞춘다(GL 프레임이 늦어도 오버레이는 현재 변환과 일치)
