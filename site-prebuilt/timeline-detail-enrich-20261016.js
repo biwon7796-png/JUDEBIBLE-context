@@ -71,7 +71,13 @@
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest(".tl-worbs-open"); if (!b) return;
-    location.hash = "#" + b.getAttribute("data-hash"); setTimeout(function () { var o = document.querySelector(".jb-research-edge-open,#panel-open"); if (o && document.body.dataset.panel !== "open") o.click(); }, 700);
+    location.hash = "#" + b.getAttribute("data-hash");
+    // switch to the study (본문연구) page first, exactly like the left rail tab and the "본문연구에서 보기" link do
+    setTimeout(function () {
+      if (document.body.dataset.view !== "study" && window.BVC && BVC.setView) { try { BVC.setView("study"); } catch (x) {} }
+      if (document.body.dataset.view !== "study") { var r = document.getElementById("rail-study"); if (r) r.click(); }
+    }, 250);
+    setTimeout(function () { var o = document.querySelector(".jb-research-edge-open,#panel-open"); if (o && document.body.dataset.panel !== "open") o.click(); }, 700);
   });
   function refName(rg) {
     var bs = window.BVC_KRV && window.BVC_KRV.books, b = bs && bs.filter(function (x) { return x.id === rg.book; })[0], nm = b ? b.name : rg.book;
