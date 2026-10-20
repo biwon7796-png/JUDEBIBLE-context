@@ -57,14 +57,16 @@
     out.sort(function (x, y) { return (y.approved ? 1 : 0) - (x.approved ? 1 : 0); });
     return out.slice(0, 2);
   }
+  // card text comes from markdown manuscripts: render **bold** / *italic*, drop stray markers left by clip()
+  function mdEsc(s) { return esc(s).replace(/\*\*([^*]+?)\*\*/g, "<strong>$1</strong>").replace(/\*([^*\s][^*]*?)\*/g, "<em>$1</em>").replace(/\*+/g, ""); }
   function worbsHtml(list, rg) {
     if (!list.length) return "";
     var h = '<h3>본문연구 <small>WORBS · 주드성경 본문연구 패널과 같은 연구</small></h3>';
     list.forEach(function (r) {
       h += '<article class="tl-worbs"><b>' + esc(r.d.title || r.d.passage.ref) + "</b>";
-      if (r.pericope && r.d.centralMessage) h += "<p>" + esc(clip(r.d.centralMessage, 420)) + "</p>";
-      else if (r.secs.length) r.secs.slice(0, 2).forEach(function (x) { h += "<p><strong>" + esc(x.title) + "</strong> " + esc(clip((x.paragraphs || [])[0] || "", 360)) + "</p>"; });
-      else if (r.d.overview && r.d.overview[0]) h += "<p>" + esc(clip(r.d.overview[0], 360)) + "</p>";
+      if (r.pericope && r.d.centralMessage) h += "<p>" + mdEsc(clip(r.d.centralMessage, 420)) + "</p>";
+      else if (r.secs.length) r.secs.slice(0, 2).forEach(function (x) { h += "<p><strong>" + esc(x.title) + "</strong> " + mdEsc(clip((x.paragraphs || [])[0] || "", 360)) + "</p>"; });
+      else if (r.d.overview && r.d.overview[0]) h += "<p>" + mdEsc(clip(r.d.overview[0], 360)) + "</p>";
       h += '<button type="button" class="tl-worbs-open" data-hash="' + esc(rg.book + "-" + rg.c1 + ":" + rg.v1) + '">본문연구 패널에서 전체 보기</button></article>';
     });
     return h + '<p class="tl-credit">이 연구는 공개 자료(Tyndale Open Study Notes, unfoldingWord Translation Notes · CC BY-SA 4.0)를 참고해 한국어 독자를 위해 선별·재구성·재서술한 것이며, 원출판사·기관이 승인한 번역이 아닙니다. 참고자료와 라이선스는 본문연구 패널 맨 아래 "연구 출처 및 저작권 안내"에 있습니다.</p>';
