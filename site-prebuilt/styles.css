@@ -6425,3 +6425,8 @@ body[data-view="explore"] #place-fixed-head .place-meta-line .d-original{color:v
   body[data-explore-resizing="1"]{cursor:col-resize;user-select:none}
 }
 @media (max-width:760px) { #explore-detail-split {display:none!important} }
+
+/* Explore 오른쪽 패널: 성경구절 버튼 아래로 펼쳐지는 본문 */
+.inline-scripture-panel { max-height: min(46vh, 360px); overflow-y: auto; margin: 8px 0 12px; }
+.inline-scripture-panel .inline-scripture-ref { margin: 0 0 6px; font-size: .76rem; font-weight: 700; color: var(--accent-ink); font-family: inherit; }
+#panel [data-inline-open][aria-expanded="true"] { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-ink); }
