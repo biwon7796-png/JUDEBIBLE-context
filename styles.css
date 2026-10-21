@@ -5703,3 +5703,8 @@ body[data-view="timeline"] #timeline-pane{--tl-sel-bg:#EDF4EF;--tl-sel-line:#5C8
 .pc-photo-credit{font-size:.68rem;line-height:1.45;color:var(--muted,#777);padding:3px 10px 7px;overflow-wrap:anywhere;}
 .pc-photo-credit a{color:inherit;text-decoration:underline;text-underline-offset:2px;}
 .pc-photo-credit a:focus-visible{outline:2px solid currentColor;outline-offset:2px;}
+
+/* Explore 오른쪽 패널: 성경구절 버튼 아래로 펼쳐지는 본문 */
+.inline-scripture-panel { max-height: min(46vh, 360px); overflow-y: auto; margin: 8px 0 12px; }
+.inline-scripture-panel .inline-scripture-ref { margin: 0 0 6px; font-size: .76rem; font-weight: 700; color: var(--accent-ink); font-family: inherit; }
+#panel [data-inline-open][aria-expanded="true"] { background: var(--accent-soft); border-color: var(--accent-line); color: var(--accent-ink); }

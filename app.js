@@ -245,7 +245,39 @@
       + (ok ? '<p class="d-body" style="white-space:pre-wrap">' + esc(a.ko) + '</p><details><summary>영문 사전 원문</summary><p class="d-body" style="white-space:pre-wrap">' + esc(a.en) + '</p></details>' : '<p class="meta">일치하는 사전 원문 확인 전입니다.</p>')
       + '</section>';
   }
+  // 검색(Explore) 오른쪽 패널의 성경구절 버튼: 본문 화면으로 이동하지 않고 버튼 아래에 말씀을 바로 펼친다. 같은 버튼을 다시 누르면 접는다.
+  var INLINE_REF_SEL = '#panel [data-open-range],#panel [data-open-ref],#panel [data-levelb-ref],#panel [data-atlas90-citation],#panel [data-source-bible-ref]';
+  function inlineRefSpec(el) {
+    var raw = el.dataset.openRange || el.dataset.openRef || el.dataset.levelbRef || el.dataset.atlas90Citation || el.dataset.sourceBibleRef || "";
+    var m = /^([a-z0-9]+-\d+):(\d*)(?:-(\d+))?$/.exec(raw), P = m && D.passages[m[1]]; if (!P) return null;
+    var n = P.verses.length, a = m[2] ? +m[2] : 1, b = m[2] ? +(m[3] || m[2]) : n;
+    a = Math.max(1, a); b = Math.min(b, n); if (b < a) return null;
+    return { pid: m[1], a: a, b: b, spec: m[1] + ":" + a + (b > a ? "-" + b : ""), P: P };
+  }
+  function closeInlineRefs(panel) {
+    [].forEach.call(panel.querySelectorAll(".inline-scripture-panel"), function (x) { x.remove(); });
+    [].forEach.call(panel.querySelectorAll('[aria-expanded="true"][data-inline-open]'), function (b) { b.setAttribute("aria-expanded", "false"); });
+  }
+  function toggleInlineRef(el) {
+    var panel = $("panel"), s = inlineRefSpec(el); if (!panel || !s) return false;
+    var open = el.getAttribute("aria-expanded") === "true"; closeInlineRefs(panel); if (open) return true;
+    var box = document.createElement("div"); box.className = "person-inline-scripture inline-scripture-panel"; box.dataset.range = s.spec;
+    box.innerHTML = '<p class="inline-scripture-ref">' + esc(s.P.ref.replace(/[장편]$/, "") + ":" + s.a + (s.b > s.a ? "–" + s.b : "")) + "</p>" +
+      s.P.verses.filter(function (v) { return v.n >= s.a && v.n <= s.b; }).map(function (v) { return '<p><span class="person-inline-verse-num">' + v.n + "</span> " + esc(v.text) + "</p>"; }).join("") +
+      '<button type="button" class="person-inline-open" data-inline-go="' + esc(s.spec) + '">본문에서 보기</button>';
+    var host = el.closest(".pills, .full-ref-list, .sp-passages"), li = !host && el.closest("li"), para = !host && !li && el.closest("p"), last = el;
+    if (li) li.appendChild(box);
+    else if (host || para) (host || para).insertAdjacentElement("afterend", box);
+    else { while (last.nextElementSibling && last.nextElementSibling.tagName === "BUTTON") last = last.nextElementSibling; last.insertAdjacentElement("afterend", box); }
+    el.setAttribute("data-inline-open", "1"); el.setAttribute("aria-expanded", "true");
+    try { box.scrollIntoView({ block: "nearest" }); } catch (e) {}
+    return true;
+  }
   document.addEventListener("click", function(ev) {
+    var inlineGo = ev.target && ev.target.closest && ev.target.closest("[data-inline-go]");
+    if (inlineGo) { ev.preventDefault(); ev.stopImmediatePropagation(); var ig = /^([a-z0-9]+-\d+):(\d+)(?:-(\d+))?$/.exec(inlineGo.dataset.inlineGo || ""); if (ig) { closeSearch(true); openRelatedPassage(ig[1], +ig[2], +(ig[3] || ig[2])); } return; }
+    var inlineRef = state.view === "explore" && ev.target && ev.target.closest && ev.target.closest(INLINE_REF_SEL);
+    if (inlineRef && toggleInlineRef(inlineRef)) { ev.preventDefault(); ev.stopImmediatePropagation(); return; }
     var lbref = ev.target && ev.target.closest && ev.target.closest('[data-levelb-ref]');
     if (lbref) { ev.preventDefault(); var m=/^([a-z0-9]+-\d+):(\d+)$/.exec(lbref.dataset.levelbRef||'');if(m&&D.passages[m[1]]&&hasVerse(m[1],+m[2])){levelBSelection=null;return openRelatedPassage(m[1],+m[2]);}return; }
     var lbopen = ev.target && ev.target.closest && ev.target.closest('[data-levelb-open]');
@@ -2896,6 +2928,10 @@
     panel.innerHTML = html; hydrateResearchSlots(panel);
     if (nextPassage && previousPassage && nextPassage !== previousPassage) panel.scrollTop = 0;
     panel.dataset.renderedPassage = nextPassage;
+    // 다른 카드(대상)를 고르면 아래로 내려가 있던 패널이 맨 위부터 보이게 한다. 같은 대상을 다시 그릴 때는 위치를 유지한다.
+    var detailKey = [localPersonOpen || "", levelBSelection || "", atlas90Selection || "", atlasBcSelection || "", atlasExpansionSelection || "", ui.placeBasic || "", state.entity ? state.entity.kind + "." + state.entity.id : ""].join("|");
+    if (panel.dataset.detailKey !== undefined && panel.dataset.detailKey !== detailKey) panelScrollTop();
+    panel.dataset.detailKey = detailKey;
     rsRenderShell();
     // Detail-only redraws must update the shared chrome context as well.
     document.body.dataset.detailContext = detailContext().kind === 'ENTITY' ? 'entity' : 'passage';
