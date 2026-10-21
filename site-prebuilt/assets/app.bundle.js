@@ -2065,10 +2065,9 @@ window.JBC_ATLAS90_SCRIPTURE_EVIDENCE={"BAT01-PLACE-0016":{"name":"Achaia","name
   function toggleInlineRef(el) {
     var panel = $("panel"), s = inlineRefSpec(el); if (!panel || !s) return false;
     var open = el.getAttribute("aria-expanded") === "true"; closeInlineRefs(panel); if (open) return true;
-    var box = document.createElement("div"); box.className = "person-inline-scripture inline-scripture-panel"; box.dataset.range = s.spec;
-    box.innerHTML = '<p class="inline-scripture-ref">' + esc(s.P.ref.replace(/[장편]$/, "") + ":" + s.a + (s.b > s.a ? "–" + s.b : "")) + "</p>" +
-      s.P.verses.filter(function (v) { return v.n >= s.a && v.n <= s.b; }).map(function (v) { return '<p><span class="person-inline-verse-num">' + v.n + "</span> " + esc(v.text) + "</p>"; }).join("") +
-      '<button type="button" class="person-inline-open" data-inline-go="' + esc(s.spec) + '">본문에서 보기</button>';
+    var box = document.createElement("div"); box.className = "pe-verse-open inline-scripture-panel"; box.dataset.range = s.spec;   // 장소 상세의 "본문에서 이 장소가 나오는 곳" 펼침과 같은 모양
+    box.innerHTML = s.P.verses.filter(function (v) { return v.n >= s.a && v.n <= s.b; }).map(function (v) { return "<p><sup>" + v.n + "</sup>" + esc(v.text) + "</p>"; }).join("") +
+      '<a class="pe-open-study" href="#' + esc(s.spec) + '" data-inline-go="' + esc(s.spec) + '">본문연구에서 보기 ›</a>';
     var host = el.closest(".pills, .full-ref-list, .sp-passages"), li = !host && el.closest("li"), para = !host && !li && el.closest("p"), last = el;
     if (li) li.appendChild(box);
     else if (host || para) (host || para).insertAdjacentElement("afterend", box);
