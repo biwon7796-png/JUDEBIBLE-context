@@ -75,6 +75,38 @@
   "research.exo2-23-25.reader.js": {
    "source": "EXODUS_02_23_25_WORBS_STORY_COMMENTARY_v0.2_READER_DRAFT_20261019.md",
    "sha": "c6ccb350e46cbb6afbf12aca8a098c7d27b10a0b105c2808aad4e710d9c544d0"
+  },
+  "research.psa6-1-10.reader.js": {
+   "source": "PSA_006_001_010_WORBS_READER_DRAFT_20261020.md",
+   "sha": "662a7ecc5bd4bdd2b46b82a82a7fa059e92c568f3d050a0e210732b1baf47dc4"
+  },
+  "research.jer3-1-5.reader.js": {
+   "source": "JER_003_001_005_WORBS_READER_DRAFT_20261020.md",
+   "sha": "58c6a7f677d4a704d8d8b71efa7a7c2689f744b76d87394e072a23492e2ca0ff"
+  },
+  "research.psa7-1-17.reader.js": {
+   "source": "PSA_007_001_017_WORBS_READER_DRAFT_20261021.md",
+   "sha": "2e80eaa3f64ea0b1d9cd416ace93b644f56ed9fe6f4c4859f9aa239b4c0a0ecc"
+  },
+  "research.1sa2-1-10.reader.js": {
+   "source": "1SA_02_01_10_WORBS_READER_DRAFT_20261020.md",
+   "sha": "45c0852dbec15cdafaff1f891d6988eba3d1bf592658714001ba0bfed3c53d12"
+  },
+  "research.1sa2-11-17.reader.js": {
+   "source": "1SA_02_11_17_WORBS_READER_DRAFT_20261021.md",
+   "sha": "2dbafcc3409370930eb562b631cf03f50e834d8c3fd9356e3ed5ff7a2d51e35e"
+  },
+  "research.jer3-6-18.reader.js": {
+   "source": "JER_003_006_018_WORBS_READER_DRAFT_20261022.md",
+   "sha": "5d941891e2751035e009c0607604ddec1e4d19367e8372b79a480cc23a1cb2ca"
+  },
+  "research.psa8-1-9.reader.js": {
+   "source": "PSA_008_001_009_WORBS_READER_CANDIDATE_20261024.md",
+   "sha": "28c5e583384663c543a5463cfe215ad156e5401572dbc409c1e761ec53d0a927"
+  },
+  "research.psa9-1-20.reader.js": {
+   "source": "PSA_009_001_020_WORBS_READER_CANDIDATE_20261025.md",
+   "sha": "8eed800200b3bf0a31f2872894ba9b65669c8d688b7be0fea4a7a667d2a613a9"
   }
  }
 }
