@@ -107,6 +107,10 @@
   "research.psa9-1-20.reader.js": {
    "source": "PSA_009_001_020_WORBS_READER_CANDIDATE_20261025.md",
    "sha": "8eed800200b3bf0a31f2872894ba9b65669c8d688b7be0fea4a7a667d2a613a9"
+  },
+  "research.psa10-1-18.reader.js": {
+   "source": "PSA_010_001_018_WORBS_READER_CANDIDATE_20261026.md",
+   "sha": "68f195dbcc8932517597f0c76ce96c8edbd4c879fce8d3fec0a32cf69f233b2a"
   }
  }
 }
