@@ -202,6 +202,7 @@ function main() {
   const PREBUILT = path.join(ROOT, "site-prebuilt");
   if (fs.existsSync(path.join(PREBUILT, "index.html"))) {
     fs.cpSync(PREBUILT, DIST, { recursive: true });
+    // Include Captain-approved Reader preview alongside the already-prebuilt app.
     copyFile('design-preview/exodus-1-15-22-reader-preview.html');
     fs.writeFileSync(outputPath(".nojekyll"), "", "utf8");
     console.log(JSON.stringify({ status: "PASS", source: "site-prebuilt", files: walk(DIST).length }));
